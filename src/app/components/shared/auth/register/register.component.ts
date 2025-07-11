@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -7,7 +8,7 @@ import { AuthService } from '../../../../core/services/auth.service';
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
 })
 export class RegisterComponent {
   private auth = inject(AuthService);

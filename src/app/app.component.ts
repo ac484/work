@@ -8,7 +8,7 @@ import { AppFooter } from "./components/app.footer";
 
 @Component({
   selector: 'app-root',
-  imports: [AppTopbar, StatsWidget, SalesTrendWidget, RecentActivityWidget, ProductOverviewWidget, AppFooter],
+  imports: [AppTopbar, AppFooter],
   template: `
     <div class="app-root-layout">
       <app-topbar></app-topbar>
