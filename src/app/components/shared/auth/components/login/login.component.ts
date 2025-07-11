@@ -1,13 +1,14 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../../core/services/auth.service';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
 })
 export class LoginComponent {
   private auth = inject(AuthService);

@@ -1,19 +1,16 @@
 import { Component } from '@angular/core';
 import { AppTopbar } from './components/app.topbar';
-import { StatsWidget } from "./components/dashboard/statswidget";
-import { SalesTrendWidget } from "./components/dashboard/salestrendwidget";
-import { RecentActivityWidget } from "./components/dashboard/recentactivitywidget";
-import { ProductOverviewWidget } from "./components/dashboard/productoverviewwidget";
-import { AppFooter } from "./components/app.footer";
+import { AppFooter } from './components/app.footer';
+import { AuthShellComponent } from './components/shared/auth/components/auth-shell/auth-shell.component';
 
 @Component({
   selector: 'app-root',
-  imports: [AppTopbar, AppFooter],
+  imports: [AppTopbar, AppFooter, AuthShellComponent],
   template: `
     <div class="app-root-layout">
       <app-topbar></app-topbar>
       <div class="flex-1">
-        
+        <app-auth-shell></app-auth-shell>
       </div>
       <app-footer></app-footer>
     </div>
@@ -29,5 +26,4 @@ import { AppFooter } from "./components/app.footer";
     }
   `]
 })
-export class AppComponent {
-}
+export class AppComponent {}

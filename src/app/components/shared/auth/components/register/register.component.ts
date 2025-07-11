@@ -1,27 +1,26 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
+  selector: 'app-register',
+  templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class ResetPasswordComponent {
+export class RegisterComponent {
   private auth = inject(AuthService);
   email: string = '';
-  message: string = '';
+  password: string = '';
   error: string = '';
 
-  async reset(): Promise<void> {
+  async register(): Promise<void> {
     try {
-      await this.auth.resetPassword(this.email);
-      this.message = '重設密碼信已寄出';
+      await this.auth.registerWithEmail(this.email, this.password);
     } catch (e) {
-      this.error = '重設失敗';
+      this.error = '註冊失敗';
     }
   }
 } 
