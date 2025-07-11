@@ -1,0 +1,7 @@
+<form (ngSubmit)="loginWithEmail()">
+  <input [(ngModel)]="email" name="email" type="email" placeholder="Email" required />
+  <input [(ngModel)]="password" name="password" type="password" placeholder="密碼" required />
+  <button type="submit">登入</button>
+  <button type="button" (click)="loginWithGoogle()">Google 登入</button>
+  <div *ngIf="error">{{ error }}</div>
+</form> 

@@ -1,0 +1,6 @@
+<form (ngSubmit)="register()">
+  <input [(ngModel)]="email" name="email" type="email" placeholder="Email" required />
+  <input [(ngModel)]="password" name="password" type="password" placeholder="密碼" required />
+  <button type="submit">註冊</button>
+  <div *ngIf="error">{{ error }}</div>
+</form> 
