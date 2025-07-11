@@ -116,15 +116,7 @@ import { CommonModule } from '@angular/common';
               "
             />
           </svg>
-          <span class="hidden sm:flex flex-col"
-            ><span
-              class="text-xl font-light text-surface-700 dark:text-surface-100 leading-none"
-              >PrimeNG Examples</span
-            >
-            <span class="text-sm font-medium text-primary leading-tight"
-              >Tailwindcss v4</span
-            ></span
-          >
+          <!-- 移除 PrimeNG Examples 與 Tailwindcss v4 字樣 -->
         </div>
         <div class="flex items-center gap-2">
           <button

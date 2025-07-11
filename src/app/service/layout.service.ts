@@ -30,10 +30,17 @@ export class LayoutService {
   appStateUpdate$ = this.appStateUpdate.asObservable();
 
   constructor() {
+    // 1. 初始化時還原
+    const cached = localStorage.getItem('appState');
+    if (cached) {
+      this.appState.set(JSON.parse(cached));
+    }
+
+    // 2. 每次變動時自動快取
     effect(() => {
       const appState = this.appState();
       if (appState) {
-        this.onAppStateUpdate();
+        localStorage.setItem('appState', JSON.stringify(appState));
       }
     });
 
