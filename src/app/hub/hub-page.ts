@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SplitterModule } from 'primeng/splitter';
-import { SidebarPanelmenuComponent } from './components/sidebar-panelmenu.component';
+import { SidebarPanelmenuComponent } from './components/sidebar/sidebar-panelmenu.component';
 
 @Component({
   selector: 'app-hub-page',

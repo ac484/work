@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
-import { GoogleAuthService } from '../../shared/components/google-auth/google-auth.service';
-import { GoogleAuthButtonComponent } from '../../shared/components/google-auth/google-auth-button.component';
+import { GoogleAuthService } from '../../../shared/components/google-auth/google-auth.service';
+import { GoogleAuthButtonComponent } from '../../../shared/components/google-auth/google-auth-button.component';
 import { CommonModule } from '@angular/common';
 
 @Component({

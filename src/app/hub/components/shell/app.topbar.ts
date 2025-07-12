@@ -3,10 +3,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
-import { LayoutService } from '../../services/layout.service';
+import { LayoutService } from '../../../shared/services/layout.service';
 import { CommonModule } from '@angular/common';
-import { GoogleAuthService, GoogleAuthButtonComponent } from '../google-auth';
-import { AsyncPipe } from '@angular/common';
+import { GoogleAuthService, GoogleAuthButtonComponent } from '../../../shared/components/google-auth';
 import { RouterLink } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 
