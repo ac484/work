@@ -5,14 +5,13 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
 import { LayoutService } from '../../../shared/services/layout.service';
 import { CommonModule } from '@angular/common';
-import { GoogleAuthService, GoogleAuthButtonComponent } from '../../../shared/components/google-auth';
 import { RouterLink } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, GoogleAuthButtonComponent, RouterLink],
+  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink],
   template: `
     <div
       class="bg-surface-0 dark:bg-surface-900 p-6 border border-surface-200 dark:border-surface-700 w-full"
@@ -131,13 +130,6 @@ import { MenubarModule } from 'primeng/menubar';
           <ng-container *ngFor="let item of menuItems">
             <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text></a>
           </ng-container>
-          <app-google-auth-button
-            [isLoggedIn]="!!user()"
-            [userName]="user()?.displayName || ''"
-            [loading]="loading()"
-            (login)="onLogin()"
-            (logout)="onLogout()"
-          ></app-google-auth-button>
           <div class="relative">
             <p-button
               pStyleClass="@next"
@@ -160,11 +152,6 @@ import { MenubarModule } from 'primeng/menubar';
 })
 export class AppTopbar {
   layoutService: LayoutService = inject(LayoutService);
-  auth = inject(GoogleAuthService);
-  // 使用 signal 管理 loading 狀態
-  loading = signal(false);
-  user = toSignal(this.auth.user$, { initialValue: null });
-
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
 
   toggleDarkMode() {
@@ -172,15 +159,6 @@ export class AppTopbar {
       ...state,
       darkMode: !state.darkMode,
     }));
-  }
-
-  onLogin() {
-    this.loading.set(true);
-    this.auth.loginWithGoogle().finally(() => this.loading.set(false));
-  }
-  onLogout() {
-    this.loading.set(true);
-    this.auth.logout().finally(() => this.loading.set(false));
   }
 
   menuItems = [
