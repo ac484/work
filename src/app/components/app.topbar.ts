@@ -6,11 +6,12 @@ import { LayoutService } from '../core/services/layout.service';
 import { CommonModule } from '@angular/common';
 import { GoogleAuthService, GoogleAuthButtonComponent } from './shared/google-auth';
 import { AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, GoogleAuthButtonComponent, AsyncPipe],
+  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, GoogleAuthButtonComponent, AsyncPipe, RouterLink],
   template: `
     <div
       class="bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl max-w-7xl mx-auto border border-surface-200 dark:border-surface-700 w-full"
@@ -121,22 +122,9 @@ import { AsyncPipe } from '@angular/common';
           <!-- 移除 PrimeNG Examples 與 Tailwindcss v4 字樣 -->
         </div>
         <div class="flex items-center gap-2">
-          <button
-            type="button"
-            class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all text-surface-900 dark:text-surface-0 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 dark:focus-visible:ring-offset-surface-950"
-            (click)="toggleDarkMode()"
-          >
-            <i
-              class="pi text-base"
-              [ngClass]="{
-                'pi-moon': isDarkMode(),
-                'pi-sun': !isDarkMode()
-              }"
-            ></i>
-          </button>
-          <p-button label="Workspace" routerLink="/workspace" text></p-button>
-          <p-button label="Finance" routerLink="/finance" text></p-button>
-          <p-button label="Dashboard" routerLink="/dashboard" text></p-button>
+          <ng-container *ngFor="let item of menuItems">
+            <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text></a>
+          </ng-container>
           <app-google-auth-button
             [isLoggedIn]="!!(user$ | async)"
             [userName]="(user$ | async)?.displayName || ''"
@@ -179,4 +167,11 @@ export class AppTopbar {
 
   onLogin() { this.auth.loginWithGoogle(); }
   onLogout() { this.auth.logout(); }
+
+  menuItems = [
+    { label: '儀表板', icon: 'pi pi-chart-bar', routerLink: '/dashboard' },
+    { label: '工作空間', icon: 'pi pi-folder', routerLink: '/workspace' },
+    { label: '財務', icon: 'pi pi-wallet', routerLink: '/finance' },
+    { label: '中樞', icon: 'pi pi-sitemap', routerLink: '/hub' }
+  ];
 }
