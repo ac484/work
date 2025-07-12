@@ -1,0 +1,27 @@
+<form (ngSubmit)="loginWithEmail()" class="p-fluid">
+  <div class="p-field">
+    <label for="email">Email</label>
+    <input
+      pInputText
+      [(ngModel)]="email"
+      name="email"
+      type="email"
+      placeholder="Email"
+      required
+    />
+  </div>
+  <div class="p-field">
+    <label for="password">密碼</label>
+    <input
+      pPassword
+      [(ngModel)]="password"
+      name="password"
+      placeholder="密碼"
+      required
+    />
+  </div>
+  <button pButton type="submit" label="登入"></button>
+  <p-message *ngIf="error" severity="error" [text]="error"></p-message>
+</form>
+<div class="p-text-center p-mt-3 p-mb-2">或</div>
+<button pButton type="button" label="Google 登入" icon="pi pi-google" (click)="loginWithGoogle()" class="p-button-secondary p-button-outlined"></button>

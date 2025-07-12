@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-import { LogoutComponent } from './components/logout/logout.component';
-import { AuthShellComponent } from './components/auth-shell/auth-shell.component';
+import { LoginComponent } from './components/login.component';
+import { RegisterComponent } from './components/register.component';
+import { ResetPasswordComponent } from './components/reset-password.component';
+import { LogoutComponent } from './components/logout.component';
+import { AuthShellComponent } from './components/auth-shell.component';
 import { AuthService } from './services/auth.service';
 
 @NgModule({

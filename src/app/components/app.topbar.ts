@@ -4,11 +4,13 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
 import { LayoutService } from '../core/services/layout.service';
 import { CommonModule } from '@angular/common';
+import { AuthShellComponent } from './shared/auth/components/auth-shell.component';
+import { LoginComponent } from './shared/auth/components/login.component';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig],
+  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, AuthShellComponent, LoginComponent],
   template: `
     <div
       class="bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl max-w-7xl mx-auto border border-surface-200 dark:border-surface-700 w-full"
@@ -132,6 +134,13 @@ import { CommonModule } from '@angular/common';
               }"
             ></i>
           </button>
+          <button pButton type="button" label="登入" (click)="showLogin = true"></button>
+          <div *ngIf="showLogin" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div class="bg-white dark:bg-surface-900 p-6 rounded shadow-lg relative">
+              <button class="absolute top-2 right-2" (click)="showLogin = false">✕</button>
+              <app-login></app-login>
+            </div>
+          </div>
           <div class="relative">
             <p-button
               pStyleClass="@next"
@@ -154,6 +163,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AppTopbar {
   layoutService: LayoutService = inject(LayoutService);
+  showLogin = false;
 
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
 

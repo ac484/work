@@ -1,8 +1,8 @@
 export interface UserProfile {
   uid: string;
   email: string | null;
-  displayName?: string | null;
-  photoURL?: string | null;
-  providerId?: string;
-  createdAt?: number;
+  displayName: string;
+  photoURL: string;
+  providerId: string;
+  createdAt: number;
 }

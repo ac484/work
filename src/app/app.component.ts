@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AppTopbar } from './components/app.topbar';
 import { AppFooter } from './components/app.footer';
-import { AuthShellComponent } from './components/shared/auth/components/auth-shell/auth-shell.component';
+import { AuthShellComponent } from './components/shared/auth/components/auth-shell.component';
 
 @Component({
   selector: 'app-root',
