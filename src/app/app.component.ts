@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
-import { AppTopbar } from './components/app.topbar';
-import { AppFooter } from "./components/app.footer";
+import { AppTopbar } from './shared/components/shell/app.topbar';
+import { AppFooter } from "./shared/components/shell/app.footer";
 import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from './shared/modules/prime-ng.module';
 import { ToastModule } from 'primeng/toast';
