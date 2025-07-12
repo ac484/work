@@ -8,11 +8,12 @@ import { CommonModule } from '@angular/common';
 import { GoogleAuthService, GoogleAuthButtonComponent } from '../google-auth';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { MenubarModule } from 'primeng/menubar';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, GoogleAuthButtonComponent, RouterLink],
+  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, GoogleAuthButtonComponent, RouterLink],
   template: `
     <div
       class="bg-surface-0 dark:bg-surface-900 p-6 border border-surface-200 dark:border-surface-700 w-full"

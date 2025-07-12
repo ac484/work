@@ -1,4 +1,5 @@
-<p-splitter [layout]="'horizontal'" [panelSizes]="[20, 60, 15, 5]" [style]="{height: '100vh'}">
+<p-splitter [layout]="'horizontal'" [panelSizes]="[20, 60, 20]" [style]="{height: '100vh'}">
+  <!-- 左欄 -->
   <ng-template #panel>
     <p-splitter [layout]="'vertical'" [panelSizes]="[50, 50]">
       <ng-template #panel>
@@ -9,6 +10,7 @@
       </ng-template>
     </p-splitter>
   </ng-template>
+  <!-- 中欄 -->
   <ng-template #panel>
     <p-splitter [layout]="'vertical'" [panelSizes]="[30, 40, 30]">
       <ng-template #panel>
@@ -22,7 +24,18 @@
       </ng-template>
     </p-splitter>
   </ng-template>
+  <!-- 右欄 -->
   <ng-template #panel>
-    <div class="panel right">右5%</div>
+    <p-splitter [layout]="'horizontal'" [panelSizes]="[33, 33, 34]">
+      <ng-template #panel>
+        <div class="panel right-1">右1</div>
+      </ng-template>
+      <ng-template #panel>
+        <div class="panel right-2">右2</div>
+      </ng-template>
+      <ng-template #panel>
+        <div class="panel right-3">右3 <app-contract></app-contract></div>
+      </ng-template>
+    </p-splitter>
   </ng-template>
 </p-splitter>
