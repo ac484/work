@@ -1,23 +1,15 @@
 import { Component } from '@angular/core';
 import { AppTopbar } from './components/app.topbar';
 import { AppFooter } from './components/app.footer';
-import { GoogleAuthService } from './components/shared/auth/google-auth.service';
-import { GoogleAuthButtonComponent } from './components/shared/auth/google-auth-button.component';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [AppTopbar, AppFooter, GoogleAuthButtonComponent, AsyncPipe],
+  imports: [AppTopbar, AppFooter],
   template: `
     <div class="app-root-layout">
       <app-topbar></app-topbar>
       <div class="flex-1">
-        <app-google-auth-button
-          [isLoggedIn]="!!(user$ | async)"
-          [userName]="(user$ | async)?.displayName || ''"
-          (login)="onLogin()"
-          (logout)="onLogout()"
-        ></app-google-auth-button>
+        <!-- 這裡不再顯示登入按鈕 -->
       </div>
       <app-footer></app-footer>
     </div>
@@ -28,11 +20,4 @@ import { AsyncPipe } from '@angular/common';
   ],
   standalone: true
 })
-export class AppComponent {
-  user$;
-  constructor(public auth: GoogleAuthService) {
-    this.user$ = this.auth.user$;
-  }
-  onLogin() { this.auth.loginWithGoogle(); }
-  onLogout() { this.auth.logout(); }
-}
+export class AppComponent {}

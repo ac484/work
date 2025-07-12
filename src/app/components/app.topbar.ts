@@ -4,11 +4,13 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
 import { LayoutService } from '../core/services/layout.service';
 import { CommonModule } from '@angular/common';
+import { GoogleAuthService, GoogleAuthButtonComponent } from './shared/google-auth';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig],
+  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, GoogleAuthButtonComponent, AsyncPipe],
   template: `
     <div
       class="bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl max-w-7xl mx-auto border border-surface-200 dark:border-surface-700 w-full"
@@ -132,7 +134,12 @@ import { CommonModule } from '@angular/common';
               }"
             ></i>
           </button>
-          <!-- 登入按鈕與登入彈窗已移除 -->
+          <app-google-auth-button
+            [isLoggedIn]="!!(user$ | async)"
+            [userName]="(user$ | async)?.displayName || ''"
+            (login)="onLogin()"
+            (logout)="onLogout()"
+          ></app-google-auth-button>
           <div class="relative">
             <p-button
               pStyleClass="@next"
@@ -155,6 +162,8 @@ import { CommonModule } from '@angular/common';
 })
 export class AppTopbar {
   layoutService: LayoutService = inject(LayoutService);
+  auth = inject(GoogleAuthService);
+  user$ = this.auth.user$;
 
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
 
@@ -164,4 +173,7 @@ export class AppTopbar {
       darkMode: !state.darkMode,
     }));
   }
+
+  onLogin() { this.auth.loginWithGoogle(); }
+  onLogout() { this.auth.logout(); }
 }
