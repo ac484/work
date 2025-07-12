@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { WorkspacePage } from './components/workspace/workspace-page';
-import { HubPage } from './components/hub/hub-page';
-import { FinancePage } from './components/finance/finance-page';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { WorkspacePage } from './workspace/workspace-page';
+import { HubPage } from './hub/hub-page';
+import { FinancePage } from './finance/finance-page';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },

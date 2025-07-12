@@ -4,7 +4,7 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
 import { LayoutService } from '../core/services/layout.service';
 import { CommonModule } from '@angular/common';
-import { GoogleAuthService, GoogleAuthButtonComponent } from './shared/google-auth';
+import { GoogleAuthService, GoogleAuthButtonComponent } from '../shared/google-auth';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
