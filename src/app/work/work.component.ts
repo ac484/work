@@ -17,13 +17,13 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 // Component 區
 // --------------------
 @Component({
-  selector: 'app-hub-page',
+  selector: 'app-work',
   standalone: true,
   imports: [CommonModule, ProgressBarModule, ToastModule, PrimeNgModule, ScrollPanelModule],
-  templateUrl: './hub-page.html',
-  styleUrls: ['./hub-page.scss']
+  templateUrl: './work.component.html',
+  styleUrls: ['./work.component.scss']
 })
-export class HubPage implements OnInit, OnDestroy {
+export class WorkComponent implements OnInit, OnDestroy {
   // --------------------
   // UI 狀態屬性
   // --------------------

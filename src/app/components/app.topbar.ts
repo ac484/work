@@ -172,6 +172,7 @@ export class AppTopbar {
     { label: '儀表板', icon: 'pi pi-chart-bar', routerLink: '/dashboard' },
     { label: '工作空間', icon: 'pi pi-folder', routerLink: '/workspace' },
     { label: '財務', icon: 'pi pi-wallet', routerLink: '/finance' },
-    { label: '中樞', icon: 'pi pi-sitemap', routerLink: '/hub' }
+    { label: '中樞', icon: 'pi pi-sitemap', routerLink: '/hub' },
+    { label: '工作', icon: 'pi pi-briefcase', routerLink: '/work' }
   ];
 }
