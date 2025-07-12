@@ -1,4 +1,5 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
@@ -126,8 +127,9 @@ import { RouterLink } from '@angular/router';
             <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text></a>
           </ng-container>
           <app-google-auth-button
-            [isLoggedIn]="!!(user$ | async)"
-            [userName]="(user$ | async)?.displayName || ''"
+            [isLoggedIn]="!!user()"
+            [userName]="user()?.displayName || ''"
+            [loading]="loading()"
             (login)="onLogin()"
             (logout)="onLogout()"
           ></app-google-auth-button>
@@ -154,7 +156,9 @@ import { RouterLink } from '@angular/router';
 export class AppTopbar {
   layoutService: LayoutService = inject(LayoutService);
   auth = inject(GoogleAuthService);
-  user$ = this.auth.user$;
+  // 使用 signal 管理 loading 狀態
+  loading = signal(false);
+  user = toSignal(this.auth.user$, { initialValue: null });
 
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
 
@@ -165,8 +169,14 @@ export class AppTopbar {
     }));
   }
 
-  onLogin() { this.auth.loginWithGoogle(); }
-  onLogout() { this.auth.logout(); }
+  onLogin() {
+    this.loading.set(true);
+    this.auth.loginWithGoogle().finally(() => this.loading.set(false));
+  }
+  onLogout() {
+    this.loading.set(true);
+    this.auth.logout().finally(() => this.loading.set(false));
+  }
 
   menuItems = [
     { label: '儀表板', icon: 'pi pi-chart-bar', routerLink: '/dashboard' },
