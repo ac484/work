@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
 import { GoogleAuthService } from '../shared/components/google-auth';
-import { globalMessageBus } from '../shared/services/global-message-bus';
+import { addGlobalMessage } from '../shared/services/global-message-store';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PrimeNgModule } from '../shared/modules/prime-ng.module';
@@ -46,7 +46,7 @@ export class WorkComponent implements OnInit, OnDestroy {
         this.user = user;
         this.loading = false;
         if (user === null && !this.toastShown) {
-          globalMessageBus.next({
+          addGlobalMessage({
             severity: 'warn',
             summary: '請先登入',
             detail: '請先登入才能使用工作區功能。'
