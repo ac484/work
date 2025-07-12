@@ -1,0 +1,17 @@
+<button
+  pButton
+  type="button"
+  icon="pi pi-google"
+  label="Google 登入"
+  *ngIf="!isLoggedIn"
+  (click)="login.emit()"
+></button>
+<button
+  pButton
+  type="button"
+  icon="pi pi-sign-out"
+  [label]="userName + ' 登出'"
+  *ngIf="isLoggedIn"
+  (click)="logout.emit()"
+  class="p-button-secondary"
+></button> 
