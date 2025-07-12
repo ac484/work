@@ -1,41 +1,50 @@
-<p-splitter [layout]="'horizontal'" [panelSizes]="[20, 60, 20]" [style]="{height: '100vh'}">
-  <!-- 左欄 -->
-  <ng-template #panel>
-    <p-splitter [layout]="'vertical'" [panelSizes]="[50, 50]">
-      <ng-template #panel>
-        <div class="panel left-top">左上</div>
-      </ng-template>
-      <ng-template #panel>
-        <div class="panel left-bottom">左下</div>
-      </ng-template>
-    </p-splitter>
-  </ng-template>
-  <!-- 中欄 -->
-  <ng-template #panel>
-    <p-splitter [layout]="'vertical'" [panelSizes]="[30, 40, 30]">
-      <ng-template #panel>
-        <div class="panel center-top">中上</div>
-      </ng-template>
-      <ng-template #panel>
-        <div class="panel center">中</div>
-      </ng-template>
-      <ng-template #panel>
-        <div class="panel center-bottom">中下</div>
-      </ng-template>
-    </p-splitter>
-  </ng-template>
-  <!-- 右欄 -->
-  <ng-template #panel>
-    <p-splitter [layout]="'horizontal'" [panelSizes]="[33, 33, 34]">
-      <ng-template #panel>
-        <div class="panel right-1">右1</div>
-      </ng-template>
-      <ng-template #panel>
-        <div class="panel right-2">右2</div>
-      </ng-template>
-      <ng-template #panel>
-        <div class="panel right-3">右3 <app-contract></app-contract></div>
-      </ng-template>
-    </p-splitter>
-  </ng-template>
-</p-splitter>
+<button pButton type="button" (click)="toggleView()" class="mb-2">
+  {{ viewMode() === 'finance' ? '切換為專案視角' : '切換為財務視角' }}
+</button>
+
+<div *ngIf="viewMode() === 'finance'; else projectView">
+  <p-splitter [layout]="'horizontal'" [panelSizes]="[70, 20, 10]" [style]="{height: '100vh'}">
+    <!-- 左欄 70% -->
+    <ng-template #panel>
+      <p-splitter [layout]="'vertical'" [panelSizes]="[80, 20]">
+        <ng-template #panel>
+          <div class="panel left-top">左上</div>
+        </ng-template>
+        <ng-template #panel>
+          <div class="panel left-bottom">左下</div>
+        </ng-template>
+      </p-splitter>
+    </ng-template>
+    <!-- 中欄 20% -->
+    <ng-template #panel>
+      <p-splitter [layout]="'vertical'" [panelSizes]="[30, 30, 40]">
+        <ng-template #panel>
+          <div class="panel center-top">中上</div>
+        </ng-template>
+        <ng-template #panel>
+          <div class="panel center">中</div>
+        </ng-template>
+        <ng-template #panel>
+          <div class="panel center-bottom">中下</div>
+        </ng-template>
+      </p-splitter>
+    </ng-template>
+    <!-- 右欄 10% -->
+    <ng-template #panel>
+      <p-splitter [layout]="'3horizontal'" [panelSizes]="[20, 20, 60]">
+        <ng-template #panel>
+          <div class="panel right-1">右1</div>
+        </ng-template>
+        <ng-template #panel>
+          <div class="panel right-2">右2</div>
+        </ng-template>
+        <ng-template #panel>
+          <div class="panel right-3">右3</div>
+        </ng-template>
+      </p-splitter>
+    </ng-template>
+  </p-splitter>
+</div>
+<ng-template #projectView>
+  <div class="panel" style="height: 100vh;">專案視角內容</div>
+</ng-template>
