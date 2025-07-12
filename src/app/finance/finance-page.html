@@ -1,1 +1,28 @@
-<p>finance-page works!</p>
+<p-splitter [layout]="'horizontal'" [panelSizes]="[20, 60, 15, 5]" [style]="{height: '100vh'}">
+  <ng-template #panel>
+    <p-splitter [layout]="'vertical'" [panelSizes]="[50, 50]">
+      <ng-template #panel>
+        <div class="panel left-top">左上</div>
+      </ng-template>
+      <ng-template #panel>
+        <div class="panel left-bottom">左下</div>
+      </ng-template>
+    </p-splitter>
+  </ng-template>
+  <ng-template #panel>
+    <p-splitter [layout]="'vertical'" [panelSizes]="[30, 40, 30]">
+      <ng-template #panel>
+        <div class="panel center-top">中上</div>
+      </ng-template>
+      <ng-template #panel>
+        <div class="panel center">中</div>
+      </ng-template>
+      <ng-template #panel>
+        <div class="panel center-bottom">中下</div>
+      </ng-template>
+    </p-splitter>
+  </ng-template>
+  <ng-template #panel>
+    <div class="panel right">右5%</div>
+  </ng-template>
+</p-splitter>

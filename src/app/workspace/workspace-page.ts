@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { GoogleAuthButtonComponent } from '../shared/google-auth/google-auth-button.component';
-import { GoogleAuthService } from '../shared/google-auth/google-auth.service';
+import { GoogleAuthButtonComponent } from '../shared/components/google-auth/google-auth-button.component';
+import { GoogleAuthService } from '../shared/components/google-auth/google-auth.service';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 

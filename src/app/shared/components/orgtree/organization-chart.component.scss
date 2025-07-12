@@ -1,0 +1,40 @@
+.organization-chart-top {
+  margin-top: 1rem;
+}
+
+.p-organizationchart .p-organizationchart-node-content {
+  min-width: 120px;
+  padding: 0.5rem 1rem;
+}
+
+.p-organizationchart .p-organizationchart-line-down {
+  height: 16px;
+}
+
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mt-1 {
+  margin-top: 0.25rem;
+}
+.font-bold {
+  font-weight: bold;
+}
+.text-xs {
+  font-size: 0.75rem;
+}
+.text-gray-500 {
+  color: #6b7280;
+} 

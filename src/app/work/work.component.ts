@@ -6,7 +6,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
-import { GoogleAuthService } from '../shared/google-auth';
+import { GoogleAuthService } from '../shared/components/google-auth';
 import { globalMessageBus } from '../shared/services/global-message-bus';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

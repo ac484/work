@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { AppTopbar } from './components/app.topbar';
 import { AppFooter } from "./components/app.footer";
 import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from './shared/modules/prime-ng.module';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { globalMessageBus, GlobalMessage } from './shared/services/global-message-bus';
+import { globalMessages, removeGlobalMessage } from './shared/services/global-message-store';
 
 @Component({
   selector: 'app-root',
@@ -19,9 +19,16 @@ import { globalMessageBus, GlobalMessage } from './shared/services/global-messag
   providers: [MessageService]
 })
 export class AppComponent {
-  constructor(private messageService: MessageService) {
-    globalMessageBus.subscribe((msg: GlobalMessage) => {
-      this.messageService.add(msg);
+  private messageService = inject(MessageService);
+
+  constructor() {
+    effect(() => {
+      const msgs = globalMessages();
+      if (msgs.length > 0) {
+        const last = msgs[msgs.length - 1];
+        this.messageService.add(last);
+        setTimeout(() => removeGlobalMessage(msgs.length - 1), 3000);
+      }
     });
   }
 }

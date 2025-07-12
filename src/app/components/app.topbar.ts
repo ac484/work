@@ -5,17 +5,17 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from './app.config';
 import { LayoutService } from '../core/services/layout.service';
 import { CommonModule } from '@angular/common';
-import { GoogleAuthService, GoogleAuthButtonComponent } from '../shared/google-auth';
+import { GoogleAuthService, GoogleAuthButtonComponent } from '../shared/components/google-auth';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, GoogleAuthButtonComponent, AsyncPipe, RouterLink],
+  imports: [CommonModule, ButtonModule, StyleClassModule, AppConfig, GoogleAuthButtonComponent, RouterLink],
   template: `
     <div
-      class="bg-surface-0 dark:bg-surface-900 p-6 rounded-2xl max-w-7xl mx-auto border border-surface-200 dark:border-surface-700 w-full"
+      class="bg-surface-0 dark:bg-surface-900 p-6 border border-surface-200 dark:border-surface-700 w-full"
     >
       <div class="flex justify-between items-center">
         <div class="flex gap-3 items-center">
