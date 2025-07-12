@@ -7,11 +7,14 @@ import { LayoutService } from '../../../shared/services/layout.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
+import { GoogleAuthService } from '../../../shared/components/google-auth/google-auth.service';
+import { GoogleAuthButtonComponent } from '../../../shared/components/google-auth/google-auth-button.component';
+
 
 @Component({
   selector: 'app-left-panel',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink],
+  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink, GoogleAuthButtonComponent],
   template: `
     <div class="fixed top-0 left-0 h-full w-52 bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 flex flex-col items-stretch z-50">
       <div class="flex flex-col items-center gap-4 py-6">
@@ -126,6 +129,13 @@ import { MenubarModule } from 'primeng/menubar';
             <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text class="w-full justify-start"></a>
           </ng-container>
         </div>
+        <app-google-auth-button
+          [isLoggedIn]="!!user()"
+          [userName]="user()?.displayName || ''"
+          [loading]="loading()"
+          (login)="onLogin()"
+          (logout)="onLogout()"
+        ></app-google-auth-button>
         <div class="mt-6">
           <p-button
             pStyleClass="@next"
@@ -147,6 +157,10 @@ import { MenubarModule } from 'primeng/menubar';
 })
 export class AppSideModule {
   layoutService: LayoutService = inject(LayoutService);
+  auth = inject(GoogleAuthService);
+  loading = signal(false);
+  user = toSignal(this.auth.user$, { initialValue: null });
+
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
 
   toggleDarkMode() {
@@ -154,6 +168,15 @@ export class AppSideModule {
       ...state,
       darkMode: !state.darkMode,
     }));
+  }
+
+  onLogin() {
+    this.loading.set(true);
+    this.auth.loginWithGoogle().finally(() => this.loading.set(false));
+  }
+  onLogout() {
+    this.loading.set(true);
+    this.auth.logout().finally(() => this.loading.set(false));
   }
 
   menuItems = [
