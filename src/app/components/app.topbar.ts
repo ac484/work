@@ -134,6 +134,9 @@ import { AsyncPipe } from '@angular/common';
               }"
             ></i>
           </button>
+          <p-button label="Workspace" routerLink="/workspace" text></p-button>
+          <p-button label="Finance" routerLink="/finance" text></p-button>
+          <p-button label="Dashboard" routerLink="/dashboard" text></p-button>
           <app-google-auth-button
             [isLoggedIn]="!!(user$ | async)"
             [userName]="(user$ | async)?.displayName || ''"

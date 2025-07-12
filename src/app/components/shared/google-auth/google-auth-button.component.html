@@ -5,6 +5,8 @@
   label="Google 登入"
   *ngIf="!isLoggedIn"
   (click)="login.emit()"
+  [loading]="loading"
+  [disabled]="loading"
 ></button>
 <button
   pButton
@@ -14,4 +16,6 @@
   *ngIf="isLoggedIn"
   (click)="logout.emit()"
   class="p-button-secondary"
+  [loading]="loading"
+  [disabled]="loading"
 ></button> 

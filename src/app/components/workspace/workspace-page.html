@@ -1,1 +1,9 @@
+<app-google-auth-button
+  [isLoggedIn]="!!user()"
+  [userName]="user()?.displayName || ''"
+  [loading]="loading()"
+  (login)="onLogin()"
+  (logout)="onLogout()"
+></app-google-auth-button>
+
 <p>workspace-page works!</p>

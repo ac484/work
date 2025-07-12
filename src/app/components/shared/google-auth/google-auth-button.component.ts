@@ -13,6 +13,7 @@ import { ButtonModule } from 'primeng/button';
 export class GoogleAuthButtonComponent {
   @Input() isLoggedIn = false;
   @Input() userName = '';
+  @Input() loading = false;
   @Output() login = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
 } 

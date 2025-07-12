@@ -1,18 +1,15 @@
 import { Component } from '@angular/core';
 import { AppTopbar } from './components/app.topbar';
 import { AppFooter } from './components/app.footer';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [AppTopbar, AppFooter],
+  imports: [AppTopbar, AppFooter, RouterOutlet],
   template: `
-    <div class="app-root-layout">
-      <app-topbar></app-topbar>
-      <div class="flex-1">
-        <!-- 這裡不再顯示登入按鈕 -->
-      </div>
+      <app-topbar>
+        <router-outlet></router-outlet>
       <app-footer></app-footer>
-    </div>
   `,
   styles: [
     `.app-root-layout { min-height: 100vh; display: flex; flex-direction: column; }`,
