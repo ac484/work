@@ -123,6 +123,11 @@ import { RouterLink } from '@angular/router';
           <!-- 移除 PrimeNG Examples 與 Tailwindcss v4 字樣 -->
         </div>
         <div class="flex items-center gap-2">
+          <button type="button"
+            class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all text-surface-900 dark:text-surface-0 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 dark:focus-visible:ring-offset-surface-950"
+            (click)="toggleDarkMode()">
+            <i class="pi text-base" [ngClass]="{ 'pi-moon': isDarkMode(), 'pi-sun': !isDarkMode() }"></i>
+          </button>
           <ng-container *ngFor="let item of menuItems">
             <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text></a>
           </ng-container>
