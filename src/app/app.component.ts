@@ -10,9 +10,13 @@ import { globalMessages, removeGlobalMessage } from './shared/services/global-me
   selector: 'app-root',
   imports: [AppSideModule, RouterModule, PrimeNgModule, ToastModule],
   template: `
-    <app-topbar />
-    <p-toast></p-toast>
-    <router-outlet></router-outlet>
+    <div class="flex">
+      <app-left-panel />
+      <div class="flex-1 ml-52">
+        <p-toast></p-toast>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   `,
   providers: [MessageService]
 })

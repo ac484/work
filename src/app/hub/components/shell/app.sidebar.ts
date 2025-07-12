@@ -9,23 +9,20 @@ import { RouterLink } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 
 @Component({
-  selector: 'app-topbar',
+  selector: 'app-left-panel',
   standalone: true,
   imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink],
   template: `
-    <div
-      class="bg-surface-0 dark:bg-surface-900 p-6 border border-surface-200 dark:border-surface-700 w-full"
-    >
-      <div class="flex justify-between items-center">
-        <div class="flex gap-3 items-center">
-          <svg
-            width="31"
-            height="33"
-            viewBox="0 0 31 33"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="block mx-auto w-10 h-10"
-          >
+    <div class="fixed top-0 left-0 h-full w-52 bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 flex flex-col items-stretch z-50">
+      <div class="flex flex-col items-center gap-4 py-6">
+        <svg
+          width="31"
+          height="33"
+          viewBox="0 0 31 33"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-10 h-10 mb-2"
+        >
             <path
               d="M15.1934 0V0V0L0.0391235 5.38288L2.35052 25.3417L15.1934 32.427V32.427V32.427L28.0364 25.3417L30.3478 5.38288L15.1934 0Z"
               fill="var(--p-primary-color)"
@@ -119,32 +116,30 @@ import { MenubarModule } from 'primeng/menubar';
               "
             />
           </svg>
-          <!-- 移除 PrimeNG Examples 與 Tailwindcss v4 字樣 -->
-        </div>
-        <div class="flex items-center gap-2">
-          <button type="button"
-            class="cursor-pointer w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all text-surface-900 dark:text-surface-0 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 dark:focus-visible:ring-offset-surface-950"
-            (click)="toggleDarkMode()">
-            <i class="pi text-base" [ngClass]="{ 'pi-moon': isDarkMode(), 'pi-sun': !isDarkMode() }"></i>
-          </button>
+        <button type="button"
+          class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all text-surface-900 dark:text-surface-0 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0 dark:focus-visible:ring-offset-surface-950"
+          (click)="toggleDarkMode()">
+          <i class="pi text-base" [ngClass]="{ 'pi-moon': isDarkMode(), 'pi-sun': !isDarkMode() }"></i>
+        </button>
+        <div class="flex flex-col gap-2 w-full mt-4">
           <ng-container *ngFor="let item of menuItems">
-            <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text></a>
+            <a [routerLink]="item.routerLink" pButton [label]="item.label" [icon]="item.icon" text class="w-full justify-start"></a>
           </ng-container>
-          <div class="relative">
-            <p-button
-              pStyleClass="@next"
-              enterFromClass="hidden"
-              enterActiveClass="animate-scalein"
-              leaveToClass="hidden"
-              leaveActiveClass="animate-fadeout"
-              [hideOnOutsideClick]="true"
-              icon="pi pi-cog"
-              text
-              rounded
-              aria-label="Settings"
-            />
-            <app-config class="hidden" />
-          </div>
+        </div>
+        <div class="mt-6">
+          <p-button
+            pStyleClass="@next"
+            enterFromClass="hidden"
+            enterActiveClass="animate-scalein"
+            leaveToClass="hidden"
+            leaveActiveClass="animate-fadeout"
+            [hideOnOutsideClick]="true"
+            icon="pi pi-cog"
+            text
+            rounded
+            aria-label="Settings"
+          />
+          <app-config class="hidden" />
         </div>
       </div>
     </div>
