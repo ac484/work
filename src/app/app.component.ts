@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { AppTopbar } from './hub/components/shell/app.topbar';
+import { AppSideModule } from './hub/components/shell/app.sidebar';
 import { RouterModule } from '@angular/router';
 import { PrimeNgModule } from './shared/modules/prime-ng.module';
 import { ToastModule } from 'primeng/toast';
@@ -8,7 +8,7 @@ import { globalMessages, removeGlobalMessage } from './shared/services/global-me
 
 @Component({
   selector: 'app-root',
-  imports: [AppTopbar, RouterModule, PrimeNgModule, ToastModule],
+  imports: [AppSideModule, RouterModule, PrimeNgModule, ToastModule],
   template: `
     <app-topbar />
     <p-toast></p-toast>

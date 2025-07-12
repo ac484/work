@@ -150,7 +150,7 @@ import { MenubarModule } from 'primeng/menubar';
     </div>
   `,
 })
-export class AppTopbar {
+export class AppSideModule {
   layoutService: LayoutService = inject(LayoutService);
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
 
