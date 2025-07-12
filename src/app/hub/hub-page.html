@@ -1,19 +1,4 @@
-<div class="sidebar p-0 bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 flex flex-col items-stretch">
-  <p-megamenu orientation="vertical" [model]="items" class="p-4 h-full" [style]="{ 'minWidth': '180px', 'height': '100%' }">
-    <ng-template #start>
-      <div class="flex items-center gap-2 mb-4">
-        <i class="pi pi-verified text-primary text-2xl"></i>
-        <span class="font-bold text-lg text-primary">工作區</span>
-      </div>
-    </ng-template>
-    <ng-template #end>
-      <div class="flex flex-col items-center mt-8">
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" style="width: 40px; height: 40px" />
-        <span class="text-xs text-surface-500 mt-2">Amy Elsner</span>
-      </div>
-    </ng-template>
-  </p-megamenu>
-</div>
+<app-sidebar-panelmenu></app-sidebar-panelmenu>
 <div class="main-content" style="margin-left:180px;">
   <p-splitter [layout]="'vertical'" [panelSizes]="[20,20,20,20,20]" style="height: 100vh;">
     <ng-template #panel>

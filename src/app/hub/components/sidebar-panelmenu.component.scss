@@ -1,0 +1,27 @@
+.sidebar-panelmenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 180px;
+  background: var(--surface-0);
+  border-right: 1px solid var(--surface-200);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sidebar-header {
+  background: transparent;
+}
+
+.sidebar-menu {
+  flex: 1 1 auto;
+  border: none;
+  background: transparent;
+}
+
+.sidebar-avatar {
+  margin-bottom: 1rem;
+} 

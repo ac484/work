@@ -1,0 +1,11 @@
+<div class="sidebar-panelmenu">
+  <div class="sidebar-header flex items-center gap-2 mb-4 p-4">
+    <i class="pi pi-verified text-primary text-2xl"></i>
+    <span class="font-bold text-lg text-primary">工作區</span>
+  </div>
+  <p-panelmenu [model]="items" [style]="{ 'minWidth': '180px', 'width': '180px' }" class="sidebar-menu" />
+  <div class="sidebar-avatar flex flex-col items-center mt-8 mb-4">
+    <img [src]="avatarUrl" alt="avatar" class="rounded-full" style="width: 40px; height: 40px" />
+    <span class="text-xs text-surface-500 mt-2">{{ userName }}</span>
+  </div>
+</div> 
