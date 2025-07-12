@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, computed, inject } from '@angular/core';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
 import { GoogleAuthService } from '../../../shared/components/google-auth/google-auth.service';
 import { GoogleAuthButtonComponent } from '../../../shared/components/google-auth/google-auth-button.component';
 import { CommonModule } from '@angular/common';
+import { LayoutService } from '../../../shared/services/layout.service';
 
 @Component({
   selector: 'app-sidebar-panelmenu',
@@ -19,25 +20,29 @@ export class SidebarPanelmenuComponent {
   loading = false;
   items: MenuItem[] = [
     {
-      label: '主頁', icon: 'pi pi-home',
-      items: [
-        { label: '儀表板', icon: 'pi pi-chart-bar' }
-      ]
+      label: '儀表板', icon: 'pi pi-chart-bar', routerLink: '/dashboard'
     },
     {
-      label: '文件', icon: 'pi pi-file',
-      items: [
-        { label: '上傳', icon: 'pi pi-upload' },
-        { label: '管理', icon: 'pi pi-cog' }
-      ]
+      label: '工作空間', icon: 'pi pi-folder', routerLink: '/workspace'
     },
     {
-      label: '設定', icon: 'pi pi-cog',
-      items: [
-        { label: '帳號', icon: 'pi pi-user-edit' }
-      ]
+      label: '財務', icon: 'pi pi-wallet', routerLink: '/finance'
+    },
+    {
+      label: '中樞', icon: 'pi pi-sitemap', routerLink: '/hub'
+    },
+    {
+      label: '工作', icon: 'pi pi-briefcase', routerLink: '/work'
     }
   ];
+  layoutService: LayoutService = inject(LayoutService);
+  isDarkMode = computed(() => this.layoutService.appState().darkMode);
+  toggleDarkMode() {
+    this.layoutService.appState.update((state) => ({
+      ...state,
+      darkMode: !state.darkMode,
+    }));
+  }
   constructor(private googleAuth: GoogleAuthService) {
     this.googleAuth.user$.subscribe((user: import('firebase/auth').User | null) => {
       this.isLoggedIn = !!user;

@@ -8,6 +8,15 @@
     <img [src]="avatarUrl" alt="avatar" class="rounded-full" style="width: 40px; height: 40px" />
     <span class="text-xs text-surface-500 mt-2">{{ userName }}</span>
   </div>
+  <div class="sidebar-darkmode flex flex-col items-center mb-2">
+    <button type="button"
+      pButton
+      class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all text-surface-900 dark:text-surface-0"
+      (click)="toggleDarkMode()"
+      [attr.aria-label]="isDarkMode() ? '切換為淺色模式' : '切換為深色模式'">
+      <i class="pi text-base" [ngClass]="{ 'pi-moon': isDarkMode(), 'pi-sun': !isDarkMode() }"></i>
+    </button>
+  </div>
   <div class="sidebar-auth flex flex-col items-center mb-4">
     <app-google-auth-button
       [isLoggedIn]="isLoggedIn"
