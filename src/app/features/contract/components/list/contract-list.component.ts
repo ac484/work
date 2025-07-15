@@ -47,8 +47,8 @@ import { doc, updateDoc } from '@angular/fire/firestore';
           <th style="width:5%">合約資訊</th>
           <th style="width:12%">專案資訊</th>
           <th style="width:5%">狀態</th>
-          <th style="width:13%" class="text-[10px]">合約金額</th>
-          <th style="width:5%" class="text-[10px]">進度摘要</th>
+          <th style="width:13%" class="text-[11px]">合約金額</th>
+          <th style="width:5%" class="text-[11px]">進度摘要</th>
           <th style="width:5%">追加/減</th>
           <th style="width:5%">申請</th>
           <th style="width:10%">操作</th>
