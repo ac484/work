@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { IamFacadeService } from '../../services/core/iam-facade.service';
 import { User } from '../../models/user.model';
-import { getUserInitials } from '../../utils/user.util.ts';
+import { getUserInitials } from '../../utils/user.util';
 
 @Component({
   selector: 'app-user-detail',

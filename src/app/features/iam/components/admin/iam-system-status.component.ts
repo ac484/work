@@ -67,7 +67,7 @@ import { Firestore } from '@angular/fire/firestore';
           <p-button 
             label="強制重新初始化" 
             icon="pi pi-refresh"
-            severity="warning"
+            [outlined]="true"
             [loading]="loading"
             (onClick)="forceReinitialize()">
           </p-button>
