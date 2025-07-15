@@ -57,6 +57,14 @@ export class IamFacadeService {
     return this.authService.register(email, password, displayName);
   }
 
+  async loginWithGoogle(): Promise<void> {
+    return this.authService.loginWithGoogle();
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    return this.authService.resetPassword(email);
+  }
+
   // ===== 用戶管理 API =====
   
   getUsers(filter?: UserFilter): Observable<UserListItem[]> {

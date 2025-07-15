@@ -2,12 +2,14 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, user, User as FirebaseUser } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, user, User as FirebaseUser, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail, updateProfile } from '@angular/fire/auth';
+import { Firestore, doc, setDoc, serverTimestamp, getDoc } from '@angular/fire/firestore';
 import { AuthUser, AuthState, LoginCredentials, RegisterData } from '../../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private auth = inject(Auth);
+  private firestore = inject(Firestore);
   private authState$ = new BehaviorSubject<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -71,7 +73,41 @@ export class AuthService {
     try {
       this.setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
-      // 可以在這裡更新用戶資料到 Firestore
+      
+      // 更新 Firebase Auth 中的顯示名稱
+      if (displayName && userCredential.user) {
+        await updateProfile(userCredential.user, { displayName });
+      }
+      
+      // 保存用戶資料到 Firestore
+      await this.saveUserProfile(userCredential.user);
+      this.clearError();
+    } catch (error: any) {
+      this.setError(error.message);
+      throw error;
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  async loginWithGoogle(): Promise<void> {
+    try {
+      this.setLoading(true);
+      const userCredential = await signInWithPopup(this.auth, new GoogleAuthProvider());
+      await this.saveUserProfile(userCredential.user);
+      this.clearError();
+    } catch (error: any) {
+      this.setError(error.message);
+      throw error;
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    try {
+      this.setLoading(true);
+      await sendPasswordResetEmail(this.auth, email);
       this.clearError();
     } catch (error: any) {
       this.setError(error.message);
@@ -115,5 +151,33 @@ export class AuthService {
   private clearError(): void {
     const currentState = this.authState$.value;
     this.authState$.next({ ...currentState, error: null });
+  }
+
+  private async saveUserProfile(user: FirebaseUser): Promise<void> {
+    if (!user || !user.uid) return;
+    
+    const userRef = doc(this.firestore, 'users', user.uid);
+    const snap = await getDoc(userRef);
+    
+    let roles = ['user'];
+    if (snap.exists()) {
+      const data = snap.data();
+      if (Array.isArray(data['roles'])) {
+        roles = data['roles'];
+      }
+    }
+    
+    await setDoc(userRef, {
+      uid: user.uid,
+      email: user.email || '',
+      displayName: user.displayName || '',
+      photoURL: user.photoURL || '',
+      roles,
+      permissions: [],
+      isActive: true,
+      lastLoginAt: serverTimestamp(),
+      createdAt: user.metadata?.creationTime ? new Date(user.metadata.creationTime) : serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
   }
 }
