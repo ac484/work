@@ -49,7 +49,8 @@ import {
             <!-- 左1上：合約列表 (70%) -->
             <ng-template #panel>
               <div class="panel h-full flex flex-col">
-                <app-contract-list class="flex-1 w-full h-full" (rowClick)="onContractRowClick($event)" [selectedId]="(selectedContractId$ | async)"></app-contract-list>
+                <app-contract-list class="flex-1 w-full h-full" (rowClick)="onContractRowClick($event)" [selectedId]="(selectedContractId$ | async)" 
+                  [tableStateKey]="'contract-list-table'" [tableStateStorage]="'session'"></app-contract-list>
               </div>
             </ng-template>
             <!-- 左1下：請款詳情 (30%) -->

@@ -41,7 +41,9 @@ import { doc, updateDoc } from '@angular/fire/firestore';
         class="table-auto w-full text-xs border-collapse"
         [scrollable]="true"
         scrollHeight="flex"
-        tableStyleClass="p-datatable-gridlines">
+        tableStyleClass="p-datatable-gridlines"
+        [stateKey]="tableStateKey"
+        [stateStorage]="tableStateStorage">
       <ng-template pTemplate="header">
         <tr>
           <th style="width:5%">合約資訊</th>
@@ -220,6 +222,8 @@ export class ContractListComponent implements OnInit {
 
   @Output() rowClick = new EventEmitter<{ id: string }>();
   @Input() selectedId: string | null = null;
+  @Input() tableStateKey?: string;
+  @Input() tableStateStorage: 'session' | 'local' = 'session';
 
   constructor(private contractService: ContractService, private dialogService: DialogService) {
     this.contracts$ = this.contractService.getContracts();
