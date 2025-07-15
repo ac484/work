@@ -82,6 +82,23 @@ export const iamRoutes: Routes = [
     ]
   },
 
+  // 系統管理路由
+  {
+    path: 'admin',
+    children: [
+      {
+        path: 'status',
+        loadComponent: () => import('./components/admin/iam-system-status.component').then(m => m.IamSystemStatusComponent),
+        title: 'IAM 系統狀態'
+      },
+      {
+        path: '',
+        redirectTo: 'status',
+        pathMatch: 'full'
+      }
+    ]
+  },
+
   // IAM 主頁
   {
     path: '',

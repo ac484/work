@@ -4,4 +4,5 @@ export * from './users';
 export * from './roles';
 export * from './permissions';
 export * from './shared';
+export * from './admin';
 export * from './iam-home.component';
