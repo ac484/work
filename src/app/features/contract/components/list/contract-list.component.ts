@@ -47,8 +47,8 @@ import { doc, updateDoc } from '@angular/fire/firestore';
           <th style="width:5%">合約資訊</th>
           <th style="width:12%">專案資訊</th>
           <th style="width:5%">狀態</th>
-          <th style="width:13%">合約金額</th>
-          <th style="width:5%">進度摘要</th>
+          <th style="width:13%" class="text-[10px]">合約金額</th>
+          <th style="width:5%" class="text-[10px]">進度摘要</th>
           <th style="width:5%">追加/減</th>
           <th style="width:5%">申請</th>
           <th style="width:10%">操作</th>
@@ -112,9 +112,19 @@ import { doc, updateDoc } from '@angular/fire/firestore';
               <span class="text-gray-500">專案編號：{{ contract.projectNo }}</span>
             </div>
           </td>
-          <td><span [class]="getStatusClass(contract.status)">{{ contract.status }}</span></td>
-          <td><app-amount-summary [contract]="contract"></app-amount-summary></td>
-          <td><app-progress-summary [contract]="contract"></app-progress-summary></td>
+          <td class="whitespace-nowrap">
+            <span [class]="getStatusClass(contract.status) + ' whitespace-nowrap'">{{ contract.status }}</span>
+          </td>
+          <td class="text-[10px] text-left whitespace-nowrap">
+            <span class="text-[10px] text-left font-semibold whitespace-nowrap">
+              <app-amount-summary [contract]="contract"></app-amount-summary>
+            </span>
+          </td>
+          <td class="text-[10px]">
+            <span class="text-[10px]">
+              <app-progress-summary [contract]="contract"></app-progress-summary>
+            </span>
+          </td>
           <td><app-change-actions [contract]="contract" [user]="user"></app-change-actions></td>
           <td>
             <app-payment-request-button [contract]="contract" [user]="user" icon="pi pi-plus" label="申請" (completed)="onPaymentRequested($event)"></app-payment-request-button>
