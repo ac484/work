@@ -20,14 +20,26 @@ export class AuthService {
   constructor() {
     // 監聽 Firebase Auth 狀態變化
     user(this.auth).subscribe({
-      next: (firebaseUser) => {
-        const authUser = firebaseUser ? this.mapFirebaseUser(firebaseUser) : null;
-        this.authState$.next({
-          user: authUser,
-          isAuthenticated: !!authUser,
-          isLoading: false,
-          error: null
-        });
+      next: async (firebaseUser) => {
+        if (firebaseUser) {
+          // 用戶登入時，確保用戶資料存在於 Firestore
+          await this.saveUserProfile(firebaseUser);
+          const authUser = this.mapFirebaseUser(firebaseUser);
+          this.authState$.next({
+            user: authUser,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null
+          });
+        } else {
+          // 用戶登出
+          this.authState$.next({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null
+          });
+        }
       },
       error: (error) => {
         this.authState$.next({
@@ -59,7 +71,9 @@ export class AuthService {
   async login(email: string, password: string): Promise<void> {
     try {
       this.setLoading(true);
-      await signInWithEmailAndPassword(this.auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      // 登入成功後，更新用戶資料到 Firestore
+      await this.saveUserProfile(userCredential.user);
       this.clearError();
     } catch (error: any) {
       this.setError(error.message);

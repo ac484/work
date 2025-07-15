@@ -129,7 +129,7 @@ export class AppSideModule {
 
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
   collapsed = this.layoutService.sidebarCollapsed;
-  
+
   toggleCollapse() {
     this.layoutService.toggleSidebar();
   }
@@ -151,11 +151,11 @@ export class AppSideModule {
 
   static viewMode = signal<'hub' | 'project'>('hub');
   static injectViewMode = () => AppSideModule.viewMode;
-  
+
   get viewModeValue() {
     return AppSideModule.viewMode();
   }
-  
+
   static toggleView() {
     AppSideModule.viewMode.set(AppSideModule.viewMode() === 'hub' ? 'project' : 'hub');
   }
@@ -178,11 +178,11 @@ export class AppSideModule {
   ];
 
   settingsOpen = signal(false);
-  
+
   toggleSettings() {
     this.settingsOpen.set(!this.settingsOpen());
   }
-  
+
   closeSettings() {
     this.settingsOpen.set(false);
   }
