@@ -16,7 +16,7 @@
 // -------------------------------------------------------------
 
 import { Routes } from '@angular/router';
-import { HubComponent } from '../features/hub/hub.component';
+// import { HubComponent } from '../features/hub/hub.component'; // 改為懶加載
 import { DashboardComponent } from '../features/dashboard/dashboard.component';
 import { RoleManagementComponent } from '../features/role-management/role-management.component';
 import { PermissionGuard } from './services/iam/permissions/permission.guard';
@@ -34,7 +34,7 @@ export const routes: Routes = [
   },
   { 
     path: 'hub', 
-    component: HubComponent,
+    loadComponent: () => import('../features/hub/hub.component').then(m => m.HubComponent),
     canActivate: [PermissionGuard],
     data: { 
       permission: PERMISSIONS.VIEW_CONTRACT,
