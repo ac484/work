@@ -76,6 +76,19 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { CarouselModule } from 'primeng/carousel';
 import { BlockUIModule } from 'primeng/blockui';
 import { PasswordModule } from 'primeng/password';
+import { EditorModule } from 'primeng/editor';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { DrawerModule } from 'primeng/drawer';
+import { FieldsetModule } from 'primeng/fieldset';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { ImageCompareModule } from 'primeng/imagecompare';
+import { ScrollTopModule } from 'primeng/scrolltop';
+import { DockModule } from 'primeng/dock';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { TreeSelectModule } from 'primeng/treeselect';
+
+
 
 @NgModule({
   imports: [
@@ -152,6 +165,17 @@ import { PasswordModule } from 'primeng/password';
     CarouselModule,
     BlockUIModule,
     PasswordModule,
+    EditorModule,
+    AutoCompleteModule,
+    BreadcrumbModule,
+    DrawerModule,
+    FieldsetModule,
+    FloatLabelModule,
+    ImageCompareModule,
+    ScrollTopModule,
+    DockModule,
+    IftaLabelModule,
+    TreeSelectModule,
   ],
   exports: [
     CommonModule,
@@ -227,6 +251,17 @@ import { PasswordModule } from 'primeng/password';
     CarouselModule,
     BlockUIModule,
     PasswordModule,
+    EditorModule,
+    AutoCompleteModule,
+    BreadcrumbModule,
+    DrawerModule,
+    FieldsetModule,
+    FloatLabelModule,
+    ImageCompareModule,
+    ScrollTopModule,
+    DockModule,
+    IftaLabelModule,
+    TreeSelectModule,
   ],
   providers: [DialogService],
 })
