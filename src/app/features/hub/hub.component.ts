@@ -1,7 +1,7 @@
 // 本元件為合約管理中樞主畫面
 // 功能：多分割區域整合合約列表、詳情、組織、討論、分析等元件
 // 用途：合約管理系統的主要操作介面
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SplitterModule } from 'primeng/splitter';
 import { AppSideModule } from '../../shell/layout.sidebar';
@@ -22,6 +22,7 @@ import {
   ContractFacadeService,
   Contract
 } from '../contract';
+import { LayoutService } from '../../core/services/layout/layout.service';
 
 @Component({
   selector: 'app-hub',
@@ -211,7 +212,7 @@ export class HubComponent {
   contracts$: Observable<Contract[]>;
   selectedContractId$: Observable<string | null>;
   selectedContract$: Observable<Contract | undefined>;
-  
+  layout = inject(LayoutService);
   constructor(private contractFacade: ContractFacadeService) {
     this.contracts$ = this.contractFacade.getContracts();
     this.selectedContractId$ = this.contractFacade.getSelectedContractId();
@@ -220,6 +221,7 @@ export class HubComponent {
 
   onContractRowClick(contract: { id: string }): void {
     this.contractFacade.setSelectedContract(contract.id);
+    // 不再自動展開 Drawer
   }
 }
 

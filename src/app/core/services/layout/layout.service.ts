@@ -32,6 +32,8 @@ export class LayoutService {
     this.sidebarCollapsed.set(!this.sidebarCollapsed());
   }
 
+  sidebarOpen = signal(false);
+
   private initialized = false;
 
   private appStateUpdate = new Subject<AppState>();

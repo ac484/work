@@ -33,7 +33,7 @@ import { RoleManagementService } from './core/services/iam/roles/role-management
 })
 export class AppComponent {
   private messageService = inject(MessageService);
-  sidebarOpen = signal(false);
+  sidebarOpen = inject(LayoutService).sidebarOpen;
   // 強制注入 RoleManagementService 以觸發 admin 權限初始化
   private _roleInit = inject(RoleManagementService);
 
