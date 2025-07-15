@@ -1,0 +1,213 @@
+/* IAM 共用元件樣式 */
+
+/* 權限標籤樣式 */
+.permission-granted {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  border-color: #c3e6cb !important;
+}
+
+.permission-denied {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  border-color: #f5c6cb !important;
+}
+
+/* 用戶頭像樣式 */
+.user-avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.user-avatar-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.user-avatar-status.online {
+  background-color: #28a745;
+}
+
+.user-avatar-status.offline {
+  background-color: #6c757d;
+}
+
+/* 角色徽章樣式 */
+.role-badge-system {
+  background: linear-gradient(45deg, #ffc107, #fd7e14);
+  color: white;
+}
+
+.role-badge-admin {
+  background: linear-gradient(45deg, #dc3545, #e83e8c);
+  color: white;
+}
+
+.role-badge-manager {
+  background: linear-gradient(45deg, #007bff, #6610f2);
+  color: white;
+}
+
+.role-badge-user {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+}
+
+/* 遷移提示樣式 */
+.migration-notice {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.migration-notice .pi {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* 權限矩陣表格樣式 */
+.matrix-table-container {
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.sticky-column {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 10;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+.matrix-table th,
+.matrix-table td {
+  border-right: 1px solid #dee2e6;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.matrix-table th:last-child,
+.matrix-table td:last-child {
+  border-right: none;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .matrix-table-container {
+    font-size: 0.875rem;
+  }
+  
+  .sticky-column {
+    min-width: 150px;
+  }
+  
+  .migration-notice {
+    padding: 1rem;
+  }
+  
+  .migration-notice h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* 載入動畫 */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* 空狀態樣式 */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.empty-state i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* 統計卡片樣式 */
+.stats-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stats-card i {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.stats-card h4 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.stats-card p {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* 表單樣式增強 */
+.form-field-required::after {
+  content: ' *';
+  color: #dc3545;
+}
+
+.form-help-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* 按鈕組樣式 */
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.button-group .p-button {
+  flex: 1;
+  min-width: 120px;
+}
+
+@media (max-width: 576px) {
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .button-group .p-button {
+    width: 100%;
+  }
+}

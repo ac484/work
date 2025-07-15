@@ -1,0 +1,131 @@
+
+description:
+globs:
+alwaysApply: false
+---
+
+## 二、資訊分類
+- **專案結構**（project_structure）：目錄、模組、檔案組織、命名慣例
+- **設計決策**（design_decision）：重要架構選擇、技術棧、權限設計、資料流
+- **最佳實踐**（best_practice_xx）：UI/UX、效能、可維護性、測試、CI/CD
+- **反模式**（anti_pattern_xx）：過度抽象、單次使用 service、any 型別、未用官方 SDK
+- **常見錯誤**（common_error_xx）：踩坑經驗、易混淆用法、常見 bug
+- **API 用法**（api_usage_xx）：常用 API、第三方套件、官方 SDK 範例
+- **團隊約定**（team_convention_xx）：程式風格、命名規則、review 流程
+- **其他**：可依實際需求擴充
+
+---
+
+## 三、context7 + mcp-redis 聯合知識管理規則
+
+### 1. 查詢優先順序
+- 任何知識查詢、比對、最佳實踐、API 文件、設計模式、反模式等，**必須先用 context7 查詢**。
+- 若 context7 查無結果，或需專案特有知識，則查詢 mcp-redis。
+
+### 2. 自動儲存與同步
+- 新產生的專案知識，依分類自動存入 mcp-redis，key 具描述性，value 具體明確，保存時間至少 240 小時。
+- 可選擇同步 context7（如有 API）。
+
+### 3. 自動化審查與回溯
+- 違反規範、反模式、常見錯誤自動記錄，方便日後審查、知識回溯、團隊學習。
+
+### 4. 團隊共享與知識傳承
+- mcp-redis 作為專案知識快取，context7 為外部權威知識，兩者結合確保知識共享與最佳實踐落地。
+
+---
+
+## 四、具體操作建議
+- 儲存時 key 格式建議：`分類_主題_細節`（如 best_practice_ui_minimalism、anti_pattern_any_type、project_structure_flat）
+- value 需包含：具體內容、來源、適用範圍、建議修正方式（如有）
+- 查詢時可依分類、主題、關鍵字模糊搜尋
+- 定期審查 mcp-redis 內容，淘汰過時知識，補充 context7 新知
+
+---
+
+## 五、範例
+- 儲存專案結構：
+  - key: `project_structure_flat`
+  - value: `本專案採用扁平結構，src/app/ 下僅分 core、shared、features、layout，避免多層巢狀。`
+- 儲存反模式：
+  - key: `anti_pattern_any_type`
+  - value: `嚴禁使用 any 型別，違者自動記錄並提示修正。`
+- 儲存團隊約定：
+  - key: `team_convention_code_review`
+  - value: `所有 PR 必須經過至少一位團隊成員審查，並通過自動化測試。`
+
+---
+
+## 六、完整知識管理流程
+1. 查詢知識時，先 context7，後 mcp-redis。
+2. 新知識依分類自動存 mcp-redis，必要時同步 context7。
+3. 違規/反模式/錯誤自動記錄，方便審查與回溯。
+4. 定期審查、淘汰過時知識，補充 context7 新知。
+5. 團隊共享，確保知識傳承與最佳實踐落地。
+
+---
+
+## 七、專案結構樹與檔案摘要
+
+### 1. 儲存建議
+- 專案結構樹：
+  - key: `project_structure_tree_${project_name}`
+  - value: 包含專案根目錄、主要模組、檔案組織的 JSON 字串
+- 檔案摘要：
+  - key: `file_summary_${file_path}`
+  - value: 包含檔案名稱、大小、修改時間、內容摘要的 JSON 字串
+
+### 2. 自動更新條件
+- 專案結構變更（新增/刪除/重構模組、檔案）
+- 檔案內容重大變更
+- 定期審查專案結構
+- 專案初始化時
+
+### 3. 使用時機
+- 專案結構查詢
+- 檔案內容比對
+- 專案結構變更驗證
+- 檔案內容回溯
+
+---
+
+## mcp-redis 倉庫來源、用途、常用指令、API 操作建議、官方文件連結，以及何時應參考這些指令，方便團隊與 AI 代碼生成正確利用。
+
+### 1. 倉庫來源
+- 本專案的 mcp-redis 倉庫位於 `redis://localhost:6379`
+- 倉庫名稱：`${project_name}_knowledge_base`
+- 倉庫密碼：`${project_name}_redis_password`
+
+### 2. 倉庫用途
+- 儲存專案特定知識，如：
+  - 專案結構樹
+  - 檔案摘要
+  - 反模式、常見錯誤、API 用法
+  - 團隊約定、設計決策
+- 作為專案知識快取，加速查詢
+
+### 3. 常用指令
+- 連接：`redis-cli -h localhost -p 6379 -a ${project_name}_redis_password`
+- 查看所有 key：`KEYS *`
+- 查看 key 類型：`TYPE key_name`
+- 刪除 key：`DEL key_name`
+- 清空資料庫：`FLUSHDB`
+
+### 4. API 操作建議
+- 儲存知識：
+  - 使用 `SET key value`
+  - 設定 TTL：`EXPIRE key seconds`
+- 查詢知識：
+  - 使用 `GET key`
+  - 模糊搜尋：`KEYS pattern`
+- 刪除知識：
+  - 使用 `DEL key`
+  - 批量刪除：`DEL key1 key2 ...`
+
+### 5. 官方文件連結
+- Redis 官方文件：https://redis.io/documentation
+- mcp-redis 官方文件：https://github.com/mcp-redis/mcp-redis
+
+### 6. 何時應參考
+- 當需要快速查詢專案特定知識時
+- 當需要確保知識一致性時
+- 當需要與 AI 代碼生成工具整合時
