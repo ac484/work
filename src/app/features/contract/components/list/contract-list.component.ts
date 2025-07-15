@@ -69,8 +69,7 @@ import { doc, updateDoc } from '@angular/fire/firestore';
             </div>
           </th>
           <th>
-            <input pInputText [(ngModel)]="filter.status" (ngModelChange)="onFilter()" 
-                   placeholder="狀態..." class="w-full p-1 text-xs border rounded" />
+            <!-- 狀態篩選 input 已移除，僅保留空白 -->
           </th>
           <th></th>
           <th></th>

@@ -20,7 +20,6 @@ import { ContractFilter } from '../../models';
       <input pInputText [(ngModel)]="filter.orderNo" placeholder="訂單編號" (input)="onFilter()" class="w-24 p-2 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
       <input pInputText [(ngModel)]="filter.projectNo" placeholder="專案編號" (input)="onFilter()" class="w-24 p-2 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
       <input pInputText [(ngModel)]="filter.projectName" placeholder="專案名稱" (input)="onFilter()" class="w-28 p-2 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-      <input pInputText [(ngModel)]="filter.status" placeholder="狀態" (input)="onFilter()" class="w-20 p-2 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
       <input pInputText type="number" [(ngModel)]="filter.minAmount" placeholder="金額下限" (input)="onFilter()" class="w-16 p-2 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
       <span class="mx-1 text-gray-400">~</span>
       <input pInputText type="number" [(ngModel)]="filter.maxAmount" placeholder="上限" (input)="onFilter()" class="w-16 p-2 text-xs border rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
