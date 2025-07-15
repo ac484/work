@@ -14,7 +14,7 @@ import { AuthService } from '../shared/components/google-auth/google-auth.servic
 import { GoogleAuthButtonComponent } from '../shared/components/google-auth/google-auth-button.component';
 import { AppUser } from '../core/services/iam/users/user.service';
 import { UserService } from '../core/services/iam/users/user.service';
-import { RoleManagementComponent } from '../features/role-management/role-management.component';
+import { IamFacadeService } from '../features/iam/services/core/iam-facade.service';
 
 @Component({
   selector: 'app-left-panel',
@@ -104,6 +104,7 @@ export class AppSideModule {
   layoutService: LayoutService = inject(LayoutService);
   auth = inject(AuthService);
   userService = inject(UserService);
+  iamFacade = inject(IamFacadeService);
   loading = signal(false);
   user = toSignal<AppUser | null>(this.userService.currentUser$, { initialValue: null });
 
@@ -161,8 +162,10 @@ export class AppSideModule {
     { label: '儀表板', icon: 'pi pi-chart-bar', routerLink: '/dashboard' },
     { label: '中樞', icon: 'pi pi-sitemap', routerLink: '/hub' },
     { label: '工作空間', icon: 'pi pi-sitemap', routerLink: '/workspace' },
-    { label: '權限管理', icon: 'pi pi-users', routerLink: '/roles', adminOnly: true },
-    { label: '權限監控', icon: 'pi pi-eye', routerLink: '/permission-monitor', adminOnly: true }
+    { label: 'IAM 管理', icon: 'pi pi-shield', routerLink: '/iam', adminOnly: true },
+    { label: '用戶管理', icon: 'pi pi-users', routerLink: '/iam/users', adminOnly: true },
+    { label: '角色管理', icon: 'pi pi-key', routerLink: '/iam/roles', adminOnly: true },
+    { label: '權限監控', icon: 'pi pi-eye', routerLink: '/iam/permissions/monitor', adminOnly: true }
   ];
 
   settingsOpen = signal(false);

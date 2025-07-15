@@ -1,11 +1,10 @@
 // 用戶個人資料元件
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { IamFacadeService } from '../../services/core/iam-facade.service';
 import { AuthUser } from '../../models/auth.model';
-import { getUserInitials } from '../../utils/auth.util';
 
 @Component({
   selector: 'app-user-profile',
@@ -102,7 +101,7 @@ import { getUserInitials } from '../../utils/auth.util';
             <h3 class="text-lg font-semibold mb-3">頭像</h3>
             <div class="text-center">
               <p-avatar 
-                [label]="getUserInitials(user)"
+                [label]="getInitials(user.displayName || user.email || '')"
                 size="xlarge"
                 class="mb-3">
               </p-avatar>
@@ -182,7 +181,7 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser$ = this.iamFacade.getCurrentUser();
-    
+
     // 載入用戶資料到表單
     this.currentUser$.subscribe(user => {
       if (user) {
@@ -199,9 +198,8 @@ export class UserProfileComponent implements OnInit {
       this.isLoading = true;
 
       try {
-        const formValue = this.profileForm.value;
         // TODO: 實現更新個人資料的邏輯
-        // await this.userProfileService.updateProfile(formValue);
+        // await this.iamFacade.updateUserProfile(this.profileForm.value);
       } catch (error) {
         // 處理錯誤
       } finally {

@@ -1,3 +1,7 @@
+// 🚨 此服務已遷移至新的 IAM 模組
+// 新路徑: src/app/features/iam/services/permissions/permission.service.ts
+// 請使用新的 IamFacadeService 進行權限管理
+
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';

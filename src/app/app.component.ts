@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { globalMessages, removeGlobalMessage } from './shared/utils/global-message-store';
 import { LayoutService } from './core/services/layout/layout.service';
-import { RoleManagementService } from './core/services/iam/roles/role-management.service';
+import { IamFacadeService } from './features/iam/services/core/iam-facade.service';
 
 @Component({
   selector: 'app-root',
@@ -28,8 +28,8 @@ import { RoleManagementService } from './core/services/iam/roles/role-management
 export class AppComponent {
   private messageService = inject(MessageService);
   sidebarCollapsed = inject(LayoutService).sidebarCollapsed;
-  // 強制注入 RoleManagementService 以觸發 admin 權限初始化
-  private _roleInit = inject(RoleManagementService);
+  // 初始化 IAM 系統
+  private iamFacade = inject(IamFacadeService);
 
   constructor() {
     effect(() => {

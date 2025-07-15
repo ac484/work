@@ -1,3 +1,7 @@
+// 🚨 此守衛已遷移至新的 IAM 模組
+// 新路徑: src/app/features/iam/services/permissions/permission.guard.ts
+// 請使用新的 IAM 模組中的權限守衛
+
 // 本檔案依據 Firebase Console 專案設定，使用 Firebase Client SDK 操作 Cloud Firestore
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
