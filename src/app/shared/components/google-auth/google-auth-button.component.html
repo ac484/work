@@ -1,0 +1,24 @@
+<!--
+本檔案為 Google 與信箱登入按鈕元件的 HTML 模板
+功能：提供 Google 登入、信箱登入/註冊/重設密碼、登出等 UI
+用途：用於側邊欄與登入區塊的認證操作介面
+-->
+<div *ngIf="!isLoggedIn">
+  <button pButton type="button" icon="pi pi-google" [label]="iconOnly ? '' : 'Google 登入'" (click)="loginGoogle.emit()" [loading]="loading" [disabled]="loading"></button>
+  <form (ngSubmit)="submit()" #f="ngForm">
+    <input pInputText type="email" [(ngModel)]="email" name="email" placeholder="信箱" required class="mb-2 w-full" [disabled]="loading" />
+    <input *ngIf="mode!=='reset'" pInputText type="password" [(ngModel)]="password" name="password" placeholder="密碼" required class="mb-2 w-full" [disabled]="loading" />
+    <button pButton type="submit"
+      [label]="iconOnly ? '' : (mode==='login'?'信箱登入':mode==='register'?'信箱註冊':'寄送重設密碼信')"
+      [icon]="'pi pi-envelope'"
+      [loading]="loading"
+      class="w-full mb-2"
+      [disabled]="loading"></button>
+    <div class="flex justify-between text-xs">
+      <a href="#" (click)="switchMode(mode==='login'?'register':'login');$event.preventDefault()">{{mode==='login'?'註冊':'登入'}}</a>
+      <a href="#" (click)="switchMode('reset');$event.preventDefault()" *ngIf="mode!=='reset'">忘記密碼</a>
+      <a href="#" (click)="switchMode('login');$event.preventDefault()" *ngIf="mode==='reset'">返回登入</a>
+    </div>
+  </form>
+</div>
+<button pButton type="button" icon="pi pi-sign-out" [label]="iconOnly ? '' : (userName + ' 登出')" *ngIf="isLoggedIn" (click)="logout.emit()" class="p-button-secondary" [loading]="loading" [disabled]="loading"></button> 

@@ -1,12 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { WorkspaceService } from '../services/workspace.service';
 import { Workspace } from '../models/workspace.model';
 
 @Component({
   selector: 'app-workspace-list',
   standalone: true,
-  imports: [CommonModule],
   template: `
     <ul>
       <li *ngFor="let w of workspaces">

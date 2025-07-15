@@ -1,5 +1,5 @@
 // 本元件為應用程式側邊欄（主導航）
-// 功能：用戶資訊、主選單、主題切換、IAM 認證、權限選單
+// 功能：用戶資訊、主選單、主題切換、Google 認證、權限選單
 // 用途：全域導航與操作入口
 import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -8,17 +8,18 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfig } from '../core/config/layout.config';
 import { LayoutService } from '../core/services/layout/layout.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
-import { IamFacadeService } from '../features/iam/services/core/iam-facade.service';
-import { AuthUser } from '../features/iam/models/auth.model';
-import { UserAvatarComponent } from '../features/iam/components/shared/user-avatar.component';
-import { IamAuthButtonComponent } from '../features/iam/components/shared/iam-auth-button.component';
+import { AuthService } from '../shared/components/google-auth/google-auth.service';
+import { GoogleAuthButtonComponent } from '../shared/components/google-auth/google-auth-button.component';
+import { AppUser } from '../core/services/iam/users/user.service';
+import { UserService } from '../core/services/iam/users/user.service';
+import { RoleManagementComponent } from '../features/role-management/role-management.component';
 
 @Component({
   selector: 'app-left-panel',
   standalone: true,
-  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink, UserAvatarComponent, IamAuthButtonComponent],
+  imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink, GoogleAuthButtonComponent],
   template: `
     <div class="fixed top-0 left-0 h-full bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 flex flex-col items-stretch z-50 transition-all duration-300"
          [ngClass]="{ 'w-52': !collapsed(), 'w-16': collapsed() }">
@@ -30,38 +31,19 @@ import { IamAuthButtonComponent } from '../features/iam/components/shared/iam-au
           [attr.aria-label]="collapsed() ? '展開側邊欄' : '收合側邊欄'">
           <i class="pi" [ngClass]="collapsed() ? 'pi-angle-right' : 'pi-angle-left'"></i>
         </button>
-        
-        <!-- 用戶頭像和資訊 -->
-        <div class="flex flex-col items-center w-full mb-2">
-          <ng-container *ngIf="currentUser() as userData; else defaultAvatar">
-            <app-user-avatar
-              [displayName]="userData.displayName"
-              [email]="userData.email"
-              [photoURL]="userData.photoURL"
-              [size]="collapsed() ? 'normal' : 'large'"
-              class="cursor-pointer"
-              (click)="goToProfile()">
-            </app-user-avatar>
-            <div class="mt-1 text-xs text-center w-full truncate" *ngIf="!collapsed()">
-              {{ userData.displayName || userData.email }}
-            </div>
-            <div class="text-[10px] text-center text-gray-400 w-full truncate" *ngIf="!collapsed()">
-              {{ userData.uid }}
-            </div>
+        <!-- 頭像功能 -->
+        <div class="flex flex-col items-center w-full mb-2" *ngIf="true">
+          <ng-container *ngIf="user() as userData; else defaultAvatar">
+            <img [src]="userData.photoURL ? userData.photoURL : 'user.svg'" [alt]="userData.displayName || userData.email || 'User'" [class]="collapsed() ? 'w-10 h-10' : 'w-14 h-14'" class="rounded-full border border-surface-300 shadow-sm object-cover" />
+            <div class="mt-1 text-xs text-center w-full truncate" *ngIf="!collapsed()">{{userData.displayName || userData.email}}</div>
+            <div class="text-[10px] text-center text-gray-400 w-full truncate" *ngIf="!collapsed()">{{userData.uid}}</div>
           </ng-container>
           <ng-template #defaultAvatar>
-            <div [class]="collapsed() ? 'w-10 h-10' : 'w-14 h-14'" 
-                 class="rounded-full bg-surface-200 dark:bg-surface-800 flex items-center justify-center text-2xl text-surface-500 cursor-pointer"
-                 (click)="goToLogin()">
+            <div [class]="collapsed() ? 'w-10 h-10' : 'w-14 h-14'" class="rounded-full bg-surface-200 dark:bg-surface-800 flex items-center justify-center text-2xl text-surface-500">
               <i class="pi pi-user"></i>
-            </div>
-            <div class="mt-1 text-xs text-center w-full" *ngIf="!collapsed()">
-              <span class="text-blue-500 cursor-pointer" (click)="goToLogin()">點擊登入</span>
             </div>
           </ng-template>
         </div>
-        
-        <!-- 主選單 -->
         <div class="flex flex-col gap-2 w-full mt-4">
           <ng-container *ngFor="let item of menuItems">
             <a *ngIf="!item.adminOnly || isAdmin()"
@@ -77,10 +59,8 @@ import { IamAuthButtonComponent } from '../features/iam/components/shared/iam-au
             ></a>
           </ng-container>
         </div>
-        
+        <!-- 移除 sidebar 內權限矩陣 UI -->
         <div class="flex-1"></div>
-        
-        <!-- 設定按鈕 -->
         <div class="flex flex-col items-center gap-2 w-full mb-4">
           <p-button type="button"
             variant="text"
@@ -98,18 +78,18 @@ import { IamAuthButtonComponent } from '../features/iam/components/shared/iam-au
             <i class="pi pi-cog"></i>
           </p-button>
         </div>
-        
-        <!-- IAM 認證按鈕 -->
-        <div class="w-full px-2">
-          <app-iam-auth-button
-            [isLoggedIn]="!!currentUser()"
-            [userName]="currentUser()?.displayName || currentUser()?.email || ''"
-            [loading]="loading()"
-            [iconOnly]="collapsed()">
-          </app-iam-auth-button>
-        </div>
+        <app-google-auth-button
+          [isLoggedIn]="!!user()"
+          [userName]="user()?.displayName || ''"
+          [loading]="loading()"
+          (loginGoogle)="onLoginGoogle()"
+          (loginEmail)="onLoginEmail($event)"
+          (registerEmail)="onRegisterEmail($event)"
+          (changePassword)="onChangePassword($event)"
+          (logout)="onLogout()"
+          [iconOnly]="collapsed()"
+        ></app-google-auth-button>
       </div>
-      
       <!-- Settings 彈窗與遮罩 -->
       <ng-container *ngIf="settingsOpen()">
         <div class="fixed inset-0 z-50 bg-black/20" (click)="closeSettings()"></div>
@@ -122,14 +102,13 @@ import { IamAuthButtonComponent } from '../features/iam/components/shared/iam-au
 })
 export class AppSideModule {
   layoutService: LayoutService = inject(LayoutService);
-  iamFacade = inject(IamFacadeService);
-  router = inject(Router);
+  auth = inject(AuthService);
+  userService = inject(UserService);
   loading = signal(false);
-  currentUser = toSignal<AuthUser | null>(this.iamFacade.getCurrentUser(), { initialValue: null });
+  user = toSignal<AppUser | null>(this.userService.currentUser$, { initialValue: null });
 
   isDarkMode = computed(() => this.layoutService.appState().darkMode);
   collapsed = this.layoutService.sidebarCollapsed;
-
   toggleCollapse() {
     this.layoutService.toggleSidebar();
   }
@@ -141,21 +120,32 @@ export class AppSideModule {
     }));
   }
 
-  goToLogin(): void {
-    this.router.navigate(['/iam/login']);
+  onLoginGoogle() {
+    this.loading.set(true);
+    this.auth.loginWithGoogle().finally(() => this.loading.set(false));
   }
-
-  goToProfile(): void {
-    this.router.navigate(['/iam/users/profile']);
+  onLoginEmail({ email, password }: { email: string; password: string }) {
+    this.loading.set(true);
+    this.auth.loginWithEmail(email, password).finally(() => this.loading.set(false));
+  }
+  onRegisterEmail({ email, password }: { email: string; password: string }) {
+    this.loading.set(true);
+    this.auth.registerWithEmail(email, password).finally(() => this.loading.set(false));
+  }
+  onChangePassword({ email }: { email: string }) {
+    this.loading.set(true);
+    this.auth.changePassword(email).finally(() => this.loading.set(false));
+  }
+  onLogout() {
+    this.loading.set(true);
+    this.auth.logout().finally(() => this.loading.set(false));
   }
 
   static viewMode = signal<'hub' | 'project'>('hub');
   static injectViewMode = () => AppSideModule.viewMode;
-
   get viewModeValue() {
     return AppSideModule.viewMode();
   }
-
   static toggleView() {
     AppSideModule.viewMode.set(AppSideModule.viewMode() === 'hub' ? 'project' : 'hub');
   }
@@ -171,25 +161,24 @@ export class AppSideModule {
     { label: '儀表板', icon: 'pi pi-chart-bar', routerLink: '/dashboard' },
     { label: '中樞', icon: 'pi pi-sitemap', routerLink: '/hub' },
     { label: '工作空間', icon: 'pi pi-sitemap', routerLink: '/workspace' },
-    { label: 'IAM 管理', icon: 'pi pi-shield', routerLink: '/iam', adminOnly: true },
-    { label: '用戶管理', icon: 'pi pi-users', routerLink: '/iam/users', adminOnly: true },
-    { label: '角色管理', icon: 'pi pi-key', routerLink: '/iam/roles', adminOnly: true },
-    { label: '權限監控', icon: 'pi pi-eye', routerLink: '/iam/permissions/monitor', adminOnly: true }
+    { label: '權限管理', icon: 'pi pi-users', routerLink: '/roles', adminOnly: true },
+    { label: '權限監控', icon: 'pi pi-eye', routerLink: '/permission-monitor', adminOnly: true }
   ];
 
   settingsOpen = signal(false);
-
   toggleSettings() {
     this.settingsOpen.set(!this.settingsOpen());
   }
-
   closeSettings() {
     this.settingsOpen.set(false);
   }
 
-  isAdmin(): boolean {
-    const user = this.currentUser();
-    // 暫時簡化實現，實際應該通過權限檢查
-    return !!user && user.email?.includes('admin');
+  isAdmin() {
+    const u = this.user();
+    return !!u && Array.isArray(u.roles) && u.roles.includes('admin');
   }
+}
+
+interface AppSideModuleConstructor {
+  viewMode: ReturnType<typeof signal<'hub' | 'project'>>;
 }
