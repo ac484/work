@@ -6,7 +6,7 @@ import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { IamFacadeService } from '../../services/core/iam-facade.service';
 import { UserListItem, UserFilter } from '../../models/user.model';
 import { UserFormComponent } from './user-form.component';
-import { getUserInitials } from '../../utils/user.util';
+import { getUserInitials } from '../../utils/user.util.ts';
 
 @Component({
   selector: 'app-user-list',

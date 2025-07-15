@@ -11,6 +11,7 @@ import { AuthService } from '../auth/auth.service';
 import { UserService } from '../users/user.service';
 import { RoleService } from '../roles/role.service';
 import { PermissionService } from '../permissions/permission.service';
+import { IamInitService } from './iam-init.service';
 
 // 模型
 import { User, UserFilter, UserListItem } from '../../models/user.model';
@@ -25,6 +26,14 @@ export class IamFacadeService {
   private userService = inject(UserService);
   private roleService = inject(RoleService);
   private permissionService = inject(PermissionService);
+  private initService = inject(IamInitService);
+
+  constructor() {
+    // 自動初始化 IAM 系統
+    this.initService.initialize().catch(error => {
+      console.error('IAM 系統自動初始化失敗:', error);
+    });
+  }
 
   // 狀態管理
   private selectedUserId$ = new BehaviorSubject<string | null>(null);
@@ -226,5 +235,19 @@ export class IamFacadeService {
       ).toPromise()
     );
     await Promise.all(promises);
+  }
+
+  // ===== 系統初始化 API =====
+  
+  async initializeSystem(): Promise<void> {
+    return this.initService.initialize();
+  }
+
+  async forceReinitialize(): Promise<void> {
+    return this.initService.forceReinitialize();
+  }
+
+  isSystemInitialized(): boolean {
+    return this.initService.isInitialized();
   }
 }

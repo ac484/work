@@ -83,6 +83,24 @@ import { PrimeNgModule } from '../../../shared/modules/prime-ng.module';
             </div>
           </div>
         </div>
+
+        <!-- 系統管理卡片 -->
+        <div class="col-12 md:col-6 lg:col-4">
+          <div class="bg-white border-round shadow-1 p-4 h-full">
+            <div class="flex align-items-center mb-3">
+              <i class="pi pi-cog text-2xl text-purple-600 mr-3"></i>
+              <h3 class="text-xl font-semibold m-0">系統管理</h3>
+            </div>
+            <p class="text-600 mb-4">系統初始化、角色重置、狀態監控</p>
+            <div class="flex gap-2">
+              <p-button 
+                label="系統狀態" 
+                [routerLink]="['/iam/admin/status']"
+                size="small">
+              </p-button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 系統狀態 -->
