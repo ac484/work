@@ -1,7 +1,7 @@
 // 本元件為應用程式側邊欄（主導航）
 // 功能：用戶資訊、主選單、主題切換、Google 認證、權限選單
 // 用途：全域導航與操作入口
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, Input, Output, EventEmitter } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
@@ -21,13 +21,13 @@ import { RoleManagementComponent } from '../features/role-management/role-manage
   standalone: true,
   imports: [CommonModule, ButtonModule, StyleClassModule, MenubarModule, AppConfig, RouterLink, GoogleAuthButtonComponent],
   template: `
-    <div class="fixed top-0 left-0 h-full bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 flex flex-col items-stretch z-50 transition-all duration-300"
+    <div *ngIf="open" class="fixed top-0 left-0 h-full bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 flex flex-col items-stretch z-50 transition-all duration-300"
          [ngClass]="{ 'w-52': !collapsed(), 'w-16': collapsed() }">
       <div class="flex flex-col items-center gap-4 py-6 flex-1">
         <!-- 收合/展開按鈕 -->
         <button type="button"
           class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all mb-2"
-          (click)="toggleCollapse()"
+          (click)="closeSidebar()"
           [attr.aria-label]="collapsed() ? '展開側邊欄' : '收合側邊欄'">
           <i class="pi" [ngClass]="collapsed() ? 'pi-angle-right' : 'pi-angle-left'"></i>
         </button>
@@ -176,6 +176,16 @@ export class AppSideModule {
   isAdmin() {
     const u = this.user();
     return !!u && Array.isArray(u.roles) && u.roles.includes('admin');
+  }
+
+  @Input() open: boolean = false;
+  @Output() openChange = new EventEmitter<boolean>();
+
+  closeSidebar() {
+    this.openChange.emit(false);
+  }
+  openSidebar() {
+    this.openChange.emit(true);
   }
 }
 
