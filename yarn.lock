@@ -2071,10 +2071,10 @@
   dependencies:
     tslib "^2.4.0"
 
-"@ng-matero/extensions@^20.0.0":
-  version "20.1.0"
-  resolved "https://registry.yarnpkg.com/@ng-matero/extensions/-/extensions-20.1.0.tgz#b3205933a9889d10f948606048296e34cc49d999"
-  integrity sha512-r5NJEaKgrGB4aLtLpBDl+noSzmudNAqt383ysj3wwokw+g5RhRE4Mawsg1iXsp4ag7B7QSP8G0PKBJ5hIs3Mzg==
+"@ng-matero/extensions@^20.1.1":
+  version "20.1.1"
+  resolved "https://registry.yarnpkg.com/@ng-matero/extensions/-/extensions-20.1.1.tgz#083d091f5d8b17c440ac1cd35ea3261e1540095a"
+  integrity sha512-JYVJ54SZQYGRhT6gYW7NDUGmhw5hl8QjVwoBrMqBuVx0pDZAAN8fCWIdpsUA+LrudqbHI7jfJk6lh6R0QbLrmg==
   dependencies:
     "@ng-select/ng-select" "^15.0.0"
     ngx-color "^10.0.0"

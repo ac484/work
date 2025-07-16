@@ -38,7 +38,7 @@
     "@angular/platform-browser": "^20.0.2",
     "@angular/platform-browser-dynamic": "^20.0.2",
     "@angular/router": "^20.0.2",
-    "@ng-matero/extensions": "^20.0.0",
+    "@ng-matero/extensions": "^20.1.1",
     "@ng-matero/extensions-date-fns-adapter": "^20.0.0",
     "@ngx-formly/core": "^7.0.0",
     "@ngx-formly/material": "^7.0.0",
