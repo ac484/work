@@ -172,14 +172,14 @@ import { Workspace } from '../../models';
         }
 
         <!-- 團隊成員 -->
-        @if (workspace()?.members && workspace()?.members.length > 0) {
+        @if (workspace()?.members && workspace()!.members!.length > 0) {
           <p-card class="members-card">
             <ng-template pTemplate="header">
               <h3>團隊成員</h3>
             </ng-template>
             
             <div class="members-grid">
-              @for (member of workspace()?.members; track member.name) {
+              @for (member of workspace()!.members!; track member.name) {
                 <div class="member-item">
                   <div class="member-avatar">
                     <i class="pi pi-user"></i>
