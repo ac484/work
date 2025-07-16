@@ -87,6 +87,8 @@ import { ScrollTopModule } from 'primeng/scrolltop';
 import { DockModule } from 'primeng/dock';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { TreeSelectModule } from 'primeng/treeselect';
+import { TextareaModule } from 'primeng/textarea';
+import { ChartModule } from 'primeng/chart';
 
 
 
@@ -176,6 +178,8 @@ import { TreeSelectModule } from 'primeng/treeselect';
     DockModule,
     IftaLabelModule,
     TreeSelectModule,
+    TextareaModule,
+    ChartModule,
   ],
   exports: [
     CommonModule,
@@ -262,6 +266,8 @@ import { TreeSelectModule } from 'primeng/treeselect';
     DockModule,
     IftaLabelModule,
     TreeSelectModule,
+    TextareaModule,
+    ChartModule,
   ],
   providers: [DialogService],
 })
