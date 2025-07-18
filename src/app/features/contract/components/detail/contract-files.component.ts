@@ -12,9 +12,9 @@ import { Contract } from '../../models';
   standalone: true,
   imports: [CommonModule, DialogModule],
   template: `
-    <div class="h-full w-full flex flex-col justify-center items-center">
+    <div class="h-full w-full flex flex-col justify-center items-center p-2">
       <ng-container *ngIf="contract && contract.url; else noFile">
-        <div class="cursor-pointer flex flex-col justify-center items-center w-full h-full hover:bg-gray-50 dark:hover:bg-surface-700 rounded p-4 transition-colors" 
+        <div class="cursor-pointer flex flex-col justify-center items-center w-full h-full hover:bg-gray-50 dark:hover:bg-surface-700 rounded-lg p-4 transition-colors border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500" 
              (click)="openDialog()">
           <i class="pi pi-file-pdf text-4xl text-red-500 mb-3"></i>
           <div class="text-sm text-center font-medium text-gray-700 dark:text-gray-300 mb-1">合約檔案</div>
@@ -23,7 +23,7 @@ import { Contract } from '../../models';
       </ng-container>
       
       <ng-template #noFile>
-        <div class="flex flex-col justify-center items-center w-full h-full text-gray-400 dark:text-gray-500 min-h-[200px]">
+        <div class="flex flex-col justify-center items-center w-full h-full text-gray-400 dark:text-gray-500 min-h-[200px] p-4">
           <i class="pi pi-file text-4xl mb-3"></i>
           <div class="text-sm text-center font-medium mb-1">無檔案</div>
           <div class="text-xs text-center text-gray-300 dark:text-gray-400">合約: {{ contract?.code || '未選擇' }}</div>
