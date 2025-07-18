@@ -1,11 +1,10 @@
 // 本服務為請款操作流程服務
-// 功能：權限檢查、狀態轉移、操作執行、提示文字生成
+// 功能：狀態轉移、操作執行、提示文字生成
 // 用途：請款流程的業務邏輯處理
 import { Injectable, inject } from '@angular/core';
 import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 import { PaymentRecord, PaymentAction, PaymentStatus, PAYMENT_STATUS_TRANSITIONS, Contract, PaymentLog } from '../../models';
 import { AppUser } from '../../../../core/services/iam/users/user.service';
-import { PAYMENT_ACTION_PERMISSIONS, SELF_APPROVAL_RESTRICTED_ACTIONS } from '../../../../core/constants/permissions';
 
 @Injectable({
   providedIn: 'root'
@@ -26,19 +25,6 @@ export class PaymentActionService {
   ): boolean {
     if (!user) return false;
 
-    // 檢查基本權限
-    const requiredPermission = PAYMENT_ACTION_PERMISSIONS[action];
-    if (requiredPermission && !userPermissions.includes(requiredPermission)) {
-      return false;
-    }
-
-    // 檢查自我審核限制
-    if (SELF_APPROVAL_RESTRICTED_ACTIONS.includes(action)) {
-      if (payment.applicant === user.displayName || payment.applicant === user.email) {
-        return false;
-      }
-    }
-
     // 檢查狀態轉移是否有效
     const transitions = PAYMENT_STATUS_TRANSITIONS[payment.status];
     return !!(transitions && transitions[action] !== undefined);
@@ -51,17 +37,6 @@ export class PaymentActionService {
     action: PaymentAction
   ): string {
     if (!user) return '請先登入';
-
-    const requiredPermission = PAYMENT_ACTION_PERMISSIONS[action];
-    if (requiredPermission && !userPermissions.includes(requiredPermission)) {
-      return `需要權限：${requiredPermission}`;
-    }
-
-    if (SELF_APPROVAL_RESTRICTED_ACTIONS.includes(action)) {
-      if (payment.applicant === user.displayName || payment.applicant === user.email) {
-        return '不能審核自己的申請';
-      }
-    }
 
     const transitions = PAYMENT_STATUS_TRANSITIONS[payment.status];
     if (!transitions || transitions[action] === undefined) {

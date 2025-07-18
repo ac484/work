@@ -1,5 +1,5 @@
 // 本元件為請款申請按鈕與表單
-// 功能：權限檢查、金額/百分比動態計算、建立請款草稿
+// 功能：金額/百分比動態計算、建立請款草稿
 // 用途：合約管理中用戶發起請款申請的入口
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9,8 +9,6 @@ import { SliderModule } from 'primeng/slider';
 import { Contract, PaymentRecord, PaymentStatus } from '../../models';
 import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 import { AppUser } from '../../../../core/services/iam/users/user.service';
-import { PermissionService } from '../../../../core/services/iam/permissions/permission.service';
-import { PERMISSIONS } from '../../../../core/constants/permissions';
 import { PaymentRequestService } from '../../services/payment/contract-payment-request.service';
 
 @Component({
@@ -19,8 +17,7 @@ import { PaymentRequestService } from '../../services/payment/contract-payment-r
   imports: [CommonModule, FormsModule, DialogModule, SliderModule],
   template: `
     <div class="h-full flex flex-col">
-      <button *ngIf="canCreatePayment" 
-              pButton type="button" icon="pi pi-wallet" 
+      <button pButton type="button" icon="pi pi-wallet" 
               class="px-2 py-1 text-xs rounded bg-primary-500 text-white hover:bg-primary-600 transition" 
               (click)="open()">
         請款
@@ -61,28 +58,17 @@ export class PaymentRequestButtonComponent implements OnInit {
   paymentAmount: number | null = null;
   paymentPercent: number | null = null;
   paymentNote = '';
-  canCreatePayment = false;
   submitting = false;
   
   private paymentRequestService = inject(PaymentRequestService);
 
-  async ngOnInit(): Promise<void> {
-    await this.checkPermissions();
+  ngOnInit(): void {
+    // 初始化完成
   }
 
-  private async checkPermissions(): Promise<void> {
-    this.canCreatePayment = await this.paymentRequestService.canCreate(this.user);
-  }
-
-  async open(): Promise<void> {
+  open(): void {
     if (!this.contract || !this.user) return;
     
-    const hasPermission = await this.paymentRequestService.canCreate(this.user);
-    if (!hasPermission) {
-      alert('您沒有創建請款申請的權限');
-      return;
-    }
-
     this.visible = true;
     this.paymentAmount = null;
     this.paymentPercent = 0.01;
@@ -138,12 +124,8 @@ export class PaymentRequestButtonComponent implements OnInit {
       this.completed.emit(record);
       alert('請款草稿已創建，請至請款詳情頁面送出審核');
     } catch (error: any) {
-      if (error.message === 'permission_denied') {
-        alert('您沒有創建請款申請的權限');
-      } else {
-        console.error('創建請款申請失敗:', error);
-        alert('創建請款申請失敗，請稍後再試');
-      }
+      console.error('創建請款申請失敗:', error);
+      alert('創建請款申請失敗，請稍後再試');
     } finally {
       this.submitting = false;
     }

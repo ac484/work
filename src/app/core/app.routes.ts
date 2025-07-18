@@ -26,18 +26,14 @@ export const routes: Routes = [
   { 
     path: 'dashboard', 
     component: DashboardComponent,
-    canActivate: [PermissionGuard],
     data: { 
-      permission: PERMISSIONS.VIEW_CONTRACT,
       description: '儀表板檢視'
     }
   },
   { 
     path: 'hub', 
     loadComponent: () => import('../features/hub/hub.component').then(m => m.HubComponent),
-    canActivate: [PermissionGuard],
     data: { 
-      permission: PERMISSIONS.VIEW_CONTRACT,
       description: '合約管理中樞'
     }
   },
@@ -54,9 +50,7 @@ export const routes: Routes = [
   {
     path: 'workspace',
     loadComponent: () => import('../features/workspace/workspace.component').then(m => m.WorkspaceComponent),
-    canActivate: [PermissionGuard],
     data: {
-      permission: PERMISSIONS.VIEW_CONTRACT,
       description: '工作區分割畫面'
     }
   },

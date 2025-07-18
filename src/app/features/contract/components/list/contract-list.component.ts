@@ -1,5 +1,5 @@
 // 本元件為合約主列表
-// 功能：顯示、篩選、標籤編輯、請款、CRUD 操作入口，支援權限控制
+// 功能：顯示、篩選、標籤編輯、請款、CRUD 操作入口
 // 用途：合約管理主畫面，所有合約一覽
 import { Component, Input, Output, EventEmitter, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,9 +14,7 @@ import { ContractFilterService } from '../../services/management/contract-filter
 import { CreateContractStepperComponent } from '../actions/contract-step.component';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { PaymentRequestButtonComponent } from '../payment/contract-payment-request-button.component';
-import { PermissionService } from '../../../../core/services/iam/permissions/permission.service';
 import { UserService, AppUser } from '../../../../core/services/iam/users/user.service';
-import { PERMISSIONS } from '../../../../core/constants/permissions';
 import { AmountSummaryComponent } from '../shared/contract-amount-summary.component';
 import { ProgressSummaryComponent } from '../analytics/contract-progress-summary.component';
 import { ChangeActionsComponent } from '../actions/contract-change-actions.component';
@@ -87,8 +85,7 @@ import { doc, updateDoc } from '@angular/fire/firestore';
                       class="p-button-text p-0"
                       (click)="refreshContracts()" title="重新整理">
               </button>
-              <button *ngIf="hasPermission(PERMISSIONS.CREATE_CONTRACT)" 
-                      pButton type="button" icon="pi pi-plus" size="small"
+              <button pButton type="button" icon="pi pi-plus" size="small"
                       class="p-button-text p-0 text-primary-500 hover:text-primary-600 transition"
                       (click)="openCreateDialog()" title="新建合約">
               </button>
@@ -133,10 +130,10 @@ import { doc, updateDoc } from '@angular/fire/firestore';
           </td>
           <td>
             <div class="flex gap-1">
-              <button *ngIf="hasPermission(PERMISSIONS.EDIT_CONTRACT)" pButton type="button" icon="pi pi-pencil" size="small"
+              <button pButton type="button" icon="pi pi-pencil" size="small"
                       class="p-button-text p-0 text-gray-500 hover:text-primary-500 transition"
                       (click)="onEdit(contract, $event)" title="編輯合約"></button>
-              <button *ngIf="hasPermission(PERMISSIONS.DELETE_CONTRACT)" pButton type="button" icon="pi pi-trash" size="small"
+              <button pButton type="button" icon="pi pi-trash" size="small"
                       class="p-button-text p-0 text-red-500 hover:text-red-700 transition"
                       (click)="onDelete(contract, $event)" title="刪除合約"></button>
             </div>
@@ -204,15 +201,11 @@ export class ContractListComponent implements OnInit {
   private allContracts: Contract[] = [];
   filter: ContractFilter = {};
   user: AppUser | null = null;
-  userPermissions: string[] = [];
-  
-  PERMISSIONS = PERMISSIONS;
-  
+
   showCompleted = false;
 
   private filterService = inject(FilterService);
   private contractFilterService = inject(ContractFilterService);
-  private permissionService = inject(PermissionService);
   private userService = inject(UserService);
   private dialogRef?: DynamicDialogRef;
 
@@ -227,11 +220,6 @@ export class ContractListComponent implements OnInit {
 
   constructor(private contractService: ContractService, private dialogService: DialogService) {
     this.contracts$ = this.contractService.getContracts();
-    
-    this.userService.currentUser$.subscribe(async (user) => {
-      this.user = user;
-      await this.updatePermissions();
-    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -239,28 +227,19 @@ export class ContractListComponent implements OnInit {
       this.allContracts = contracts;
       this.applyFilter();
     });
-    await this.updatePermissions();
-  }
 
-  private async updatePermissions(): Promise<void> {
-    if (this.user) {
-      this.userPermissions = await this.permissionService.getUserPermissions(this.user);
-    } else {
-      this.userPermissions = [];
-    }
-  }
-
-  hasPermission(perm: string): boolean {
-    return this.userPermissions.includes(perm);
+    this.userService.currentUser$.subscribe(user => {
+      this.user = user;
+    });
   }
 
   getStatusClass(status: Contract['status']): string {
-    const statusClasses = {
-      '進行中': 'text-blue-600 bg-blue-100 px-2 py-1 rounded text-xs',
-      '已完成': 'text-green-600 bg-green-100 px-2 py-1 rounded text-xs',
-      '已終止': 'text-red-600 bg-red-100 px-2 py-1 rounded text-xs'
-    };
-    return statusClasses[status] || 'text-gray-600 bg-gray-100 px-2 py-1 rounded text-xs';
+    switch (status) {
+      case '進行中': return 'text-blue-600 font-semibold';
+      case '已完成': return 'text-green-600 font-semibold';
+      case '已終止': return 'text-red-600 font-semibold';
+      default: return 'text-gray-600';
+    }
   }
 
   onFilter(): void {
@@ -282,108 +261,77 @@ export class ContractListComponent implements OnInit {
   }
 
   private applyFilter(): void {
-    let filtered = this.contractFilterService.filterContracts(this.allContracts, this.filter);
-    if (!this.showCompleted) {
-      filtered = filtered.filter(c => c.status !== '已完成');
-    }
-    this.filteredContracts = filtered;
+    this.filteredContracts = this.contractFilterService.filterContracts(
+      this.allContracts,
+      this.filter,
+      this.showCompleted
+    );
   }
 
   refreshContracts(): void {
-    this.contracts$ = this.contractService.getContracts();
-    this.contracts$.subscribe(contracts => {
-      this.allContracts = contracts;
-      this.applyFilter();
-    });
+    this.contractService.refreshContracts();
   }
 
   onTagsChange(contract: Contract, tags: string[]): void {
-    if ((contract as any).id) {
-      this.contractService.updateContractTags((contract as any).id, tags);
-    }
+    this.contractService.updateContractTags(contract.id!, tags);
   }
 
   onRowClick(contract: Contract): void {
-    if ((contract as any).id) {
-      this.rowClick.emit({ id: (contract as any).id });
-    }
+    this.rowClick.emit({ id: contract.id! });
   }
 
   openCreateDialog(): void {
-    if (!this.hasPermission(PERMISSIONS.CREATE_CONTRACT)) {
-      alert('您沒有新建合約的權限');
-      return;
-    }
-    
     this.dialogRef = this.dialogService.open(CreateContractStepperComponent, {
       header: '新建合約',
-      width: '700px',
-      contentStyle: { 'max-height': '80vh', overflow: 'auto' },
-      dismissableMask: true,
-      closable: true
+      width: '70%',
+      contentStyle: { 'max-height': '500px', overflow: 'auto' },
+      baseZIndex: 10000
     });
-    
-    this.dialogRef.onClose.subscribe(() => {
-      this.refreshContracts();
+
+    this.dialogRef.onClose.subscribe((result: Contract | null) => {
+      if (result) {
+        this.contractService.refreshContracts();
+      }
     });
   }
 
   onPaymentRequested(record: any): void {
-    this.refreshContracts();
+    this.contractService.refreshContracts();
   }
 
   onEdit(contract: Contract, event: Event): void {
     event.stopPropagation();
-    if (!this.hasPermission(PERMISSIONS.EDIT_CONTRACT)) {
-      alert('您沒有編輯合約的權限');
-      return;
-    }
     this.editingContract = contract;
-    this.editForm = {
-      code: contract.code,
-      orderNo: contract.orderNo,
-      projectNo: contract.projectNo,
-      projectName: contract.projectName,
-      client: contract.client,
-      status: contract.status
-    };
+    this.editForm = { ...contract };
     this.editDialogVisible = true;
   }
 
   async saveEdit() {
-    if (!this.editingContract) return;
-    const updated: Contract = {
-      ...this.editingContract,
-      ...this.editForm
-    };
-    const contractDoc = doc(this.contractService['firestore'], 'contracts', updated.id!);
-    await updateDoc(contractDoc, {
-      code: updated.code,
-      orderNo: updated.orderNo,
-      projectNo: updated.projectNo,
-      projectName: updated.projectName,
-      client: updated.client,
-      status: updated.status
-    });
-    this.editDialogVisible = false;
-    this.editingContract = null;
-    this.refreshContracts();
+    if (!this.editingContract || !this.editForm.code) return;
+
+    try {
+      const updatedContract = { ...this.editingContract, ...this.editForm };
+      await this.contractService.updateContract(updatedContract);
+      this.editDialogVisible = false;
+      this.editingContract = null;
+      this.editForm = {};
+      this.contractService.refreshContracts();
+    } catch (error) {
+      console.error('更新合約失敗:', error);
+      alert('更新合約失敗，請稍後再試');
+    }
   }
 
   cancelEdit() {
     this.editDialogVisible = false;
     this.editingContract = null;
+    this.editForm = {};
   }
 
   onDelete(contract: Contract, event: Event): void {
     event.stopPropagation();
-    if (!this.hasPermission(PERMISSIONS.DELETE_CONTRACT)) {
-      alert('您沒有刪除合約的權限');
-      return;
-    }
-    
-    if (confirm('確定要刪除此合約？此操作無法復原。')) {
-      alert('刪除功能將在未來版本中實作');
+    if (confirm(`確定要刪除合約 "${contract.code}" 嗎？`)) {
+      this.contractService.deleteContract(contract.id!);
     }
   }
 }

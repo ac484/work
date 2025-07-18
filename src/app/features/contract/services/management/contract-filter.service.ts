@@ -21,8 +21,14 @@ export class ContractFilterService {
     return { ...this.activeFilter };
   }
 
-  filterContracts(contracts: Contract[], filter: ContractFilter): Contract[] {
-    return this.applyFilter(contracts, filter);
+  filterContracts(contracts: Contract[], filter: ContractFilter, showCompleted: boolean = true): Contract[] {
+    let filtered = this.applyFilter(contracts, filter);
+    
+    if (!showCompleted) {
+      filtered = filtered.filter(c => c.status !== '已完成');
+    }
+    
+    return filtered;
   }
 
   private applyFilter(contracts: Contract[], filter: ContractFilter): Contract[] {

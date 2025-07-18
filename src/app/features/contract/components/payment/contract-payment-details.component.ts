@@ -1,5 +1,5 @@
 // 本元件用於顯示單一合約的請款紀錄與操作
-// 功能：表格顯示所有請款輪次，支援狀態流轉、權限檢查、歷程顯示
+// 功能：表格顯示所有請款輪次，支援狀態流轉、歷程顯示
 // 用途：合約詳情的請款管理區塊
 import { Component, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9,9 +9,7 @@ import { Observable, of } from 'rxjs';
 import { PaymentRecord, PaymentStatus, PaymentAction, PAYMENT_STATUS_TRANSITIONS, Contract } from '../../models';
 import { StepperModule } from 'primeng/stepper';
 import { PaymentActionService } from '../../services/payment/contract-payment-action.service';
-import { PermissionService } from '../../../../core/services/iam/permissions/permission.service';
 import { UserService, AppUser } from '../../../../core/services/iam/users/user.service';
-import { PAYMENT_ACTION_PERMISSIONS, SELF_APPROVAL_RESTRICTED_ACTIONS } from '../../../../core/constants/permissions';
 
 @Component({
   selector: 'app-payment-details',
@@ -47,15 +45,9 @@ import { PAYMENT_ACTION_PERMISSIONS, SELF_APPROVAL_RESTRICTED_ACTIONS } from '..
             <td>
               <div class="flex gap-1 flex-wrap">
                 <button *ngFor="let action of getAvailableActions(p)"
-                        [disabled]="!canPerformActionSync(p, action)"
                         pButton type="button" size="small" 
                         (click)="onAction(contract, p, action)"
-                        class="px-2 py-1 text-xs rounded"
-                        [class.bg-primary-500]="canPerformActionSync(p, action)"
-                        [class.text-white]="canPerformActionSync(p, action)"
-                        [class.bg-gray-300]="!canPerformActionSync(p, action)"
-                        [class.text-gray-500]="!canPerformActionSync(p, action)"
-                        [title]="getActionTooltip(p, action)">
+                        class="px-2 py-1 text-xs rounded bg-primary-500 text-white hover:bg-primary-600 transition">
                   {{ action }}
                 </button>
               </div>
@@ -86,22 +78,15 @@ export class PaymentDetailsComponent implements OnChanges {
   @Input() contractId!: string;
   contract$: Observable<Contract | undefined> = of(undefined);
   private actionService = inject(PaymentActionService);
-  private permissionService = inject(PermissionService);
   private user$ = inject(UserService).currentUser$;
   private contractService = inject(ContractService);
   private cdr = inject(ChangeDetectorRef);
   
-  private userPermissions: string[] = [];
   private currentUser: AppUser | null = null;
 
   constructor() {
-    this.user$.subscribe(async (user) => {
+    this.user$.subscribe((user) => {
       this.currentUser = user;
-      if (user) {
-        this.userPermissions = await this.permissionService.getUserPermissions(user);
-      } else {
-        this.userPermissions = [];
-      }
       this.cdr.markForCheck();
     });
   }
@@ -128,33 +113,12 @@ export class PaymentDetailsComponent implements OnChanges {
     return this.actionService.getAvailableActions(payment);
   }
 
-  canPerformActionSync(payment: PaymentRecord, action: PaymentAction): boolean {
-    return this.actionService.canPerformAction(
-      this.currentUser,
-      this.userPermissions,
-      payment,
-      action
-    );
-  }
-
-  getActionTooltip(payment: PaymentRecord, action: PaymentAction): string {
-    return this.actionService.getActionTooltip(
-      this.currentUser,
-      this.userPermissions,
-      payment,
-      action
-    );
-  }
-
   async onAction(contract: Contract, payment: PaymentRecord, action: PaymentAction): Promise<void> {
     if (!this.currentUser) {
       alert('請先登入');
       return;
     }
-    if (!this.canPerformActionSync(payment, action)) {
-      alert('您沒有權限執行此操作');
-      return;
-    }
+    
     try {
       await this.actionService.executeAction(contract, payment, action, this.currentUser);
       alert('操作成功');

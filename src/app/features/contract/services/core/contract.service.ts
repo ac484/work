@@ -2,9 +2,9 @@
 // 功能：合約建立、查詢、更新、PDF 上傳、流水號生成
 // 用途：所有合約資料操作的統一入口
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, doc, getDoc, addDoc, updateDoc, query, orderBy, limit, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, getDoc, addDoc, updateDoc, deleteDoc, query, orderBy, limit, getDocs } from '@angular/fire/firestore';
 import { Storage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Contract } from '../../models';
 
 @Injectable({
@@ -14,14 +14,33 @@ export class ContractService {
   private firestore = inject(Firestore);
   private contractsCol = collection(this.firestore, 'contracts');
   private storage = inject(Storage);
+  private refreshSubject = new BehaviorSubject<void>(undefined);
 
   getContracts(): Observable<Contract[]> {
     return collectionData(this.contractsCol, { idField: 'id' }) as Observable<Contract[]>;
   }
 
+  refreshContracts(): void {
+    this.refreshSubject.next();
+  }
+
   updateContractTags(id: string, tags: string[]): Promise<void> {
     const contractDoc = doc(this.firestore, 'contracts', id);
     return updateDoc(contractDoc, { tags });
+  }
+
+  async updateContract(contract: Contract): Promise<void> {
+    if (!contract.id) {
+      throw new Error('合約 ID 不存在');
+    }
+    const contractDoc = doc(this.firestore, 'contracts', contract.id);
+    const { id, ...updateData } = contract;
+    await updateDoc(contractDoc, updateData);
+  }
+
+  async deleteContract(id: string): Promise<void> {
+    const contractDoc = doc(this.firestore, 'contracts', id);
+    await deleteDoc(contractDoc);
   }
 
   getContractById(id: string): Observable<Contract | undefined> {
