@@ -2,24 +2,70 @@
   "mcpServers": {
     "memory": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "*"
+      ]
     },
     "angular-cli": {
       "command": "npx",
-      "args": ["-y", "@talzach/mcp-angular-cli"]
+      "args": [
+        "-y",
+        "@talzach/mcp-angular-cli"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "*"
+      ]
     },
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./src"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./.kiro",
+        "./src"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "list_allowed_directories",
+        "list_directory",
+        "directory_tree",
+        "create_directory",
+        "write_file",
+        "read_file",
+        "edit_file",
+        "*"
+      ]
     },
     "redis-mcp": {
-      "type": "stdio",
       "command": "C:\\Users\\ac7x\\pipx\\venvs\\uv\\Scripts\\uv.exe",
       "args": [
         "--directory",
         "C:/Users/ac7x/Documents/GitHub/mcp/mcp-redis",
         "run",
         "src/main.py"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "info",
+        "get",
+        "set",
+        "delete",
+        "type",
+        "keys",
+        "scan_keys",
+        "scan_all_keys",
+        "subscribe",
+        "json_set",
+        "json_get",
+        "json_del",
+        "dbsize",
+        "*"
       ]
     },
     "context7": {
@@ -27,6 +73,12 @@
       "args": [
         "tsx",
         "C:/Users/ac7x/Documents/GitHub/mcp/context7-master/src/index.ts"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "resolve-library-id",
+        "get-library-docs",
+        "*"
       ]
     }
   }
