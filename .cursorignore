@@ -54,11 +54,3 @@ ui-debug.log
 # 其他
 *.tgz
 *.tar.gz
-
-pnpm-lock.yaml
-firebase.json
-.postcssrc.json
-.gitignore
-public
-
-
