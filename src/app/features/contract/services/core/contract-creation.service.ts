@@ -1,19 +1,12 @@
 // 本服務為合約建立流程服務
-// 功能：代理 PDF 上傳與合約建立，簡化元件邏輯
+// 功能：合約建立流程的統一入口
 // 用途：新建合約流程的服務層
-import { Injectable, inject } from '@angular/core';
-import { ContractService } from './contract.service';
-import type { Contract } from '../../models';
+// 注意：實際合約建立邏輯已移動到 Firebase Functions
+
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ContractCreationService {
-  private contractService = inject(ContractService);
-
-  uploadPdf(file: File): Promise<string> {
-    return this.contractService.uploadContractPdf(file);
-  }
-
-  createContract(data: Partial<Contract>): Promise<void> {
-    return this.contractService.createContract(data);
-  }
+  // 合約建立功能已移動到 Firebase Functions
+  // 請直接使用 createContract Function
 }

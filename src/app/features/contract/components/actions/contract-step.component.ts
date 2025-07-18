@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { Contract, ContractMember } from '../../models';
-import { ContractService } from '../../services/core/contract.service';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Component({
@@ -75,19 +74,16 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
 
       <!-- 步驟 3: 檔案上傳 -->
       <div *ngIf="step === 3" class="flex flex-col gap-3">
-        <h3 class="text-lg font-semibold mb-2">檔案上傳</h3>
+        <h3 class="text-lg font-semibold mb-2">檔案上傳 (選填)</h3>
         <div class="border-2 border-dashed border-gray-300 p-4 text-center">
           <input type="file" accept=".pdf" (change)="onFileSelected($event)" class="hidden" #fileInput />
           <button pButton type="button" label="選擇 PDF 檔案" (click)="fileInput.click()"></button>
           <p *ngIf="pdfFile" class="mt-2 text-sm text-gray-600">已選擇: {{ pdfFile.name }}</p>
+          <p *ngIf="!pdfFile" class="mt-2 text-sm text-gray-500">PDF 檔案為選填項目，可稍後上傳</p>
         </div>
-        <div *ngIf="pdfFile && !url" class="flex justify-center">
-          <button pButton type="button" label="上傳檔案" [loading]="uploading" (click)="uploadPdf()"></button>
-        </div>
-        <div *ngIf="url" class="text-sm text-green-600">檔案上傳成功！</div>
         <div class="flex justify-between mt-4">
           <button pButton type="button" label="上一步" (click)="step = 2"></button>
-          <button pButton type="button" label="完成" [disabled]="!url" (click)="finish()"></button>
+          <button pButton type="button" label="完成" (click)="finish()"></button>
         </div>
       </div>
     </div>
@@ -107,11 +103,8 @@ export class CreateContractStepperComponent {
   contractAmount: number | null = null;
   members: ContractMember[] = JSON.parse(JSON.stringify(this.initialMembers));
   pdfFile: File | null = null;
-  uploading = false;
-  url = '';
   step = 1;
   client = '';
-  private contractService = inject(ContractService);
   private functions = inject(Functions);
 
   onFileSelected(event: Event): void {
@@ -121,69 +114,63 @@ export class CreateContractStepperComponent {
     }
   }
 
-  async uploadPdf(): Promise<void> {
-    if (!this.pdfFile) return;
-    
-    this.uploading = true;
-    try {
-      this.url = await this.contractService.uploadContractPdf(this.pdfFile);
-    } catch (error) {
-      console.error('PDF 上傳失敗:', error);
-      alert('PDF 上傳失敗，請稍後再試');
-    } finally {
-      this.uploading = false;
-    }
-  }
+
 
   async finish(): Promise<void> {
-    if (!this.url || !this.contractAmount) return;
+    if (!this.contractAmount) return;
     
     try {
-      // 先驗證合約資料
-      const validate = httpsCallable(this.functions, 'validateContract');
-      const validation = await validate({
+      // 準備 PDF 檔案資料
+      let pdfFileData = null;
+      if (this.pdfFile) {
+        const base64Data = await this.fileToBase64(this.pdfFile);
+        pdfFileData = {
+          name: this.pdfFile.name,
+          type: this.pdfFile.type,
+          size: this.pdfFile.size,
+          base64Data
+        };
+      }
+
+      // 使用新的 Firebase Function 建立合約
+      const createContract = httpsCallable(this.functions, 'createContract');
+      const result = await createContract({
         contractData: {
+          orderNo: this.orderNo,
+          projectNo: this.projectNo,
           projectName: this.projectName,
           client: this.client,
           contractAmount: this.contractAmount,
-          orderNo: this.orderNo,
-          projectNo: this.projectNo
+          members: this.members.filter(m => m.name.trim())
         },
-        validationType: 'create'
+        pdfFile: pdfFileData
       });
-
-      if (!(validation.data as any).valid) {
-        alert('合約資料驗證失敗：\n' + (validation.data as any).errors.join('\n'));
-        return;
+      
+      if (!(result.data as any).success) {
+        throw new Error((result.data as any).error);
       }
-
-      // 建立合約
-      await this.contractService.createContract({
-        orderNo: this.orderNo,
-        projectNo: this.projectNo,
-        projectName: this.projectName,
-        client: this.client,
-        contractAmount: this.contractAmount,
-        members: this.members.filter(m => m.name.trim()),
-        url: this.url,
-        status: '進行中',
-        pendingPercent: 100,
-        invoicedAmount: 0,
-        paymentRound: 0,
-        paymentPercent: 0,
-        paymentStatus: '草稿',
-        invoiceStatus: '未開票',
-        payments: [],
-        changes: [],
-        tags: []
-      });
       
       this.contractCreated.emit();
       this.resetForm();
-    } catch (error) {
+      alert('合約建立成功！');
+    } catch (error: any) {
       console.error('建立合約失敗:', error);
-      alert('建立合約失敗，請稍後再試');
+      alert('建立合約失敗：' + (error.message || '請稍後再試'));
     }
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const result = reader.result as string;
+        // 移除 data:application/pdf;base64, 前綴
+        const base64 = result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = error => reject(error);
+    });
   }
 
   resetForm(): void {
@@ -193,7 +180,6 @@ export class CreateContractStepperComponent {
     this.contractAmount = null;
     this.members = JSON.parse(JSON.stringify(this.initialMembers));
     this.pdfFile = null;
-    this.url = '';
     this.step = 1;
     this.client = '';
   }

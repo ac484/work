@@ -31,3 +31,4 @@ export * from './contracts/create-payment-request';
 export * from './contracts/contract-change-management';
 export * from './contracts/contract-validation';
 export * from './contracts/auto-progress-calculation';
+export * from './contracts/contract-creation';
