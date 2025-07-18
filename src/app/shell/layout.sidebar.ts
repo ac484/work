@@ -26,7 +26,7 @@ import { RoleManagementComponent } from '../features/role-management/role-manage
       <div class="flex flex-col items-center gap-4 py-6 flex-1">
         <!-- 收合/展開按鈕 -->
         <button type="button"
-          class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-all mb-2"
+          class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all mb-2"
           (click)="closeSidebar()"
           [attr.aria-label]="collapsed() ? '展開側邊欄' : '收合側邊欄'">
           <i class="pi" [ngClass]="collapsed() ? 'pi-angle-right' : 'pi-angle-left'"></i>

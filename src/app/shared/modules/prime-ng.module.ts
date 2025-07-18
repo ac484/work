@@ -1,6 +1,19 @@
 // 本模組為 PrimeNG 元件集中匯入/匯出模組
 // 功能：統一管理 PrimeNG 20+ 所有常用元件
 // 用途：便於全域與特定模組引用 PrimeNG UI
+import { FormsModule } from '@angular/forms';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { DividerModule } from 'primeng/divider';
+import { FocusTrapModule } from 'primeng/focustrap';
+import { InputMaskModule } from 'primeng/inputmask';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { StepsModule } from 'primeng/steps';
+import { TieredMenuModule } from 'primeng/tieredmenu';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -93,6 +106,19 @@ import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   imports: [
+    FormsModule,
+    AutoFocusModule,
+    OverlayBadgeModule,
+    ConfirmPopupModule,
+    DividerModule,
+    FocusTrapModule,
+    InputMaskModule,
+    SpeedDialModule,
+    StepsModule,
+    ToggleSwitchModule,
+    IconFieldModule,
+    InputIconModule,
+    TieredMenuModule,
     CommonModule,
     ReactiveFormsModule,
     AccordionModule,
@@ -181,6 +207,19 @@ import { ChartModule } from 'primeng/chart';
     ChartModule,
   ],
   exports: [
+    FormsModule,
+    AutoFocusModule,
+    OverlayBadgeModule,
+    ConfirmPopupModule,
+    DividerModule,
+    FocusTrapModule,
+    InputMaskModule,
+    SpeedDialModule,
+    StepsModule,
+    ToggleSwitchModule,
+    IconFieldModule,
+    InputIconModule,
+    TieredMenuModule,
     CommonModule,
     ReactiveFormsModule,
     AccordionModule,
