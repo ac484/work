@@ -66,9 +66,11 @@ import { ContractService } from '../contract/services/core/contract.service';
             <!-- 中間上：合約摘要 (30%) -->
             <ng-template #panel>
               <div class="panel summary-area h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
-                <ng-container *ngIf="contracts$ | async as contracts">
-                  <app-contract-summary [contracts]="contracts"></app-contract-summary>
-                </ng-container>
+                <div class="flex flex-col justify-center items-center h-full text-gray-400">
+                  <i class="pi pi-chart-bar text-3xl mb-3"></i>
+                  <div class="text-sm text-center font-medium mb-1">合約統計</div>
+                  <div class="text-xs text-center text-gray-300">合約列表上方已顯示統計資訊</div>
+                </div>
               </div>
             </ng-template>
             <!-- 中間中：事件日誌 (30%) -->

@@ -26,7 +26,6 @@ import { DialogModule } from 'primeng/dialog';
   template: `
     <div class="mb-3 flex gap-4 items-center">
       <div class="flex gap-2 items-center">
-        <span class="text-sm text-gray-600">共 {{ filteredContracts.length }} 筆合約</span>
         <p-checkbox [(ngModel)]="showCompleted" binary="true" (onChange)="onShowCompletedChange()" inputId="showCompletedContracts" class="ml-2" [style]="{verticalAlign: 'middle'}"></p-checkbox>
         <label for="showCompletedContracts" class="text-xs text-gray-500 cursor-pointer select-none">顯示已完成</label>
         <app-contract-summary [contracts]="filteredContracts"></app-contract-summary>
