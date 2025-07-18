@@ -1,5 +1,17 @@
 {
   "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "angular-cli": {
+      "command": "npx",
+      "args": ["-y", "@talzach/mcp-angular-cli"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./src"]
+    },
     "redis-mcp": {
       "type": "stdio",
       "command": "C:\\Users\\ac7x\\pipx\\venvs\\uv\\Scripts\\uv.exe",
@@ -8,6 +20,13 @@
         "C:/Users/ac7x/Documents/GitHub/mcp/mcp-redis",
         "run",
         "src/main.py"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "tsx",
+        "C:/Users/ac7x/Documents/GitHub/mcp/context7-master/src/index.ts"
       ]
     }
   }
