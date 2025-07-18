@@ -43,14 +43,14 @@ import { ContractService } from '../contract/services/core/contract.service';
           <p-splitter [layout]="'vertical'" [panelSizes]="[70,30]" class="h-full">
             <!-- 左側上：合約列表 (70%) -->
             <ng-template #panel>
-              <div class="panel h-full flex flex-col">
+              <div class="panel h-full flex flex-col bg-surface-0 dark:bg-surface-900">
                 <app-contract-list class="flex-1 w-full h-full" (rowClick)="onContractRowClick($event)" [selectedId]="(selectedContractId$ | async)"
                   [tableStateKey]="'contract-list-table'" [tableStateStorage]="'session'"></app-contract-list>
               </div>
             </ng-template>
             <!-- 左側下：請款詳情 (30%) -->
             <ng-template #panel>
-              <div class="panel payment-details h-full overflow-auto p-2 border-b">
+              <div class="panel payment-details h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
                 <app-payment-details *ngIf="selectedContractId$ | async as contractId" [contractId]="contractId"></app-payment-details>
                 <div *ngIf="!(selectedContractId$ | async)" class="text-center text-gray-400 py-4">
                   <i class="pi pi-credit-card text-2xl mb-2"></i>
@@ -66,7 +66,7 @@ import { ContractService } from '../contract/services/core/contract.service';
           <p-splitter [layout]="'vertical'" [panelSizes]="[30,40,30]" class="h-full">
             <!-- 中間上：合約摘要 (30%) -->
             <ng-template #panel>
-              <div class="panel summary-area h-full overflow-auto p-2 border-b">
+              <div class="panel summary-area h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
                 <ng-container *ngIf="contracts$ | async as contracts">
                   <app-contract-summary [contracts]="contracts"></app-contract-summary>
                 </ng-container>
@@ -74,7 +74,7 @@ import { ContractService } from '../contract/services/core/contract.service';
             </ng-template>
             <!-- 中間中：討論區 (40%) -->
             <ng-template #panel>
-              <div class="panel messages h-full min-h-0 flex flex-col p-2">
+              <div class="panel messages h-full min-h-0 flex flex-col p-2 bg-surface-0 dark:bg-surface-900">
                 <ng-container *ngIf="selectedContract$ | async as contract; else messagesSkeleton">
                   <app-contract-messages [contract]="contract" class="flex-1 min-h-0"></app-contract-messages>
                 </ng-container>
@@ -93,7 +93,7 @@ import { ContractService } from '../contract/services/core/contract.service';
             </ng-template>
             <!-- 中間下：事件日誌 (30%) -->
             <ng-template #panel>
-              <div class="panel event-log h-full overflow-auto p-2">
+              <div class="panel event-log h-full overflow-auto p-2 bg-surface-0 dark:bg-surface-900">
                 <app-event-log [contract]="(selectedContract$ | async) ?? null"></app-event-log>
               </div>
             </ng-template>
@@ -102,7 +102,7 @@ import { ContractService } from '../contract/services/core/contract.service';
        
         <!-- 區域3：右側 (15%) - 合約檔案 -->
         <ng-template #panel>
-          <div class="panel h-full border">
+          <div class="panel h-full border bg-surface-0 dark:bg-surface-900">
             <app-contract-files [contract]="(selectedContract$ | async) ?? null"></app-contract-files>
           </div>
         </ng-template>
@@ -110,7 +110,7 @@ import { ContractService } from '../contract/services/core/contract.service';
     </div>
    
     <ng-template #projectView>
-      <div class="panel h-screen flex items-center justify-center">
+      <div class="panel h-screen flex items-center justify-center bg-surface-0 dark:bg-surface-900">
         <div class="text-center text-gray-500">
           <i class="pi pi-folder text-4xl mb-4"></i>
           <div class="text-lg">專案視圖</div>
@@ -121,7 +121,7 @@ import { ContractService } from '../contract/services/core/contract.service';
   `,
   styles: [`
     .panel {
-      background-color: white;
+      /* Tailwind 控制背景色，移除原生 background-color */
       border: 1px solid #e5e7eb;
     }
   `]
