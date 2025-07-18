@@ -24,7 +24,6 @@ graph TB
     
     subgraph "資源層 Resource Layer"
         G[Firestore 安全規則]
-        H[Functions 權限檢查]
         I[前端路由守衛]
     end
     
@@ -32,7 +31,7 @@ graph TB
     B --> E
     C --> F
     D --> G
-    E --> H
+    E --> I
     F --> I
 ```
 
@@ -173,26 +172,7 @@ sequenceDiagram
     end
 ```
 
-### 後端權限檢查流程
-```mermaid
-sequenceDiagram
-    participant Client
-    participant Func as Firebase Function
-    participant Auth as Admin Auth
-    participant DB as Firestore
-    
-    Client->>Func: API 請求 (含 JWT Token)
-    Func->>Auth: 驗證 Token
-    Auth->>Func: 返回用戶 UID
-    Func->>DB: 查詢用戶角色和權限
-    DB->>Func: 返回權限信息
-    
-    alt 權限充足
-        Func->>Client: 執行操作並返回結果
-    else 權限不足
-        Func->>Client: 返回 403 Forbidden
-    end
-```
+
 
 ---
 
@@ -452,117 +432,6 @@ service cloud.firestore {
     }
   }
 }
-```
-
----
-
-## 🔧 Firebase Functions 權限檢查 (Functions Permission Check)
-
-### 權限檢查中間件
-```typescript
-// functions/src/middleware/auth.ts
-import { HttpsError } from 'firebase-functions/v2/https';
-import { getAuth } from 'firebase-admin/auth';
-import { getFirestore } from 'firebase-admin/firestore';
-
-export interface AuthenticatedRequest {
-  auth: {
-    uid: string;
-    email?: string;
-    role?: UserRole;
-  };
-}
-
-export async function verifyAuth(idToken: string): Promise<AuthenticatedRequest['auth']> {
-  try {
-    const decodedToken = await getAuth().verifyIdToken(idToken);
-    
-    // 獲取用戶角色
-    const userDoc = await getFirestore()
-      .collection('users')
-      .doc(decodedToken.uid)
-      .get();
-    
-    const userData = userDoc.data();
-    
-    return {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
-      role: userData?.role || UserRole.GUEST
-    };
-  } catch (error) {
-    throw new HttpsError('unauthenticated', 'Invalid authentication token');
-  }
-}
-
-export function requirePermission(permission: Permission) {
-  return (auth: AuthenticatedRequest['auth']) => {
-    if (!auth.role) {
-      throw new HttpsError('permission-denied', 'User role not found');
-    }
-    
-    const userPermissions = rolePermissions[auth.role];
-    if (!userPermissions.includes(permission)) {
-      throw new HttpsError('permission-denied', `Missing permission: ${permission}`);
-    }
-  };
-}
-
-export function requireRole(role: UserRole) {
-  return (auth: AuthenticatedRequest['auth']) => {
-    if (auth.role !== role) {
-      throw new HttpsError('permission-denied', `Required role: ${role}`);
-    }
-  };
-}
-```
-
-### API 端點權限檢查範例
-```typescript
-// functions/src/api/users.ts
-import { onCall } from 'firebase-functions/v2/https';
-import { verifyAuth, requirePermission } from '../middleware/auth';
-
-export const createUser = onCall(async (request) => {
-  // 驗證認證
-  const authHeader = request.rawRequest.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    throw new HttpsError('unauthenticated', 'Missing authorization header');
-  }
-  
-  const idToken = authHeader.split('Bearer ')[1];
-  const auth = await verifyAuth(idToken);
-  
-  // 檢查權限
-  requirePermission(Permission.USER_CREATE)(auth);
-  
-  // 執行用戶創建邏輯
-  const { userData } = request.data;
-  
-  // ... 創建用戶邏輯
-  
-  return { success: true, userId: 'new-user-id' };
-});
-
-export const deleteUser = onCall(async (request) => {
-  const authHeader = request.rawRequest.headers.authorization;
-  const idToken = authHeader?.split('Bearer ')[1];
-  
-  if (!idToken) {
-    throw new HttpsError('unauthenticated', 'Missing token');
-  }
-  
-  const auth = await verifyAuth(idToken);
-  
-  // 檢查刪除用戶權限
-  requirePermission(Permission.USER_DELETE)(auth);
-  
-  const { userId } = request.data;
-  
-  // ... 刪除用戶邏輯
-  
-  return { success: true };
-});
 ```
 
 ---

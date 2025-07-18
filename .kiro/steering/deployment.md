@@ -1,6 +1,6 @@
 # 部署指南 (Deployment Guide)
 
-> **本專案採用 Firebase 全棧部署方案**，支援前端 Angular 應用與後端 Functions 的統一部署管理。
+> **本專案採用 Firebase 前端部署方案**，支援 Angular 應用的部署管理。
 > 
 > 部署策略：**本地開發 → 測試環境 → 生產環境**，確保代碼品質與穩定性。
 
@@ -74,12 +74,8 @@ npm install
 # 啟動開發服務器
 ng serve
 
-# 啟動 Firebase Functions 模擬器
-cd functions
-npm run serve
-
 # 啟動 Firestore 模擬器
-firebase emulators:start
+firebase emulators:start --only firestore
 ```
 
 ### 2. 測試環境部署
@@ -93,7 +89,7 @@ npm run e2e:ci
 
 # 部署到測試環境
 firebase use staging
-firebase deploy --only hosting,functions
+firebase deploy --only hosting
 ```
 
 ### 3. 生產環境部署
@@ -108,7 +104,7 @@ npm run e2e:full
 
 # 部署到生產環境
 firebase use production
-firebase deploy --only hosting,functions
+firebase deploy --only hosting
 
 # 部署 Firestore 規則和索引
 firebase deploy --only firestore:rules,firestore:indexes
@@ -141,12 +137,6 @@ firebase deploy
 
 # 僅部署前端
 firebase deploy --only hosting
-
-# 僅部署 Functions
-firebase deploy --only functions
-
-# 僅部署特定 Function
-firebase deploy --only functions:functionName
 
 # 部署 Firestore 規則
 firebase deploy --only firestore:rules
@@ -183,9 +173,6 @@ echo "開始部署後驗證..."
 # 檢查前端應用
 curl -f https://your-app.web.app/health || exit 1
 
-# 檢查 API 端點
-curl -f https://your-region-your-project.cloudfunctions.net/api/health || exit 1
-
 # 檢查 Firestore 連接
 firebase firestore:databases:list
 
@@ -197,18 +184,16 @@ echo "部署驗證完成！"
 ### ✅ 前端驗證
 - [ ] 應用正常載入
 - [ ] 路由功能正常
-- [ ] API 調用成功
+- [ ] Firebase 服務調用成功
 - [ ] 用戶認證功能正常
 
-### ✅ 後端驗證
-- [ ] Functions 正常響應
-- [ ] 數據庫讀寫正常
+### ✅ 數據驗證
+- [ ] Firestore 讀寫正常
 - [ ] 權限控制生效
 - [ ] 日誌記錄正常
 
 ### ✅ 效能驗證
 - [ ] 頁面載入時間 < 3 秒
-- [ ] API 響應時間 < 1 秒
 - [ ] 建構產物大小合理
 - [ ] 無 JavaScript 錯誤
 ```
@@ -241,12 +226,6 @@ npm audit fix       # 修復安全漏洞
 firebase login      # 重新登入
 firebase use --add  # 重新設定專案
 
-# 問題：Functions 部署失敗
-# 解決方案：
-cd functions
-npm run build       # 檢查 Functions 建構
-firebase deploy --only functions --debug
-
 # 問題：Hosting 部署失敗
 # 解決方案：
 firebase hosting:disable  # 停用舊版本
@@ -260,9 +239,9 @@ firebase deploy --only hosting
 # 檢查 .env 檔案位置和格式
 # 確認 angular.json 中的 fileReplacements 配置
 
-# 問題：API 端點錯誤
+# 問題：Firebase 配置錯誤
 # 解決方案：
-# 檢查 environment.ts 中的 API URL
+# 檢查 environment.ts 中的 Firebase 配置
 # 確認 Firebase 專案 ID 正確
 ```
 
@@ -283,9 +262,9 @@ logEvent(analytics, 'page_load_time', {
   load_time: performance.now()
 });
 
-// 記錄 API 調用時間
-logEvent(analytics, 'api_call_time', {
-  endpoint: '/api/users',
+// 記錄 Firebase 操作時間
+logEvent(analytics, 'firebase_operation_time', {
+  operation: 'firestore_read',
   response_time: responseTime
 });
 ```

@@ -132,7 +132,7 @@ ng generate module module-name        # 生成模組
 
 - **Authentication**: 使用者認證 (Google Auth 支援)
 - **Firestore**: NoSQL 資料庫
-- **Functions**: 雲端函數
+
 - **Storage**: 檔案儲存 (PDF 上傳)
 - **Analytics**: 使用分析
 - **Performance**: 效能監控

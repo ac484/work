@@ -19,7 +19,6 @@ graph TB
     end
     
     subgraph "後端技術棧 Backend Stack"
-        B1[Firebase Functions]
         B2[Firestore]
         B3[Firebase Auth]
         B4[Firebase Storage]
@@ -34,11 +33,9 @@ graph TB
         C5[Angular CLI]
     end
     
-    A1 --> B1
     A2 --> A1
     A3 --> A1
     C1 --> A1
-    C1 --> B1
 ```
 
 ---
@@ -133,26 +130,7 @@ graph TB
 
 ## 🔧 後端框架 (Backend Frameworks)
 
-### Firebase Functions
-```json
-{
-  "version": "Latest",
-  "purpose": "無服務器後端服務",
-  "keyFeatures": [
-    "HTTP 觸發器",
-    "資料庫觸發器",
-    "認證觸發器",
-    "排程觸發器",
-    "自動擴展"
-  ],
-  "advantages": [
-    "無需管理服務器",
-    "按需付費",
-    "自動擴展",
-    "與 Firebase 生態整合"
-  ]
-}
-```
+
 
 ### Firestore
 ```json

@@ -30,12 +30,11 @@ graph TB
 
 ### 啟動命令
 ```bash
-npx -y @modelcontextprotocol/server-filesystem ./ng-alain/src ./functions
+npx -y @modelcontextprotocol/server-filesystem ./ng-alain/src
 ```
 
 ### 允許的目錄範圍
 - **./ng-alain/src**: Angular 前端專案源碼
-- **./functions**: Firebase Functions 後端代碼
 
 ### 環境要求
 - **Node.js**: >= 18.0.0
@@ -50,7 +49,7 @@ npx -y @modelcontextprotocol/server-filesystem ./ng-alain/src ./functions
     "create_directory", "list_directory", "list_directory_with_sizes",
     "directory_tree", "move_file", "search_files", "get_file_info"
   ],
-  "allowedDirectories": ["./ng-alain/src", "./functions"]
+  "allowedDirectories": ["./ng-alain/src"]
 }
 ```
 
@@ -227,17 +226,6 @@ const ngAlainStructure = {
   }
 };
 
-// Firebase Functions 結構
-const functionsStructure = {
-  "src": {
-    "api": ["user", "product", "order"],
-    "services": ["auth", "database", "storage"],
-    "utils": ["helpers", "validators", "constants"],
-    "types": ["interfaces", "enums"]
-  }
-};
-```
-
 ### 檔案命名規範
 ```typescript
 // Angular 檔案命名規範
@@ -260,18 +248,20 @@ const namingConventions = {
 
 ### 目錄限制
 ```typescript
-// 允許的操作目錄
+// 允許的目錄範圍
 const allowedDirectories = [
-  "./ng-alain/src",     // Angular 前端源碼
-  "./functions"         // Firebase Functions 後端
+  "./ng-alain/src",           // Angular 源碼
+  "./ng-alain/src/app",       // 應用程式代碼
+  "./ng-alain/src/assets",    // 靜態資源
+  "./ng-alain/src/environments" // 環境配置
 ];
 
-// 禁止的操作
-const forbiddenOperations = [
-  "訪問系統目錄",
-  "修改配置檔案 (angular.json, package.json)",
-  "刪除重要檔案",
-  "訪問 node_modules"
+// 禁止的目錄
+const forbiddenDirectories = [
+  "./ng-alain/node_modules",  // 依賴包
+  "./ng-alain/dist",          // 建構輸出
+  "./ng-alain/.git",          // Git 倉庫
+  "./ng-alain/.angular"       // Angular 快取
 ];
 ```
 
