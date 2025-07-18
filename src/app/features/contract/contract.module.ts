@@ -1,74 +1,66 @@
-// 合約模組 - 統一匯出入口
-// 功能：集中管理合約相關的所有元件、服務、型別
-// 用途：供其他模組統一引用，實現模組化架構
+// 本檔案為合約管理模組
+// 功能：合約 CRUD、請款流程、變更管理、檔案上傳
+// 用途：合約管理的統一入口
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-
-// === 新架構匯出 ===
-// 型別定義
-export * from './models';
+import { FormsModule } from '@angular/forms';
+import { FirestoreModule } from '@angular/fire/firestore';
+import { StorageModule } from '@angular/fire/storage';
+import { PrimeNgModule } from '../../shared/modules/prime-ng.module';
 
 // 元件
-export * from './components';
+import { ContractListComponent } from './components/list/contract-list.component';
+import { PaymentRequestButtonComponent } from './components/payment/contract-payment-request-button.component';
+import { PaymentDetailsComponent } from './components/payment/contract-payment-details.component';
+import { CreateContractStepperComponent } from './components/actions/contract-step.component';
+import { ChangeActionsComponent } from './components/actions/contract-change-actions.component';
+import { ChipsComponent } from './components/shared/contract-chips.component';
+import { AmountSummaryComponent } from './components/shared/contract-amount-summary.component';
+import { ProgressSummaryComponent } from './components/analytics/contract-progress-summary.component';
+import { ContractSummaryComponent } from './components/analytics/contract-summary.component';
+import { EventLogComponent } from './components/detail/contract-event-log.component';
+import { ContractFilesComponent } from './components/detail/contract-files.component';
+import { ContractMessagesComponent } from './components/detail/contract-messages.component';
 
 // 服務
-export * from './services';
-
-// 工具函數
-export * from './utils';
-
-// 路由
-import { contractRoutes } from './contract.routes';
-
-// === 向後相容匯出（舊版本相容性） ===
-export { ContractFacadeService } from './services/core/contract-facade.service';
-
-// 核心服務
 import { ContractService } from './services/core/contract.service';
-import { ContractCreationService } from './services/core/contract-creation.service';
-import { ContractFacadeService } from './services/core/contract-facade.service';
-
-// 分析服務
-import { ContractAnalyticsService } from './services/analytics/contract-analytics.service';
-import { ContractSummaryService } from './services/analytics/contract-summary.service';
-import { ContractTimelineService } from './services/analytics/contract-timeline.service';
-import { OrganizationChartService } from './services/analytics/contract-organization-chart.service';
-
-// 請款服務
-import { PaymentActionService } from './services/payment/contract-payment-action.service';
 import { PaymentRequestService } from './services/payment/contract-payment-request.service';
-
-// 管理服務
+import { PaymentActionService } from './services/payment/contract-payment-action.service';
 import { ContractFilterService } from './services/management/contract-filter.service';
-import { TagService } from './services/management/contract-tag.service';
 import { ContractChangeService } from './services/management/contract-change.service';
+import { TagService } from './services/management/contract-tag.service';
+import { ContractAnalyticsService } from './services/analytics/contract-analytics.service';
 
 @NgModule({
+  declarations: [],
   imports: [
     CommonModule,
-    RouterModule.forChild(contractRoutes)
+    FormsModule,
+    FirestoreModule,
+    StorageModule,
+    PrimeNgModule,
+    // 元件
+    ContractListComponent,
+    PaymentRequestButtonComponent,
+    PaymentDetailsComponent,
+    CreateContractStepperComponent,
+    ChangeActionsComponent,
+    ChipsComponent,
+    AmountSummaryComponent,
+    ProgressSummaryComponent,
+    ContractSummaryComponent,
+    EventLogComponent,
+    ContractFilesComponent,
+    ContractMessagesComponent
   ],
   providers: [
-    // 核心服務
     ContractService,
-    ContractCreationService,
-    ContractFacadeService,
-    
-    // 分析服務
-    ContractAnalyticsService,
-    ContractSummaryService,
-    ContractTimelineService,
-    OrganizationChartService,
-    
-    // 請款服務
-    PaymentActionService,
     PaymentRequestService,
-    
-    // 管理服務
+    PaymentActionService,
     ContractFilterService,
+    ContractChangeService,
     TagService,
-    ContractChangeService
+    ContractAnalyticsService
   ]
 })
 export class ContractModule { }

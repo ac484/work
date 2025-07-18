@@ -158,11 +158,3 @@ export interface UserInfo {
   displayName?: string;         // 顯示名稱
   email?: string;               // 電子郵件
 }
-
-// ===== 時間線事件：合約、變更、請款等紀錄顯示用 =====
-export interface TimelineEvent {
-  label: string;                // 事件標題
-  date: string;                 // 事件日期 (ISO 格式)
-  type: 'change' | 'payment' | 'contract';   // 事件類型
-  severity?: 'success' | 'info' | 'warning' | 'danger'; // 事件嚴重程度
-}
