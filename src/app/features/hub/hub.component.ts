@@ -121,7 +121,8 @@ import { ContractService } from '../contract/services/core/contract.service';
   `,
   styles: [`
     .panel {
-      @apply bg-white border border-gray-200;
+      background-color: white;
+      border: 1px solid #e5e7eb;
     }
   `]
 })
