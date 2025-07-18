@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { Contract, ContractMember } from '../../models';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { ContractFunctionsService } from '../../services/contract-functions.service';
 
 @Component({
   selector: 'app-create-contract-stepper',
@@ -105,7 +105,7 @@ export class CreateContractStepperComponent {
   pdfFile: File | null = null;
   step = 1;
   client = '';
-  private functions = inject(Functions);
+  private contractFunctions = inject(ContractFunctionsService);
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -132,23 +132,17 @@ export class CreateContractStepperComponent {
         };
       }
 
-      // 使用新的 Firebase Function 建立合約
-      const createContract = httpsCallable(this.functions, 'createContract');
-      const result = await createContract({
-        contractData: {
-          orderNo: this.orderNo,
-          projectNo: this.projectNo,
-          projectName: this.projectName,
-          client: this.client,
-          contractAmount: this.contractAmount,
-          members: this.members.filter(m => m.name.trim())
-        },
-        pdfFile: pdfFileData
-      });
+      // 使用極簡調用建立合約
+      const result = await this.contractFunctions.createContract({
+        orderNo: this.orderNo,
+        projectNo: this.projectNo,
+        projectName: this.projectName,
+        client: this.client,
+        contractAmount: this.contractAmount,
+        members: this.members.filter(m => m.name.trim())
+      }, pdfFileData).toPromise();
       
-      if (!(result.data as any).success) {
-        throw new Error((result.data as any).error);
-      }
+      if (!result) throw new Error('合約建立失敗');
       
       this.contractCreated.emit();
       this.resetForm();

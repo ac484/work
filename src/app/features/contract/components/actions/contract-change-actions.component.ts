@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { Contract } from '../../models';
 import { AppUser } from '../../../../core/services/iam/users/user.service';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { ContractFunctionsService } from '../../services/contract-functions.service';
 import { PermissionService } from '../../../../core/services/iam/permissions/permission.service';
 import { PERMISSIONS } from '../../../../core/constants/permissions';
 
@@ -54,7 +54,7 @@ export class ChangeActionsComponent implements OnInit, OnChanges {
   note = '';
   canEdit = false;
   
-  private functions = inject(Functions);
+  private contractFunctions = inject(ContractFunctionsService);
   private permissionService = inject(PermissionService);
 
   ngOnInit() {
@@ -126,20 +126,13 @@ export class ChangeActionsComponent implements OnInit, OnChanges {
     }
     
     try {
-      // 直接調用 Firebase Function
-      const addChange = httpsCallable(this.functions, 'addContractChange');
-      const result = await addChange({
-        contractId: this.contract.id!,
-        type: this.changeType,
-        amount: this.amount,
-        note: this.note,
-        userId: this.user.uid,
-        userDisplayName: this.user.displayName || this.user.email || '未知用戶'
-      });
-      
-      if (!(result.data as any).success) {
-        throw new Error((result.data as any).error);
-      }
+      // 使用極簡調用
+      await this.contractFunctions.changeAmount(
+        this.contract.id!,
+        this.changeType,
+        this.amount,
+        this.note
+      ).toPromise();
       
       this.showDialog = false;
       alert('金額變更成功');

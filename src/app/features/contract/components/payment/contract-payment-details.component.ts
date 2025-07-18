@@ -9,7 +9,7 @@ import { Observable, of } from 'rxjs';
 import { PaymentRecord, PaymentStatus, PaymentAction, PAYMENT_STATUS_TRANSITIONS, Contract } from '../../models';
 import { StepperModule } from 'primeng/stepper';
 import { UserService, AppUser } from '../../../../core/services/iam/users/user.service';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { ContractFunctionsService } from '../../services/contract-functions.service';
 
 @Component({
   selector: 'app-payment-details',
@@ -80,7 +80,7 @@ export class PaymentDetailsComponent implements OnChanges {
   contract$: Observable<Contract | undefined> = of(undefined);
   private user$ = inject(UserService).currentUser$;
   private contractService = inject(ContractService);
-  private functions = inject(Functions);
+  private contractFunctions = inject(ContractFunctionsService);
   private cdr = inject(ChangeDetectorRef);
   
   private currentUser: AppUser | null = null;
@@ -122,23 +122,15 @@ export class PaymentDetailsComponent implements OnChanges {
     }
     
     try {
-      // 直接調用 Firebase Function
-      const executeAction = httpsCallable(this.functions, 'executePaymentAction');
-      const result = await executeAction({
-        contractId: contract.id!,
-        paymentRound: payment.round,
-        action,
-        userId: this.currentUser.uid,
-        userDisplayName: this.currentUser.displayName || this.currentUser.email || '未知用戶'
-      });
+      // 使用極簡調用
+      await this.contractFunctions.updateStatus(
+        contract.id!,
+        payment.round,
+        action
+      ).toPromise();
       
-      if (!(result.data as any).success) {
-        throw new Error((result.data as any).error);
-      }
-      
-      // 操作成功後自動計算合約進度
-      const calculateProgress = httpsCallable(this.functions, 'calculateContractProgress');
-      await calculateProgress({ contractId: contract.id! });
+      // 自動計算合約進度
+      await this.contractFunctions.calculateProgress(contract.id!).toPromise();
       
       alert('操作成功');
     } catch (error) {

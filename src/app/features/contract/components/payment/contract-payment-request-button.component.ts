@@ -8,7 +8,7 @@ import { DialogModule } from 'primeng/dialog';
 import { SliderModule } from 'primeng/slider';
 import { Contract, PaymentRecord } from '../../models';
 import { AppUser } from '../../../../core/services/iam/users/user.service';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { ContractFunctionsService } from '../../services/contract-functions.service';
 
 @Component({
   selector: 'app-payment-request-button',
@@ -59,7 +59,7 @@ export class PaymentRequestButtonComponent implements OnInit {
   paymentNote = '';
   submitting = false;
   
-  private functions = inject(Functions);
+  private contractFunctions = inject(ContractFunctionsService);
 
   ngOnInit(): void {
     // 初始化完成
@@ -109,26 +109,19 @@ export class PaymentRequestButtonComponent implements OnInit {
 
     this.submitting = true;
     try {
-      // 直接調用 Firebase Function
-      const createPayment = httpsCallable(this.functions, 'createPaymentRequest');
-      const result = await createPayment({
-        contractId: this.contract.id!,
-        amount: this.paymentAmount,
-        percent: this.paymentPercent,
-        note: this.paymentNote,
-        userId: this.user.uid,
-        userDisplayName: this.user.displayName || this.user.email || '未知用戶'
-      });
+      // 使用極簡調用
+      const result = await this.contractFunctions.requestPayment(
+        this.contract.id!,
+        this.paymentAmount,
+        this.paymentPercent,
+        this.paymentNote
+      ).toPromise();
       
-      if (!(result.data as any).success) {
-        throw new Error((result.data as any).error);
-      }
+      if (!result) throw new Error('請款申請失敗');
+      const record = result.paymentRecord;
       
-      const record = (result.data as any).paymentRecord;
-      
-      // 建立請款成功後自動計算合約進度
-      const calculateProgress = httpsCallable(this.functions, 'calculateContractProgress');
-      await calculateProgress({ contractId: this.contract.id! });
+      // 自動計算合約進度
+      await this.contractFunctions.calculateProgress(this.contract.id!).toPromise();
       
       this.paymentAmount = null;
       this.paymentPercent = null;
