@@ -19,14 +19,14 @@ export class ProgressSummaryComponent {
   @Input() contract!: Contract;
 
   get completedPercent(): number {
-    if (!this.contract.payments || this.contract.payments.length === 0) {
+    if (!this.contract.payments || !Array.isArray(this.contract.payments) || this.contract.payments.length === 0) {
       return 0;
     }
     
     const totalAmount = this.contract.contractAmount;
     if (totalAmount <= 0) return 0;
     
-    const completedPayments = this.contract.payments.filter(p => p.status === '完成');
+    const completedPayments = this.contract.payments.filter(p => p && p.status === '完成');
     const completedAmount = completedPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
     
     return Math.round((completedAmount / totalAmount) * 100);

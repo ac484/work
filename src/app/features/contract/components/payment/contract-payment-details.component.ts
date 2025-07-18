@@ -17,8 +17,8 @@ import { ContractFunctionsService } from '../../services/contract-functions.serv
   imports: [CommonModule, PrimeNgModule, StepperModule],
   template: `
     <div *ngIf="contract$ | async as contract" class="h-full flex flex-col">
-      <h4 class="font-bold text-base mb-2">請款紀錄（共 {{ contract.payments.length || 0 }} 次）</h4>
-      <p-table *ngIf="contract.payments && contract.payments.length" [value]="contract.payments || []" class="table-auto w-full flex-1 overflow-auto text-xs border-collapse">
+      <h4 class="font-bold text-base mb-2">請款紀錄（共 {{ getPaymentsCount(contract) }} 次）</h4>
+      <p-table *ngIf="hasPayments(contract)" [value]="contract.payments" class="table-auto w-full flex-1 overflow-auto text-xs border-collapse">
         <ng-template pTemplate="header">
           <tr>
             <th>輪次</th>
@@ -52,11 +52,11 @@ import { ContractFunctionsService } from '../../services/contract-functions.serv
                 </button>
               </div>
               <!-- 請款歷程 -->
-              <div *ngIf="p.logs && p.logs.length" class="mt-2 text-xs">
+              <div *ngIf="hasLogs(p)" class="mt-2 text-xs">
                 <details>
-                  <summary class="cursor-pointer text-blue-600">歷程 ({{ p.logs.length }})</summary>
+                  <summary class="cursor-pointer text-blue-600">歷程 ({{ getLogsCount(p) }})</summary>
                   <div class="mt-1 space-y-1 max-h-24 overflow-y-auto">
-                    <div *ngFor="let log of p.logs" class="text-gray-600">
+                    <div *ngFor="let log of getLogs(p)" class="text-gray-600">
                       <span class="font-medium">{{ log.action }}</span>
                       by {{ log.user }}
                       <span class="text-gray-400">({{ log.timestamp | date:'MM/dd HH:mm' }})</span>
@@ -69,7 +69,7 @@ import { ContractFunctionsService } from '../../services/contract-functions.serv
           </tr>
         </ng-template>
       </p-table>
-      <div *ngIf="!contract.payments?.length" class="p-2 text-xs text-gray-500 flex-1 flex items-center justify-center">尚無請款紀錄</div>
+      <div *ngIf="!hasPayments(contract)" class="p-2 text-xs text-gray-500 flex-1 flex items-center justify-center">尚無請款紀錄</div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -137,5 +137,25 @@ export class PaymentDetailsComponent implements OnChanges {
       console.error('操作失敗:', error);
       alert('操作失敗，請稍後再試');
     }
+  }
+
+  getPaymentsCount(contract: Contract): number {
+    return contract.payments ? contract.payments.length : 0;
+  }
+
+  hasPayments(contract: Contract): boolean {
+    return contract.payments && Array.isArray(contract.payments) && contract.payments.length > 0;
+  }
+
+  hasLogs(payment: PaymentRecord): boolean {
+    return payment.logs && Array.isArray(payment.logs) && payment.logs.length > 0;
+  }
+
+  getLogsCount(payment: PaymentRecord): number {
+    return payment.logs ? payment.logs.length : 0;
+  }
+
+  getLogs(payment: PaymentRecord): any[] {
+    return payment.logs || [];
   }
 }

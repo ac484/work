@@ -21,7 +21,13 @@ export class AmountSummaryComponent {
   @Input() contract!: Contract;
 
   get netChange(): number {
-    return (this.contract.changes ?? []).reduce((sum, c) => sum + (c.type === '追加' ? c.amount : -c.amount), 0);
+    const changes = this.contract.changes && Array.isArray(this.contract.changes) ? this.contract.changes : [];
+    return changes.reduce((sum, c) => {
+      if (c && c.type && typeof c.amount === 'number') {
+        return sum + (c.type === '追加' ? c.amount : -c.amount);
+      }
+      return sum;
+    }, 0);
   }
   get originalAmount(): number {
     return this.contract.contractAmount - this.netChange;
