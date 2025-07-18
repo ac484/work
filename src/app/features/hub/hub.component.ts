@@ -102,7 +102,7 @@ import { ContractService } from '../contract/services/core/contract.service';
        
         <!-- 區域3：右側 (15%) - 合約檔案 -->
         <ng-template #panel>
-          <div class="panel h-full border bg-surface-0 dark:bg-surface-900">
+          <div class="panel h-full p-2 bg-surface-0 dark:bg-surface-900">
             <app-contract-files [contract]="(selectedContract$ | async) ?? null"></app-contract-files>
           </div>
         </ng-template>
@@ -121,8 +121,7 @@ import { ContractService } from '../contract/services/core/contract.service';
   `,
   styles: [`
     .panel {
-      /* Tailwind 控制背景色，移除原生 background-color */
-      border: 1px solid #e5e7eb;
+      /* 移除邊框避免視覺空白 */
     }
   `]
 })

@@ -12,7 +12,7 @@ import { Contract } from '../../models';
   standalone: true,
   imports: [CommonModule, DialogModule],
   template: `
-    <div class="h-full flex flex-col justify-center items-center p-2">
+    <div class="h-full flex flex-col justify-center items-center">
       <ng-container *ngIf="contract && contract.url; else noFile">
         <div class="cursor-pointer flex flex-col justify-center items-center h-full hover:bg-gray-50 rounded p-2 transition-colors" 
              (click)="openDialog()">
