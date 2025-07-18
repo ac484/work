@@ -24,6 +24,15 @@ import {setGlobalOptions} from "firebase-functions";
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
+// 本檔案依據 Firebase Console 專案設定，使用 Firebase Admin SDK
+// 功能：Firebase Functions 統一入口
+// 用途：匯出所有合約管理相關的 Functions
+
+import { initializeApp } from 'firebase-admin/app';
+
+// 初始化 Firebase Admin
+initializeApp();
+
 // Export functions
 export * from './contracts/generate-contract-code';
 export * from './contracts/payment-status-transition';

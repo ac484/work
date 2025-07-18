@@ -2,119 +2,68 @@
 // 功能：自動進度計算與狀態更新
 // 用途：合約進度追蹤與狀態管理
 
-import { onCall } from 'firebase-functions/v2/https';
 import { getFirestore } from 'firebase-admin/firestore';
+import { withErrorHandling } from './error-handler';
+import { checkAuth, getContract, calculatePaymentProgress } from './utils';
 
-interface ProgressCalculationInput {
-  contractId: string;
-}
 
-export const calculateContractProgress = onCall<ProgressCalculationInput>(async (request) => {
-  try {
-    const { contractId } = request.data;
-    
-    if (!request.auth) {
-      return { success: false, error: '未授權' };
-    }
 
-    const db = getFirestore();
-    const contractRef = db.collection('contracts').doc(contractId);
-    const contractDoc = await contractRef.get();
+const determineContractStatus = (completionRate: number) => {
+  if (completionRate >= 100) return '已完成';
+  if (completionRate === 0) return '未開始';
+  return '進行中';
+};
 
-    if (!contractDoc.exists) {
-      return { success: false, error: '合約不存在' };
-    }
+export const calculateContractProgress = withErrorHandling(async (request) => {
+  const { contractId } = request.data;
+  checkAuth(request);
+  
+  const { ref: contractRef, data: contractData } = await getContract(contractId);
+  const contractAmount = contractData?.contractAmount || 0;
+  const payments = contractData?.payments || [];
 
-    const contractData = contractDoc.data();
-    const contractAmount = contractData?.contractAmount || 0;
-    const payments = contractData?.payments || [];
+  const progress = calculatePaymentProgress(payments, contractAmount);
+  const status = determineContractStatus(progress.completionRate);
 
-    // 計算請款統計
-    const completedPayments = payments.filter((p: any) => p.status === '完成');
-    const completedAmount = completedPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-    const totalRequested = payments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-    const pendingAmount = totalRequested - completedAmount;
+  const progressData = {
+    ...progress,
+    status,
+    lastCalculated: new Date(),
+  };
 
-    // 計算完成百分比
-    const completionRate = contractAmount > 0 ? Math.round((completedAmount / contractAmount) * 100) : 0;
-
-    // 判斷合約狀態
-    let status = '進行中';
-    if (completionRate >= 100) {
-      status = '已完成';
-    } else if (completionRate === 0) {
-      status = '未開始';
-    }
-
-    // 更新合約進度
-    const progressData = {
-      completionRate,
-      completedAmount,
-      pendingAmount,
-      totalRequested,
-      paymentCount: payments.length,
-      completedPaymentCount: completedPayments.length,
-      status,
-      lastCalculated: new Date(),
-    };
-
-    await contractRef.update(progressData);
-
-    return { 
-      success: true, 
-      progress: progressData 
-    };
-
-  } catch (error) {
-    return { success: false, error: (error as Error).message };
-  }
+  await contractRef.update(progressData);
+  return { progress: progressData };
 });
 
 // 批量重新計算所有合約進度
-export const calculateAllContractsProgress = onCall(async (request) => {
-  try {
-    if (!request.auth) {
-      return { success: false, error: '未授權' };
+export const calculateAllContractsProgress = withErrorHandling(async (request) => {
+  checkAuth(request);
+  
+  const db = getFirestore();
+  const snapshot = await db.collection('contracts').get();
+
+  const results = [];
+  for (const doc of snapshot.docs) {
+    try {
+      const contractData = doc.data();
+      const payments = contractData?.payments || [];
+      const contractAmount = contractData?.contractAmount || 0;
+      
+      const progress = calculatePaymentProgress(payments, contractAmount);
+      const status = determineContractStatus(progress.completionRate);
+
+      await doc.ref.update({
+        completionRate: progress.completionRate,
+        completedAmount: progress.completedAmount,
+        status,
+        lastCalculated: new Date(),
+      });
+
+      results.push({ contractId: doc.id, success: true });
+    } catch (error) {
+      results.push({ contractId: doc.id, success: false, error: (error as Error).message });
     }
-
-    const db = getFirestore();
-    const contractsRef = db.collection('contracts');
-    const snapshot = await contractsRef.get();
-
-    const results = [];
-    for (const doc of snapshot.docs) {
-      try {
-        const contractData = doc.data();
-        const payments = contractData?.payments || [];
-        
-        const completedPayments = payments.filter((p: any) => p.status === '完成');
-        const completedAmount = completedPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0);
-        const contractAmount = contractData?.contractAmount || 0;
-        const completionRate = contractAmount > 0 ? Math.round((completedAmount / contractAmount) * 100) : 0;
-
-        let status = '進行中';
-        if (completionRate >= 100) {
-          status = '已完成';
-        } else if (completionRate === 0) {
-          status = '未開始';
-        }
-
-        await doc.ref.update({
-          completionRate,
-          completedAmount,
-          status,
-          lastCalculated: new Date(),
-        });
-
-        results.push({ contractId: doc.id, success: true });
-      } catch (error) {
-        results.push({ contractId: doc.id, success: false, error: (error as Error).message });
-      }
-    }
-
-    return { success: true, results };
-
-  } catch (error) {
-    return { success: false, error: (error as Error).message };
   }
+
+  return { results };
 }); 
