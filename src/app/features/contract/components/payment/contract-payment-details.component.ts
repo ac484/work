@@ -75,10 +75,10 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     :host ::ng-deep .p-datatable tbody tr:hover {
-      background-color: rgb(249 250 251) !important;
+      background-color: var(--surface-100) !important;
     }
     :host ::ng-deep .p-datatable tbody tr:hover td {
-      background-color: rgb(249 250 251) !important;
+      background-color: var(--surface-100) !important;
     }
   `]
 })
