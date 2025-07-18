@@ -25,13 +25,9 @@ import { ContractMessagesComponent } from './components/detail/contract-messages
 
 // 服務
 import { ContractService } from './services/core/contract.service';
-import { PaymentRequestService } from './services/payment/contract-payment-request.service';
-import { PaymentActionService } from './services/payment/contract-payment-action.service';
 import { ContractFilterService } from './services/management/contract-filter.service';
-import { ContractChangeService } from './services/management/contract-change.service';
 import { TagService } from './services/management/contract-tag.service';
 import { ContractAnalyticsService } from './services/analytics/contract-analytics.service';
-import { FirebaseFunctionsService } from './services/firebase-functions.service';
 
 @NgModule({
   declarations: [],
@@ -58,13 +54,9 @@ import { FirebaseFunctionsService } from './services/firebase-functions.service'
   ],
   providers: [
     ContractService,
-    PaymentRequestService,
-    PaymentActionService,
     ContractFilterService,
-    ContractChangeService,
     TagService,
-    ContractAnalyticsService,
-    FirebaseFunctionsService
+    ContractAnalyticsService
   ]
 })
 export class ContractModule { }

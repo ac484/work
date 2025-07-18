@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
 import { Contract } from '../../models';
-import { ContractChangeService } from '../../services/management/contract-change.service';
-import { Firestore } from '@angular/fire/firestore';
+import { AppUser } from '../../../../core/services/iam/users/user.service';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Component({
   selector: 'app-change-actions',
@@ -44,12 +44,12 @@ import { Firestore } from '@angular/fire/firestore';
 })
 export class ChangeActionsComponent {
   @Input() contract!: Contract & { id?: string };
-  @Input() user: any;
+  @Input() user: AppUser | null = null;
   showDialog = false;
   changeType: '追加' | '追減' = '追加';
   amount = 0;
   note = '';
-  private firestore = inject(Firestore);
+  private functions = inject(Functions);
 
   canEdit(): boolean {
     return !!this.user && !!this.contract?.id;
@@ -69,13 +69,26 @@ export class ChangeActionsComponent {
   }
 
   async confirm() {
-    if (!this.canEdit() || !this.amount || this.amount <= 0) return;
+    if (!this.canEdit() || !this.amount || this.amount <= 0 || !this.user) return;
     
     try {
-      const changeService = new ContractChangeService();
-      await changeService.addChange(this.contract, this.changeType, this.amount, this.note, this.user);
+      // 直接調用 Firebase Function
+      const addChange = httpsCallable(this.functions, 'addContractChange');
+      const result = await addChange({
+        contractId: this.contract.id!,
+        type: this.changeType,
+        amount: this.amount,
+        note: this.note,
+        userId: this.user.uid,
+        userDisplayName: this.user.displayName || this.user.email || '未知用戶'
+      });
+      
+      if (!(result.data as any).success) {
+        throw new Error((result.data as any).error);
+      }
+      
       this.showDialog = false;
-      // 可以發出事件通知父元件刷新
+      alert('金額變更成功');
     } catch (error) {
       console.error('變更金額失敗:', error);
       alert('變更金額失敗，請稍後再試');

@@ -1,12 +1,13 @@
-// 本元件為新建合約的分步驟表單
-// 功能：三步驟建立合約（基本資訊、成員設定、檔案上傳），支援 PDF 上傳
-// 用途：新建合約彈窗的主要內容
+// 本元件為合約建立流程的步驟式表單
+// 功能：三步驟建立合約（基本資訊、成員設定、檔案上傳）
+// 用途：新建合約的統一入口
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
-import { ContractMember } from '../../models';
+import { Contract, ContractMember } from '../../models';
 import { ContractService } from '../../services/core/contract.service';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Component({
   selector: 'app-create-contract-stepper',
@@ -111,6 +112,7 @@ export class CreateContractStepperComponent {
   step = 1;
   client = '';
   private contractService = inject(ContractService);
+  private functions = inject(Functions);
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -126,8 +128,8 @@ export class CreateContractStepperComponent {
     try {
       this.url = await this.contractService.uploadContractPdf(this.pdfFile);
     } catch (error) {
-      console.error('檔案上傳失敗:', error);
-      alert('檔案上傳失敗，請稍後再試');
+      console.error('PDF 上傳失敗:', error);
+      alert('PDF 上傳失敗，請稍後再試');
     } finally {
       this.uploading = false;
     }
@@ -137,6 +139,25 @@ export class CreateContractStepperComponent {
     if (!this.url || !this.contractAmount) return;
     
     try {
+      // 先驗證合約資料
+      const validate = httpsCallable(this.functions, 'validateContract');
+      const validation = await validate({
+        contractData: {
+          projectName: this.projectName,
+          client: this.client,
+          contractAmount: this.contractAmount,
+          orderNo: this.orderNo,
+          projectNo: this.projectNo
+        },
+        validationType: 'create'
+      });
+
+      if (!(validation.data as any).valid) {
+        alert('合約資料驗證失敗：\n' + (validation.data as any).errors.join('\n'));
+        return;
+      }
+
+      // 建立合約
       await this.contractService.createContract({
         orderNo: this.orderNo,
         projectNo: this.projectNo,
@@ -169,11 +190,11 @@ export class CreateContractStepperComponent {
     this.orderNo = '';
     this.projectNo = '';
     this.projectName = '';
-    this.client = '';
     this.contractAmount = null;
     this.members = JSON.parse(JSON.stringify(this.initialMembers));
     this.pdfFile = null;
     this.url = '';
     this.step = 1;
+    this.client = '';
   }
 }

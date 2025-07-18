@@ -8,9 +8,8 @@ import { ContractService } from '../../services/core/contract.service';
 import { Observable, of } from 'rxjs';
 import { PaymentRecord, PaymentStatus, PaymentAction, PAYMENT_STATUS_TRANSITIONS, Contract } from '../../models';
 import { StepperModule } from 'primeng/stepper';
-import { PaymentActionService } from '../../services/payment/contract-payment-action.service';
 import { UserService, AppUser } from '../../../../core/services/iam/users/user.service';
-import { FirebaseFunctionsService } from '../../services/firebase-functions.service';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Component({
   selector: 'app-payment-details',
@@ -78,10 +77,9 @@ import { FirebaseFunctionsService } from '../../services/firebase-functions.serv
 export class PaymentDetailsComponent implements OnChanges {
   @Input() contractId!: string;
   contract$: Observable<Contract | undefined> = of(undefined);
-  private actionService = inject(PaymentActionService);
   private user$ = inject(UserService).currentUser$;
   private contractService = inject(ContractService);
-  private firebaseFunctions = inject(FirebaseFunctionsService);
+  private functions = inject(Functions);
   private cdr = inject(ChangeDetectorRef);
   
   private currentUser: AppUser | null = null;
@@ -112,7 +110,8 @@ export class PaymentDetailsComponent implements OnChanges {
   }
 
   getAvailableActions(payment: PaymentRecord): PaymentAction[] {
-    return this.actionService.getAvailableActions(payment);
+    const transitions = PAYMENT_STATUS_TRANSITIONS[payment.status];
+    return transitions ? Object.keys(transitions) as PaymentAction[] : [];
   }
 
   async onAction(contract: Contract, payment: PaymentRecord, action: PaymentAction): Promise<void> {
@@ -122,12 +121,23 @@ export class PaymentDetailsComponent implements OnChanges {
     }
     
     try {
-      await this.actionService.executeAction(contract, payment, action, this.currentUser);
+      // 直接調用 Firebase Function
+      const executeAction = httpsCallable(this.functions, 'executePaymentAction');
+      const result = await executeAction({
+        contractId: contract.id!,
+        paymentRound: payment.round,
+        action,
+        userId: this.currentUser.uid,
+        userDisplayName: this.currentUser.displayName || this.currentUser.email || '未知用戶'
+      });
+      
+      if (!(result.data as any).success) {
+        throw new Error((result.data as any).error);
+      }
       
       // 操作成功後自動計算合約進度
-      if (contract.id) {
-        await this.firebaseFunctions.calculateContractProgress(contract.id);
-      }
+      const calculateProgress = httpsCallable(this.functions, 'calculateContractProgress');
+      await calculateProgress({ contractId: contract.id! });
       
       alert('操作成功');
     } catch (error) {
