@@ -72,7 +72,7 @@ interface Product {
             </tr>
           </ng-template>
           <ng-template #body let-product>
-            <tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
               <td>{{ product.name }}</td>
               <td>{{ product.category }}</td>
               <td>{{ product.price }}</td>
@@ -95,14 +95,7 @@ interface Product {
       </div>
     </div>
   `,
-  styles: [`
-    :host ::ng-deep .p-datatable tbody tr:hover {
-      background-color: var(--surface-100) !important;
-    }
-    :host ::ng-deep .p-datatable tbody tr:hover td {
-      background-color: var(--surface-100) !important;
-    }
-  `]
+  styles: [``]
 })
 export class ProductOverviewWidget {
   selectedProduct!: Product;

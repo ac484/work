@@ -32,7 +32,7 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-p>
-          <tr>
+          <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
             <td>{{ p.round }}</td>
             <td>
               <span [class]="getStatusClass(p.status)">{{ p.status }}</span>
@@ -73,14 +73,7 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [`
-    :host ::ng-deep .p-datatable tbody tr:hover {
-      background-color: var(--surface-100) !important;
-    }
-    :host ::ng-deep .p-datatable tbody tr:hover td {
-      background-color: var(--surface-100) !important;
-    }
-  `]
+  styles: [``]
 })
 export class PaymentDetailsComponent implements OnChanges {
   @Input() contractId!: string;

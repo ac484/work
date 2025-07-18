@@ -90,7 +90,7 @@ import { DialogModule } from 'primeng/dialog';
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-contract>
-        <tr (click)="onRowClick(contract)" class="cursor-pointer">
+        <tr (click)="onRowClick(contract)" class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
           <td>
             <div class="flex flex-col gap-1">
               <span class="font-semibold">{{ contract.code }}</span>
@@ -175,12 +175,7 @@ import { DialogModule } from 'primeng/dialog';
       white-space: nowrap;
       display: block;
     }
-    :host ::ng-deep .p-datatable tbody tr:hover {
-      background-color: var(--surface-100) !important;
-    }
-    :host ::ng-deep .p-datatable tbody tr:hover td {
-      background-color: var(--surface-100) !important;
-    }
+
   `]
 })
 export class ContractListComponent implements OnInit {
