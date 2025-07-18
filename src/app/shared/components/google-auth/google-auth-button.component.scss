@@ -1,0 +1,23 @@
+/*
+本檔案為 Google 認證按鈕元件的樣式
+功能：定義登入表單、按鈕、排版等樣式
+用途：配合 google-auth-button.component.html 使用
+*/
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+form {
+  width: 100%;
+}
+.flex {
+  display: flex;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.text-xs {
+  font-size: 0.75rem;
+} 
