@@ -1,329 +1,163 @@
-# 程式碼規範 (Coding Guidelines)
+# Coding Guidelines
 
-> **本專案遵循 Angular 20 極簡主義開發規範**，強調代碼品質、可讀性與一致性。
-> 
-> 核心原則：**清晰重於聰明，簡單重於複雜**。
+> This project follows Angular best practices with a focus on minimalism: clear, concise, and maintainable code.
 
----
+## Core Principles
 
-## 📝 命名規範 (Naming Conventions)
+- **Readability First**: Self-explanatory code with minimal comments
+- **Consistency**: Unified naming and formatting conventions
+- **Simplicity**: Avoid over-engineering, keep code concise
+- **Maintainability**: Consider future maintenance needs
 
-### 檔案命名 (File Naming)
 ```typescript
-// ✅ 正確命名
-user-profile.component.ts      // 元件
-user-data.service.ts          // 服務
-user.model.ts                 // 模型
-user-role.enum.ts             // 枚舉
-currency-format.pipe.ts       // 管道
-auth.guard.ts                 // 守衛
-http.interceptor.ts           // 攔截器
-
-// ❌ 錯誤命名
-UserProfile.component.ts      // 不使用 PascalCase
-userdata.service.ts          // 缺少連字符
-user_model.ts                // 不使用底線
-```
-
-### 變數與函數命名 (Variable & Function Naming)
-```typescript
-// ✅ 正確命名
-const userName = signal('');           // camelCase
-const isLoading = signal(false);       // 布林值使用 is/has/can 前綴
-const userList = computed(() => []);   // 複數形式表示陣列
-
-// 函數命名
-function getUserById(id: string) {}    // 動詞開頭
-function validateEmail(email: string) {} // 描述性命名
-
-// ❌ 錯誤命名
-const user_name = '';                  // 不使用底線
-const loading = false;                 // 布林值不清晰
-const data = [];                       // 命名過於泛泛
-```
-
-### 元件與類別命名 (Component & Class Naming)
-```typescript
-// ✅ 正確命名
-export class UserProfileComponent {}   // PascalCase + Component 後綴
-export class UserDataService {}       // PascalCase + Service 後綴
-export interface User {}              // PascalCase 介面
-export enum UserRole {}               // PascalCase 枚舉
-
-// ❌ 錯誤命名
-export class userProfile {}           // 不使用 PascalCase
-export class UserProfileComp {}       // 縮寫不清晰
-```
-
----
-
-## 🎨 代碼風格 (Code Style)
-
-### TypeScript 嚴格模式
-```typescript
-// tsconfig.json 必須啟用嚴格模式
-{
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true
-  }
+// ✅ Good design
+interface UserService {
+  getUser(id: string): Signal<User | null>;
+  updateUser(user: User): Promise<void>;
 }
 
-// ✅ 正確使用類型
-function processUser(user: User): UserProfile {
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email
-  };
-}
-
-// ❌ 禁止使用 any
-function processData(data: any): any {  // 嚴禁使用
-  return data;
+// ❌ Avoid
+interface UserService {
+  getUserByIdentifierAndReturnUserObjectOrNullIfNotFound(id: string): Signal<User | null>;
+  updateUserWithValidationAndErrorHandling(user: User): Promise<void>;
 }
 ```
 
-### Angular 20 最佳實踐
+## Naming Conventions
+
+### File Naming
+```
+user-profile.component.ts
+user.service.ts
+user.model.ts
+user-role.enum.ts
+```
+
+### Variable Naming
 ```typescript
-// ✅ 使用 signals 和新控制流
+// Use camelCase
+const userName = 'John Doe';
+const userList = signal<User[]>([]);
+
+// Boolean values use is/has/can prefix
+const isAuthenticated = signal(false);
+const hasPermission = signal(true);
+
+// Constants use UPPER_SNAKE_CASE
+const MAX_RETRY_COUNT = 3;
+```
+
+## Component Structure
+
+```typescript
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-user-profile',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, MatCardModule],
   template: `
-    @if (users(); as userList) {
-      @for (user of userList; track user.id) {
-        <div>{{ user.name }}</div>
-      }
-    } @else {
-      <div>沒有用戶數據</div>
+    @if (user(); as userData) {
+      <mat-card>
+        <mat-card-title>{{ userData.name }}</mat-card-title>
+        <mat-card-content>{{ userData.email }}</mat-card-content>
+      </mat-card>
     }
   `
 })
-export class UserListComponent {
-  users = signal<User[]>([]);
-  filteredUsers = computed(() => 
-    this.users().filter(user => user.active)
-  );
-}
-
-// ❌ 避免舊式寫法
-@Component({
-  template: `
-    <div *ngIf="users.length > 0; else noData">
-      <div *ngFor="let user of users; trackBy: trackByFn">
-        {{ user.name }}
-      </div>
-    </div>
-    <ng-template #noData>沒有用戶數據</ng-template>
-  `
-})
-export class OldUserListComponent {
-  users: User[] = [];  // 避免傳統陣列
+export class UserProfileComponent {
+  // State management with signals
+  user = signal<User | null>(null);
+  
+  // Dependency injection with inject()
+  private userService = inject(UserService);
+  
+  // Computed properties
+  canEdit = computed(() => this.user()?.role === 'admin');
 }
 ```
 
-### 代碼格式化
-```typescript
-// ✅ 正確格式化
-const userConfig = {
-  name: 'John Doe',
-  email: 'john@example.com',
-  role: UserRole.ADMIN,
-  permissions: [
-    'read:users',
-    'write:users',
-    'delete:users'
-  ]
-};
+## Template Guidelines
 
-// 函數參數過多時換行
-function createUser(
-  name: string,
-  email: string,
-  role: UserRole,
-  permissions: string[]
-): User {
-  return { name, email, role, permissions };
-}
-```
-
----
-
-## 🚫 常見反模式 (Anti-Patterns)
-
-### 禁止的寫法
-```typescript
-// ❌ 使用 any 類型
-function processData(data: any): any {
-  return data.someProperty;
+```html
+<!-- Use new control flow syntax -->
+@if (user(); as userData) {
+  <div>{{ userData.name }}</div>
+} @else {
+  <div>Loading...</div>
 }
 
-// ❌ 過度抽象
-class UserFormatterService {
-  formatUserName(user: User): string {
-    return user.name;  // 單行邏輯不需要服務
-  }
-}
-
-// ❌ 不必要的 Wrapper 元件
-@Component({
-  template: `<user-profile [user]="user"></user-profile>`
-})
-export class UserProfileWrapperComponent {
-  @Input() user!: User;
-}
-
-// ❌ 使用舊式控制流
-<div *ngIf="condition">...</div>
-<div *ngFor="let item of items">...</div>
-
-// ❌ 未使用 OnPush 策略
-@Component({
-  changeDetection: ChangeDetectionStrategy.Default  // 避免使用
-})
-```
-
-### 推薦的替代方案
-```typescript
-// ✅ 使用具體類型
-function processUser(user: User): UserProfile {
-  return {
-    id: user.id,
-    displayName: user.name,
-    email: user.email
-  };
-}
-
-// ✅ 直接在元件中實現簡單邏輯
-@Component({
-  template: `<div>{{ formatUserName(user) }}</div>`
-})
-export class UserComponent {
-  formatUserName(user: User): string {
-    return user.name.toUpperCase();
-  }
-}
-
-// ✅ 使用新控制流
-@if (condition) {
-  <div>內容</div>
-}
-@for (item of items; track item.id) {
+<!-- List rendering with track -->
+@for (item of items(); track item.id) {
   <div>{{ item.name }}</div>
 }
 ```
 
----
+## Type Safety
 
-## 🛠️ 開發工具配置 (Development Tools)
-
-### ESLint 配置
-```json
-// .eslintrc.json
-{
-  "extends": [
-    "@angular-eslint/recommended",
-    "@typescript-eslint/recommended"
-  ],
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unused-vars": "error",
-    "@angular-eslint/prefer-on-push-component-change-detection": "error",
-    "@angular-eslint/prefer-standalone-component": "error"
-  }
-}
-```
-
-### Prettier 配置
-```json
-// .prettierrc
-{
-  "printWidth": 80,
-  "tabWidth": 2,
-  "useTabs": false,
-  "semi": true,
-  "singleQuote": true,
-  "quoteProps": "as-needed",
-  "trailingComma": "es5",
-  "bracketSpacing": true,
-  "arrowParens": "avoid"
-}
-```
-
-### VS Code 設定
-```json
-// .vscode/settings.json
-{
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "typescript.preferences.importModuleSpecifier": "relative"
-}
-```
-
----
-
-## 📋 代碼審查檢查清單 (Code Review Checklist)
-
-### ✅ 基本檢查
-- [ ] 沒有使用 `any` 類型
-- [ ] 使用 Angular 20 新控制流 (`@if`, `@for`, `@switch`)
-- [ ] 元件使用 `OnPush` 變更檢測策略
-- [ ] 使用 `signals` 管理狀態
-- [ ] 遵循命名規範
-
-### ✅ 架構檢查
-- [ ] 單一職責原則
-- [ ] 避免過度抽象
-- [ ] 沒有不必要的 Wrapper 元件
-- [ ] 適當的模組劃分
-
-### ✅ 效能檢查
-- [ ] 使用 `trackBy` 函數（在 `@for` 中）
-- [ ] 避免在模板中使用複雜計算
-- [ ] 適當使用 `computed()` 和 `effect()`
-
-### ✅ 測試檢查
-- [ ] 單元測試覆蓋率 > 80%
-- [ ] 測試命名清晰描述測試意圖
-- [ ] 使用適當的測試工具和模擬
-
----
-
-## 🎯 極簡主義原則 (Minimalism Principles)
-
-### 代碼簡潔性
 ```typescript
-// ✅ 簡潔明瞭
-const activeUsers = computed(() => 
-  users().filter(user => user.active)
-);
+// Always define interfaces
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
 
-// ❌ 過度複雜
-const activeUsers = computed(() => {
-  const allUsers = users();
-  const filteredUsers: User[] = [];
-  for (let i = 0; i < allUsers.length; i++) {
-    if (allUsers[i].active === true) {
-      filteredUsers.push(allUsers[i]);
-    }
-  }
-  return filteredUsers;
-});
+// Use enums for fixed values
+enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  GUEST = 'guest'
+}
 ```
 
-### 檔案大小控制
-- **單檔案 < 100 行**：超過時考慮拆分
-- **函數 < 20 行**：保持函數簡潔
-- **元件職責單一**：一個元件只做一件事
+## Best Practices
 
----
+### State Management
+```typescript
+// Use signals for state management
+export class UserState {
+  private users = signal<User[]>([]);
+  
+  // Public readonly signals
+  readonly users$ = this.users.asReadonly();
+  
+  // Computed properties
+  readonly activeUsers = computed(() => 
+    this.users().filter(user => user.isActive)
+  );
+}
+```
 
-> **核心理念**: 寫出清晰、簡潔、可維護的代碼，讓團隊成員能夠輕鬆理解和協作。
-> 
-> **品質保證**: 通過工具自動化和代碼審查，確保代碼品質的一致性。
+### Security
+```typescript
+// Always validate inputs
+userForm = new FormGroup({
+  name: new FormControl('', [
+    Validators.required,
+    Validators.maxLength(50)
+  ]),
+  email: new FormControl('', [
+    Validators.required,
+    Validators.email
+  ])
+});
+
+// Use Angular's built-in XSS protection
+// ✅ Do this
+<div [innerHTML]="sanitizedContent"></div>
+
+// ❌ Never do this
+<div [innerHTML]="userInput"></div>
+```
+
+## Code Review Checklist
+
+- Use OnPush change detection
+- Manage state with signals
+- Ensure type safety (no any types)
+- Implement proper error handling
+- Write unit tests for critical logic
+- Check for security vulnerabilities
+
+> **Core Principle**: Create high-quality, maintainable code that follows Angular best practices.
