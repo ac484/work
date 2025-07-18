@@ -29,13 +29,12 @@ import { ContractService } from '../contract/services/core/contract.service';
     ContractListComponent,
     PaymentDetailsComponent,
     ContractMessagesComponent,
-    ContractSummaryComponent,
     EventLogComponent,
     ContractFilesComponent
   ],
   template: `
     <div *ngIf="viewMode() === 'hub'; else projectView">
-      <p-splitter [layout]="'horizontal'" [panelSizes]="[60,25,15]" class="h-screen">
+      <p-splitter [layout]="'horizontal'" [panelSizes]="[74,25,1]" class="h-screen">
         <!-- 區域1：左側 (60%) - 垂直分割 top:70% / bottom:30% -->
         <ng-template #panel>
           <p-splitter [layout]="'vertical'" [panelSizes]="[70,30]" class="h-full">
