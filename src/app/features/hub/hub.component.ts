@@ -8,16 +8,14 @@ import { AppSideModule } from '../../shell/layout.sidebar';
 import { Observable, BehaviorSubject, of, switchMap } from 'rxjs';
 import { PrimeNgModule } from '../../shared/modules/prime-ng.module';
 
-// 使用模組化匯入
-import {
-  ContractListComponent,
-  PaymentDetailsComponent,
-  ContractMessagesComponent,
-  ContractSummaryComponent,
-  EventLogComponent,
-  ContractFilesComponent,
-  Contract
-} from '../contract';
+// 直接匯入各個元件
+import { ContractListComponent } from '../contract/components/list/contract-list.component';
+import { PaymentDetailsComponent } from '../contract/components/payment/contract-payment-details.component';
+import { ContractMessagesComponent } from '../contract/components/detail/contract-messages.component';
+import { ContractSummaryComponent } from '../contract/components/analytics/contract-summary.component';
+import { EventLogComponent } from '../contract/components/detail/contract-event-log.component';
+import { ContractFilesComponent } from '../contract/components/detail/contract-files.component';
+import { Contract } from '../contract/models/contract.model';
 import { LayoutService } from '../../core/services/layout/layout.service';
 import { ContractService } from '../contract/services/core/contract.service';
 

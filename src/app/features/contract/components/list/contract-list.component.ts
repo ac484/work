@@ -9,8 +9,6 @@ import { ChipsComponent } from '../shared/contract-chips.component';
 import { ContractService } from '../../services/core/contract.service';
 import { Observable } from 'rxjs';
 import { Contract, ContractFilter } from '../../models';
-import { FilterService } from 'primeng/api';
-import { ContractFilterService } from '../../services/management/contract-filter.service';
 import { CreateContractStepperComponent } from '../actions/contract-step.component';
 import { DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
 import { PaymentRequestButtonComponent } from '../payment/contract-payment-request-button.component';
@@ -20,7 +18,6 @@ import { ProgressSummaryComponent } from '../analytics/contract-progress-summary
 import { ChangeActionsComponent } from '../actions/contract-change-actions.component';
 import { ContractSummaryComponent } from '../analytics/contract-summary.component';
 import { DialogModule } from 'primeng/dialog';
-import { doc, updateDoc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-contract-list',
@@ -195,8 +192,6 @@ export class ContractListComponent implements OnInit {
 
   showCompleted = false;
 
-  private filterService = inject(FilterService);
-  private contractFilterService = inject(ContractFilterService);
   private userService = inject(UserService);
   private dialogRef?: DynamicDialogRef;
   private cdr = inject(ChangeDetectorRef);
@@ -232,8 +227,6 @@ export class ContractListComponent implements OnInit {
     });
   }
 
-
-
   onFilter(): void {
     this.applyFilter();
   }
@@ -253,11 +246,50 @@ export class ContractListComponent implements OnInit {
   }
 
   private applyFilter(): void {
-    this.filteredContracts = this.contractFilterService.filterContracts(
-      this.allContracts,
-      this.filter,
-      this.showCompleted
-    );
+    let filtered = this.allContracts.filter(contract => {
+      // 業主篩選
+      if (this.filter.client && !contract.client.toLowerCase().includes(this.filter.client.toLowerCase())) {
+        return false;
+      }
+
+      // 合約編號篩選
+      if (this.filter.code && !contract.code.toLowerCase().includes(this.filter.code.toLowerCase())) {
+        return false;
+      }
+
+      // 訂單編號篩選
+      if (this.filter.orderNo && contract.orderNo && !contract.orderNo.toLowerCase().includes(this.filter.orderNo.toLowerCase())) {
+        return false;
+      }
+
+      // 專案編號篩選
+      if (this.filter.projectNo && contract.projectNo && !contract.projectNo.toLowerCase().includes(this.filter.projectNo.toLowerCase())) {
+        return false;
+      }
+
+      // 專案名稱篩選
+      if (this.filter.projectName && contract.projectName && !contract.projectName.toLowerCase().includes(this.filter.projectName.toLowerCase())) {
+        return false;
+      }
+
+      // 標籤篩選
+      if (this.filter.tags && this.filter.tags.length > 0) {
+        const contractTags = contract.tags || [];
+        const hasAllTags = this.filter.tags.every(tag => contractTags.includes(tag));
+        if (!hasAllTags) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // 完成狀態篩選
+    if (!this.showCompleted) {
+      filtered = filtered.filter(c => c.status !== '已完成');
+    }
+
+    this.filteredContracts = filtered;
   }
 
   refreshContracts(): void {
