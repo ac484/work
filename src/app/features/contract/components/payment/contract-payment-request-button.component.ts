@@ -10,6 +10,7 @@ import { Contract, PaymentRecord, PaymentStatus } from '../../models';
 import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 import { AppUser } from '../../../../core/services/iam/users/user.service';
 import { PaymentRequestService } from '../../services/payment/contract-payment-request.service';
+import { FirebaseFunctionsService } from '../../services/firebase-functions.service';
 
 @Component({
   selector: 'app-payment-request-button',
@@ -61,6 +62,7 @@ export class PaymentRequestButtonComponent implements OnInit {
   submitting = false;
   
   private paymentRequestService = inject(PaymentRequestService);
+  private firebaseFunctions = inject(FirebaseFunctionsService);
 
   ngOnInit(): void {
     // 初始化完成
@@ -117,6 +119,12 @@ export class PaymentRequestButtonComponent implements OnInit {
         this.paymentPercent,
         this.paymentNote
       );
+      
+      // 建立請款成功後自動計算合約進度
+      if (this.contract.id) {
+        await this.firebaseFunctions.calculateContractProgress(this.contract.id);
+      }
+      
       this.paymentAmount = null;
       this.paymentPercent = null;
       this.paymentNote = '';

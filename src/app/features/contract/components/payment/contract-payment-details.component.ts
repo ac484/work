@@ -10,6 +10,7 @@ import { PaymentRecord, PaymentStatus, PaymentAction, PAYMENT_STATUS_TRANSITIONS
 import { StepperModule } from 'primeng/stepper';
 import { PaymentActionService } from '../../services/payment/contract-payment-action.service';
 import { UserService, AppUser } from '../../../../core/services/iam/users/user.service';
+import { FirebaseFunctionsService } from '../../services/firebase-functions.service';
 
 @Component({
   selector: 'app-payment-details',
@@ -80,6 +81,7 @@ export class PaymentDetailsComponent implements OnChanges {
   private actionService = inject(PaymentActionService);
   private user$ = inject(UserService).currentUser$;
   private contractService = inject(ContractService);
+  private firebaseFunctions = inject(FirebaseFunctionsService);
   private cdr = inject(ChangeDetectorRef);
   
   private currentUser: AppUser | null = null;
@@ -121,6 +123,12 @@ export class PaymentDetailsComponent implements OnChanges {
     
     try {
       await this.actionService.executeAction(contract, payment, action, this.currentUser);
+      
+      // 操作成功後自動計算合約進度
+      if (contract.id) {
+        await this.firebaseFunctions.calculateContractProgress(contract.id);
+      }
+      
       alert('操作成功');
     } catch (error) {
       console.error('操作失敗:', error);

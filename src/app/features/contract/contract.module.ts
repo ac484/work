@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FirestoreModule } from '@angular/fire/firestore';
 import { StorageModule } from '@angular/fire/storage';
+import { FunctionsModule } from '@angular/fire/functions';
 import { PrimeNgModule } from '../../shared/modules/prime-ng.module';
 
 // 元件
@@ -30,6 +31,7 @@ import { ContractFilterService } from './services/management/contract-filter.ser
 import { ContractChangeService } from './services/management/contract-change.service';
 import { TagService } from './services/management/contract-tag.service';
 import { ContractAnalyticsService } from './services/analytics/contract-analytics.service';
+import { FirebaseFunctionsService } from './services/firebase-functions.service';
 
 @NgModule({
   declarations: [],
@@ -38,6 +40,7 @@ import { ContractAnalyticsService } from './services/analytics/contract-analytic
     FormsModule,
     FirestoreModule,
     StorageModule,
+    FunctionsModule,
     PrimeNgModule,
     // 元件
     ContractListComponent,
@@ -60,7 +63,8 @@ import { ContractAnalyticsService } from './services/analytics/contract-analytic
     ContractFilterService,
     ContractChangeService,
     TagService,
-    ContractAnalyticsService
+    ContractAnalyticsService,
+    FirebaseFunctionsService
   ]
 })
 export class ContractModule { }
