@@ -13,7 +13,6 @@ import { Contract } from '../../models';
   imports: [CommonModule, DialogModule],
   template: `
     <div class="h-full flex flex-col justify-center items-center">
-      <div class="text-xs text-gray-500 mb-2">Debug: {{ contract?.code || '無合約' }}</div>
       <ng-container *ngIf="contract && contract.url; else noFile">
         <div class="cursor-pointer flex flex-col justify-center items-center h-full hover:bg-gray-50 rounded p-2 transition-colors" 
              (click)="openDialog()">
@@ -28,7 +27,6 @@ import { Contract } from '../../models';
           <i class="pi pi-file text-2xl mb-2"></i>
           <div class="text-xs text-center">無檔案</div>
           <div class="text-xs text-center text-gray-300 mt-1">合約: {{ contract?.code || '未選擇' }}</div>
-          <div class="text-xs text-center text-gray-300">URL: {{ contract?.url || '無' }}</div>
         </div>
       </ng-template>
       
@@ -65,7 +63,16 @@ import { Contract } from '../../models';
       </p-dialog>
     </div>
   `,
-  styles: [':host { display: block; width: 100%; height: 100%; }']
+  styles: [`
+    :host { 
+      display: block; 
+      width: 100%; 
+      height: 100%; 
+    }
+    :host > div {
+      min-height: 100%;
+    }
+  `]
 })
 export class ContractFilesComponent implements OnChanges {
   @Input() contract: Contract | null = null;

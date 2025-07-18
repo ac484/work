@@ -94,7 +94,15 @@ interface Product {
         </p-table>
       </div>
     </div>
-  `
+  `,
+  styles: [`
+    :host ::ng-deep .p-datatable tbody tr:hover {
+      background-color: rgb(249 250 251) !important;
+    }
+    :host ::ng-deep .p-datatable tbody tr:hover td {
+      background-color: rgb(249 250 251) !important;
+    }
+  `]
 })
 export class ProductOverviewWidget {
   selectedProduct!: Product;

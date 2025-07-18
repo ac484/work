@@ -72,7 +72,15 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
       <div *ngIf="!contract.payments?.length" class="p-2 text-xs text-gray-500 flex-1 flex items-center justify-center">尚無請款紀錄</div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [`
+    :host ::ng-deep .p-datatable tbody tr:hover {
+      background-color: rgb(249 250 251) !important;
+    }
+    :host ::ng-deep .p-datatable tbody tr:hover td {
+      background-color: rgb(249 250 251) !important;
+    }
+  `]
 })
 export class PaymentDetailsComponent implements OnChanges {
   @Input() contractId!: string;

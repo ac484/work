@@ -97,7 +97,7 @@ import { doc, updateDoc } from '@angular/fire/firestore';
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-contract>
-        <tr (click)="onRowClick(contract)" class="cursor-pointer hover:bg-gray-50">
+        <tr (click)="onRowClick(contract)" class="cursor-pointer">
           <td>
             <div class="flex flex-col gap-1">
               <span class="font-semibold">{{ contract.code }}</span>
@@ -192,6 +192,12 @@ import { doc, updateDoc } from '@angular/fire/firestore';
       text-overflow: ellipsis;
       white-space: nowrap;
       display: block;
+    }
+    :host ::ng-deep .p-datatable tbody tr:hover {
+      background-color: rgb(249 250 251) !important;
+    }
+    :host ::ng-deep .p-datatable tbody tr:hover td {
+      background-color: rgb(249 250 251) !important;
     }
   `]
 })
