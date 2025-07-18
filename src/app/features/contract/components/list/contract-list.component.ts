@@ -46,7 +46,6 @@ import { doc, updateDoc } from '@angular/fire/firestore';
         <tr>
           <th style="width:5%">合約資訊</th>
           <th style="width:12%">專案資訊</th>
-          <th style="width:5%">狀態</th>
           <th style="width:13%" class="text-[11px]">合約金額</th>
           <th style="width:5%" class="text-[11px]">進度摘要</th>
           <th style="width:5%">追加/減</th>
@@ -67,9 +66,6 @@ import { doc, updateDoc } from '@angular/fire/firestore';
               <input pInputText [(ngModel)]="filter.orderNo" (ngModelChange)="onFilter()" placeholder="訂單編號" class="w-1/4 p-1 text-xs border rounded" />
               <input pInputText [(ngModel)]="filter.projectNo" (ngModelChange)="onFilter()" placeholder="專案編號" class="w-1/4 p-1 text-xs border rounded" />
             </div>
-          </th>
-          <th>
-            <!-- 狀態篩選 input 已移除，僅保留空白 -->
           </th>
           <th></th>
           <th></th>
@@ -110,9 +106,6 @@ import { doc, updateDoc } from '@angular/fire/firestore';
               <span class="text-gray-500">訂單編號：{{ contract.orderNo }}</span>
               <span class="text-gray-500">專案編號：{{ contract.projectNo }}</span>
             </div>
-          </td>
-          <td class="whitespace-nowrap">
-            <span [class]="getStatusClass(contract.status) + ' whitespace-nowrap'">{{ contract.status }}</span>
           </td>
           <td class="text-[10px] text-left whitespace-nowrap">
             <span class="text-[10px] text-left font-semibold whitespace-nowrap">
@@ -165,14 +158,6 @@ import { doc, updateDoc } from '@angular/fire/firestore';
         <label class="flex flex-col gap-1 text-xs">
           業主
           <input pInputText [(ngModel)]="editForm.client" name="client" />
-        </label>
-        <label class="flex flex-col gap-1 text-xs">
-          狀態
-          <select pInputText [(ngModel)]="editForm.status" name="status">
-            <option value="進行中">進行中</option>
-            <option value="已完成">已完成</option>
-            <option value="已終止">已終止</option>
-          </select>
         </label>
         <div class="flex gap-2 justify-end mt-2">
           <button pButton type="button" label="取消" (click)="cancelEdit()"></button>
@@ -247,14 +232,7 @@ export class ContractListComponent implements OnInit {
     });
   }
 
-  getStatusClass(status: Contract['status']): string {
-    switch (status) {
-      case '進行中': return 'text-blue-600 font-semibold';
-      case '已完成': return 'text-green-600 font-semibold';
-      case '已終止': return 'text-red-600 font-semibold';
-      default: return 'text-gray-600';
-    }
-  }
+
 
   onFilter(): void {
     this.applyFilter();
