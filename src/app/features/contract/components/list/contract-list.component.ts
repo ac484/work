@@ -139,7 +139,7 @@ import { doc, updateDoc } from '@angular/fire/firestore';
             </div>
           </td>
           <td>
-            <app-chips [tags]="contract.tags || []" (tagsChange)="onTagsChange(contract, $event)"></app-chips>
+            <app-chips [tags]="contract.tags || []" (tagsChange)="onTagsChange(contract.tags, contract)"></app-chips>
           </td>
         </tr>
       </ng-template>
@@ -272,8 +272,8 @@ export class ContractListComponent implements OnInit {
     this.contractService.refreshContracts();
   }
 
-  onTagsChange(contract: Contract, tags: string[]): void {
-    this.contractService.updateContractTags(contract.id!, tags);
+  onTagsChange(contractTags: string[], contract: Contract): void {
+    this.contractService.updateContract(contract.id!, { tags: contractTags });
   }
 
   onRowClick(contract: Contract): void {
@@ -308,10 +308,8 @@ export class ContractListComponent implements OnInit {
 
   async saveEdit() {
     if (!this.editingContract || !this.editForm.code) return;
-
     try {
-      const updatedContract = { ...this.editingContract, ...this.editForm };
-      await this.contractService.updateContract(updatedContract);
+      await this.contractService.updateContract(this.editingContract.id!, this.editForm);
       this.editDialogVisible = false;
       this.editingContract = null;
       this.editForm = {};
