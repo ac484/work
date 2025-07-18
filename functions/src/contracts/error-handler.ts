@@ -9,7 +9,10 @@ import { createErrorResponse, createSuccessResponse } from './utils';
 export const withErrorHandling = <T>(
   handler: (request: any) => Promise<T>
 ) => {
-  return onCall<T>(async (request) => {
+  return onCall<T>({
+    enforceAppCheck: false, // 暫時停用 App Check 以避免錯誤
+    maxInstances: 10
+  }, async (request) => {
     try {
       const result = await handler(request);
       return createSuccessResponse(result);
