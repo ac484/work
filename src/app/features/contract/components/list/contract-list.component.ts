@@ -1,7 +1,7 @@
 // 本元件為合約主列表
 // 功能：顯示、篩選、標籤編輯、請款、CRUD 操作入口
 // 用途：合約管理主畫面，所有合約一覽
-import { Component, Input, Output, EventEmitter, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PrimeNgModule } from '../../../../shared/modules/prime-ng.module';
@@ -208,6 +208,7 @@ export class ContractListComponent implements OnInit {
   private contractFilterService = inject(ContractFilterService);
   private userService = inject(UserService);
   private dialogRef?: DynamicDialogRef;
+  private cdr = inject(ChangeDetectorRef);
 
   editDialogVisible = false;
   editingContract: Contract | null = null;
@@ -228,8 +229,15 @@ export class ContractListComponent implements OnInit {
       this.applyFilter();
     });
 
-    this.userService.currentUser$.subscribe(user => {
-      this.user = user;
+    this.userService.currentUser$.subscribe({
+      next: (user) => {
+        console.log('ContractListComponent - 用戶資料更新:', user);
+        this.user = user;
+        this.cdr.detectChanges(); // Trigger change detection for user data
+      },
+      error: (error) => {
+        console.error('ContractListComponent - 用戶資料載入錯誤:', error);
+      }
     });
   }
 

@@ -5,7 +5,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SplitterModule } from 'primeng/splitter';
 import { AppSideModule } from '../../shell/layout.sidebar';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, switchMap } from 'rxjs';
 import { PrimeNgModule } from '../../shared/modules/prime-ng.module';
 
 // 使用模組化匯入
@@ -138,7 +138,17 @@ export class HubComponent {
   constructor(private contractService: ContractService) {
     this.contracts$ = this.contractService.getContracts();
     this.selectedContractId$ = this.selectedContractIdSubject.asObservable();
-    this.selectedContract$ = of(undefined); // 簡化實作，暫時返回 undefined
+    this.selectedContract$ = this.selectedContractId$.pipe(
+      switchMap(id => {
+        console.log('HubComponent - 選中合約 ID:', id);
+        return id ? this.contractService.getContractById(id) : of(undefined);
+      })
+    );
+    
+    // 添加調試訂閱
+    this.selectedContract$.subscribe(contract => {
+      console.log('HubComponent - 選中合約資料:', contract);
+    });
   }
 
   onContractRowClick(contract: { id: string }): void {

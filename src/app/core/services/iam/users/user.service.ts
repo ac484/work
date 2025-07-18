@@ -19,13 +19,17 @@ export class UserService {
 
   currentUser$: Observable<AppUser | null> = authState(this.auth).pipe(
     switchMap(user => {
+      console.log('UserService - Firebase Auth 用戶:', user);
       if (!user) return of(null);
       const ref = doc(this.firestore, 'users', user.uid);
       return from(getDoc(ref)).pipe(
         switchMap(snap => {
           const data = snap.data();
+          console.log('UserService - Firestore 用戶資料:', data);
           if (!data) return of(null);
-          return of({ uid: user.uid, email: user.email || '', roles: data['roles'] || [], displayName: user.displayName, photoURL: user.photoURL } as AppUser);
+          const appUser = { uid: user.uid, email: user.email || '', roles: data['roles'] || [], displayName: user.displayName, photoURL: user.photoURL } as AppUser;
+          console.log('UserService - 最終用戶物件:', appUser);
+          return of(appUser);
         })
       );
     })

@@ -23,15 +23,20 @@ export class ContractService {
   }
 
   getContractById(id: string): Observable<Contract | undefined> {
+    console.log('ContractService - 查詢合約 ID:', id);
     return new Observable(observer => {
       getDoc(doc(this.contractsCol, id)).then(doc => {
         if (doc.exists()) {
-          observer.next({ id: doc.id, ...doc.data() } as Contract);
+          const contract = { id: doc.id, ...doc.data() } as Contract;
+          console.log('ContractService - 找到合約:', contract);
+          observer.next(contract);
         } else {
+          console.log('ContractService - 合約不存在:', id);
           observer.next(undefined);
         }
         observer.complete();
       }).catch(error => {
+        console.error('ContractService - 查詢合約錯誤:', error);
         observer.error(error);
       });
     });
