@@ -62,7 +62,7 @@ import { ContractService } from '../contract/services/core/contract.service';
        
         <!-- 區域2：中間 (25%) - 垂直分割 top:30% / middle:40% / bottom:30% -->
         <ng-template #panel>
-          <p-splitter [layout]="'vertical'" [panelSizes]="[30,40,30]" class="h-full">
+          <p-splitter [layout]="'vertical'" [panelSizes]="[30,30,40]" class="h-full">
             <!-- 中間上：合約摘要 (30%) -->
             <ng-template #panel>
               <div class="panel summary-area h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
@@ -71,7 +71,13 @@ import { ContractService } from '../contract/services/core/contract.service';
                 </ng-container>
               </div>
             </ng-template>
-            <!-- 中間中：討論區 (40%) -->
+            <!-- 中間中：事件日誌 (30%) -->
+            <ng-template #panel>
+              <div class="panel event-log h-full overflow-auto p-2 bg-surface-0 dark:bg-surface-900">
+                <app-event-log [contract]="(selectedContract$ | async) ?? null"></app-event-log>
+              </div>
+            </ng-template>
+            <!-- 中間下：討論區 (40%) -->
             <ng-template #panel>
               <div class="panel messages h-full min-h-0 flex flex-col p-2 bg-surface-0 dark:bg-surface-900">
                 <ng-container *ngIf="selectedContract$ | async as contract; else messagesSkeleton">
@@ -89,12 +95,6 @@ import { ContractService } from '../contract/services/core/contract.service';
                     <div class="text-xs text-center text-gray-300">進行討論</div>
                   </div>
                 </ng-template>
-              </div>
-            </ng-template>
-            <!-- 中間下：事件日誌 (30%) -->
-            <ng-template #panel>
-              <div class="panel event-log h-full overflow-auto p-2 bg-surface-0 dark:bg-surface-900">
-                <app-event-log [contract]="(selectedContract$ | async) ?? null"></app-event-log>
               </div>
             </ng-template>
           </p-splitter>
