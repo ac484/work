@@ -32,6 +32,7 @@ import { DialogModule } from 'primeng/dialog';
         <app-contract-summary [contracts]="filteredContracts"></app-contract-summary>
       </div>
     </div>
+    
     <p-table [value]="filteredContracts"
         class="table-auto w-full text-xs border-collapse"
         [scrollable]="true"
@@ -133,7 +134,27 @@ import { DialogModule } from 'primeng/dialog';
           </td>
         </tr>
       </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8">
+            <div class="flex flex-col justify-center items-center py-8 text-gray-400">
+              <i class="pi pi-file-edit text-4xl mb-4"></i>
+              <div class="text-lg text-center font-medium mb-2">
+                {{ allContracts.length === 0 ? '尚無合約資料' : '沒有符合條件的合約' }}
+              </div>
+              <div class="text-sm text-center text-gray-300 mb-4">
+                {{ allContracts.length === 0 ? '點擊下方按鈕建立第一個合約' : '請調整篩選條件或清除篩選' }}
+              </div>
+              <button pButton type="button" icon="pi pi-plus" label="新建合約" 
+                      class="p-button-primary"
+                      (click)="openCreateDialog()">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
     </p-table>
+    
     <p-dialog header="編輯合約" [(visible)]="editDialogVisible" [modal]="true" [style]="{width: '400px'}" (onHide)="cancelEdit()">
       <form *ngIf="editingContract" class="flex flex-col gap-3 p-2">
         <label class="flex flex-col gap-1 text-xs">
@@ -181,7 +202,7 @@ import { DialogModule } from 'primeng/dialog';
 export class ContractListComponent implements OnInit {
   contracts$: Observable<Contract[]>;
   filteredContracts: Contract[] = [];
-  private allContracts: Contract[] = [];
+  allContracts: Contract[] = []; // 改為 public
   filter: ContractFilter = {};
   user: AppUser | null = null;
 

@@ -50,9 +50,10 @@ import { ContractService } from '../contract/services/core/contract.service';
             <ng-template #panel>
               <div class="panel payment-details h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
                 <app-payment-details *ngIf="selectedContractId$ | async as contractId" [contractId]="contractId"></app-payment-details>
-                <div *ngIf="!(selectedContractId$ | async)" class="text-center text-gray-400 py-4">
-                  <i class="pi pi-credit-card text-2xl mb-2"></i>
-                  <div class="text-sm">請選擇合約查看請款詳情</div>
+                <div *ngIf="!(selectedContractId$ | async)" class="flex flex-col justify-center items-center h-full text-gray-400 min-h-[150px]">
+                  <i class="pi pi-credit-card text-3xl mb-3"></i>
+                  <div class="text-sm text-center font-medium mb-1">請選擇合約</div>
+                  <div class="text-xs text-center text-gray-300">查看請款詳情</div>
                 </div>
               </div>
             </ng-template>
@@ -82,9 +83,10 @@ import { ContractService } from '../contract/services/core/contract.service';
                     <p-skeleton class="w-4/5 h-6"></p-skeleton>
                     <p-skeleton class="w-3/5 h-6"></p-skeleton>
                   </div>
-                  <div *ngIf="!(selectedContractId$ | async)" class="text-center text-gray-400 py-4">
-                    <i class="pi pi-comments text-2xl mb-2"></i>
-                    <div class="text-sm">請選擇合約進行討論</div>
+                  <div *ngIf="!(selectedContractId$ | async)" class="flex flex-col justify-center items-center h-full text-gray-400 min-h-[200px]">
+                    <i class="pi pi-comments text-3xl mb-3"></i>
+                    <div class="text-sm text-center font-medium mb-1">請選擇合約</div>
+                    <div class="text-xs text-center text-gray-300">進行討論</div>
                   </div>
                 </ng-template>
               </div>
@@ -100,7 +102,7 @@ import { ContractService } from '../contract/services/core/contract.service';
        
         <!-- 區域3：右側 (15%) - 合約檔案 -->
         <ng-template #panel>
-          <div class="panel h-full p-2 bg-surface-0 dark:bg-surface-900">
+          <div class="panel h-full w-full bg-surface-0 dark:bg-surface-900">
             <app-contract-files [contract]="(selectedContract$ | async) ?? null"></app-contract-files>
           </div>
         </ng-template>
