@@ -86,6 +86,196 @@ export const MOCK_WORKSPACES: Workspace[] = [
         hours: 360,
         dependencies: ['t2'],
         createdAt: '2024-03-01T11:00:00.000Z'
+      },
+      {
+        id: 't4',
+        workspaceId: 'workspace-1',
+        title: '大廳裝修工程',
+        description: '進行1樓大廳裝修及天花板施工',
+        status: '進行中',
+        assignees: [
+          { name: '張工程師', role: '專案經理' }
+        ],
+        locationId: 'workspace-1-loc-11',
+        startDate: '2024-03-01',
+        endDate: '2024-04-15',
+        actualStart: '2024-03-01',
+        progress: 45,
+        hours: 240,
+        createdAt: '2024-02-25T09:00:00.000Z'
+      },
+      {
+        id: 't5',
+        workspaceId: 'workspace-1',
+        title: '辦公室隔間施工',
+        description: '進行2-5樓辦公室隔間牆體施工',
+        status: '進行中',
+        assignees: [
+          { name: '陳監工', role: '品質監工' }
+        ],
+        locationId: 'workspace-1-loc-12',
+        startDate: '2024-03-10',
+        endDate: '2024-04-30',
+        actualStart: '2024-03-10',
+        progress: 65,
+        hours: 320,
+        createdAt: '2024-03-05T08:00:00.000Z'
+      },
+      {
+        id: 't6',
+        workspaceId: 'workspace-1',
+        title: '高樓層結構施工',
+        description: '進行6-10樓結構體施工',
+        status: '進行中',
+        assignees: [
+          { name: '李主任', role: '工地主任' }
+        ],
+        locationId: 'workspace-1-loc-13',
+        startDate: '2024-04-01',
+        endDate: '2024-06-30',
+        actualStart: '2024-04-01',
+        progress: 40,
+        hours: 480,
+        createdAt: '2024-03-25T09:30:00.000Z'
+      },
+      {
+        id: 't7',
+        workspaceId: 'workspace-1',
+        title: '空調機房設備安裝',
+        description: '安裝頂樓空調機房設備',
+        status: '進行中',
+        assignees: [
+          { name: '王技師', role: '結構技師' }
+        ],
+        locationId: 'workspace-1-loc-14',
+        startDate: '2024-05-01',
+        endDate: '2024-06-30',
+        actualStart: '2024-05-01',
+        progress: 55,
+        hours: 240,
+        createdAt: '2024-04-25T08:00:00.000Z'
+      },
+      {
+        id: 't8',
+        workspaceId: 'workspace-1',
+        title: '電梯機房設備安裝',
+        description: '安裝頂樓電梯機房設備',
+        status: '進行中',
+        assignees: [
+          { name: '林安全員', role: '安全管理員' }
+        ],
+        locationId: 'workspace-1-loc-15',
+        startDate: '2024-05-15',
+        endDate: '2024-07-15',
+        actualStart: '2024-05-15',
+        progress: 35,
+        hours: 200,
+        createdAt: '2024-05-10T09:00:00.000Z'
+      },
+      {
+        id: 't9',
+        workspaceId: 'workspace-1',
+        title: '大會議室裝修',
+        description: '進行大會議室裝修工程',
+        status: '進行中',
+        assignees: [
+          { name: '張工程師', role: '專案經理' }
+        ],
+        locationId: 'workspace-1-loc-17',
+        startDate: '2024-04-15',
+        endDate: '2024-06-15',
+        actualStart: '2024-04-15',
+        progress: 50,
+        hours: 320,
+        createdAt: '2024-04-10T08:30:00.000Z'
+      },
+      {
+        id: 't10',
+        workspaceId: 'workspace-1',
+        title: '小會議室隔間',
+        description: '進行小會議室隔間施工',
+        status: '已完成',
+        assignees: [
+          { name: '陳監工', role: '品質監工' }
+        ],
+        locationId: 'workspace-1-loc-18',
+        startDate: '2024-04-01',
+        endDate: '2024-04-20',
+        actualStart: '2024-04-01',
+        actualEnd: '2024-04-18',
+        progress: 100,
+        hours: 96,
+        createdAt: '2024-03-28T10:00:00.000Z'
+      },
+      {
+        id: 't11',
+        workspaceId: 'workspace-1',
+        title: '多功能廳結構施工',
+        description: '進行多功能廳結構體施工',
+        status: '進行中',
+        assignees: [
+          { name: '張工程師', role: '專案經理' }
+        ],
+        locationId: 'workspace-1-loc-19',
+        startDate: '2024-04-10',
+        endDate: '2024-06-30',
+        actualStart: '2024-04-10',
+        progress: 60,
+        hours: 400,
+        createdAt: '2024-04-05T09:00:00.000Z'
+      },
+      {
+        id: 't12',
+        workspaceId: 'workspace-1',
+        title: '警衛室施工',
+        description: '進行警衛室結構及裝修施工',
+        status: '已完成',
+        assignees: [
+          { name: '林安全員', role: '安全管理員' }
+        ],
+        locationId: 'workspace-1-loc-20',
+        startDate: '2024-02-01',
+        endDate: '2024-03-15',
+        actualStart: '2024-02-01',
+        actualEnd: '2024-03-10',
+        progress: 100,
+        hours: 160,
+        createdAt: '2024-01-25T08:00:00.000Z'
+      },
+      {
+        id: 't13',
+        workspaceId: 'workspace-1',
+        title: '戶外停車場施工',
+        description: '進行戶外停車場地面施工',
+        status: '已完成',
+        assignees: [
+          { name: '李主任', role: '工地主任' }
+        ],
+        locationId: 'workspace-1-loc-21',
+        startDate: '2024-01-10',
+        endDate: '2024-02-28',
+        actualStart: '2024-01-10',
+        actualEnd: '2024-02-25',
+        progress: 100,
+        hours: 240,
+        createdAt: '2024-01-05T09:00:00.000Z'
+      },
+      {
+        id: 't14',
+        workspaceId: 'workspace-1',
+        title: '垃圾處理區施工',
+        description: '進行垃圾處理區結構施工',
+        status: '進行中',
+        assignees: [
+          { name: '林安全員', role: '安全管理員' }
+        ],
+        locationId: 'workspace-1-loc-22',
+        startDate: '2024-03-01',
+        endDate: '2024-04-15',
+        actualStart: '2024-03-01',
+        progress: 75,
+        hours: 120,
+        createdAt: '2024-02-25T10:00:00.000Z'
       }
     ],
     calendarEvents: [

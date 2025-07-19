@@ -143,20 +143,6 @@ export class WorkspaceFacadeService {
   }
 
   /**
-   * 更新任務狀態
-   */
-  async updateTaskStatus(taskId: string, status: WorkspaceTask['status']): Promise<void> {
-    await this.taskService.updateTaskStatus(taskId, status);
-  }
-
-  /**
-   * 更新任務進度
-   */
-  async updateTaskProgress(taskId: string, progress: number): Promise<void> {
-    await this.taskService.updateTaskProgress(taskId, progress);
-  }
-
-  /**
    * 獲取工作區概覽資訊
    */
   getWorkspaceOverview(): Observable<{

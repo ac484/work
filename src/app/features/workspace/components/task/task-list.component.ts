@@ -408,7 +408,15 @@ export class TaskListComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.loadTasks();
+    // 監聽位置選擇變化，自動重新載入任務
+    this.workspaceFacade.getSelectedLocationId().subscribe(locationId => {
+      if (locationId) {
+        this.loadTasks();
+      } else {
+        // 如果沒有選擇位置，清空任務列表
+        this.tasks.set([]);
+      }
+    });
   }
 
   /**

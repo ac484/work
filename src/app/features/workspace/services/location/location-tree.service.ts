@@ -24,7 +24,8 @@ export class LocationTreeService {
    */
   getLocationsByWorkspace(workspaceId: string): Observable<WorkspaceLocationNode[]> {
     if (this.isDevelopmentMode) {
-      return of(this.mockDataService.getMockLocationNodesByWorkspace(workspaceId));
+      const locations = this.mockDataService.getMockLocationNodesByWorkspace(workspaceId);
+      return this.mockDataService.simulateCollectionQuery(locations);
     }
     const q = query(
       this.locationsCollection, 
@@ -40,9 +41,9 @@ export class LocationTreeService {
    */
   getRootNodes(workspaceId: string): Observable<WorkspaceLocationNode[]> {
     if (this.isDevelopmentMode) {
-      const nodes = this.mockDataService.getMockLocationNodesByWorkspace(workspaceId);
-      const rootNodes = nodes.filter(node => node.nodeType === 'root');
-      return of(rootNodes);
+      const locations = this.mockDataService.getMockLocationNodesByWorkspace(workspaceId);
+      const rootNodes = locations.filter(node => node.nodeType === 'root');
+      return this.mockDataService.simulateCollectionQuery(rootNodes);
     }
     const q = query(
       this.locationsCollection,
@@ -57,6 +58,17 @@ export class LocationTreeService {
    * 獲取指定父節點的子節點
    */
   getChildNodes(parentId: string): Observable<WorkspaceLocationNode[]> {
+    if (this.isDevelopmentMode) {
+      // 從所有工作區中找出對應的子節點
+      const allLocations: WorkspaceLocationNode[] = [];
+      this.mockDataService.getMockWorkspaces().forEach(workspace => {
+        if (workspace.locations) {
+          allLocations.push(...workspace.locations);
+        }
+      });
+      const childNodes = allLocations.filter(node => node.parentId === parentId);
+      return this.mockDataService.simulateCollectionQuery(childNodes);
+    }
     const q = query(
       this.locationsCollection,
       where('parentId', '==', parentId),
@@ -69,6 +81,11 @@ export class LocationTreeService {
    * 獲取葉節點（任務容器）
    */
   getLeafNodes(workspaceId: string): Observable<WorkspaceLocationNode[]> {
+    if (this.isDevelopmentMode) {
+      const locations = this.mockDataService.getMockLocationNodesByWorkspace(workspaceId);
+      const leafNodes = locations.filter(node => node.nodeType === 'leaf');
+      return this.mockDataService.simulateCollectionQuery(leafNodes);
+    }
     const q = query(
       this.locationsCollection,
       where('workspaceId', '==', workspaceId),
@@ -82,6 +99,17 @@ export class LocationTreeService {
    * 創建新的位置節點
    */
   async createLocationNode(node: Omit<WorkspaceLocationNode, 'id'>): Promise<string> {
+    if (this.isDevelopmentMode) {
+      // 模擬新增到對應工作區的位置列表
+      const workspace = this.mockDataService.getMockWorkspaces().find(w => w.id === node.workspaceId);
+      if (workspace && workspace.locations) {
+        const newId = `workspace-${node.workspaceId}-loc-${workspace.locations.length + 1}`;
+        const newNode = { ...node, id: newId } as WorkspaceLocationNode;
+        workspace.locations.push(newNode);
+        return newId;
+      }
+      return '';
+    }
     const docRef = await addDoc(this.locationsCollection, node);
     return docRef.id;
   }
@@ -90,6 +118,20 @@ export class LocationTreeService {
    * 更新位置節點
    */
   async updateLocationNode(id: string, updates: Partial<WorkspaceLocationNode>): Promise<void> {
+    if (this.isDevelopmentMode) {
+      // 模擬更新對應工作區的位置節點
+      const allWorkspaces = this.mockDataService.getMockWorkspaces();
+      for (const workspace of allWorkspaces) {
+        if (workspace.locations) {
+          const locationIndex = workspace.locations.findIndex(loc => loc.id === id);
+          if (locationIndex !== -1) {
+            workspace.locations[locationIndex] = { ...workspace.locations[locationIndex], ...updates };
+            break;
+          }
+        }
+      }
+      return;
+    }
     const nodeDoc = doc(this.firestore, 'workspace-locations', id);
     await updateDoc(nodeDoc, updates);
   }
@@ -98,6 +140,20 @@ export class LocationTreeService {
    * 刪除位置節點
    */
   async deleteLocationNode(id: string): Promise<void> {
+    if (this.isDevelopmentMode) {
+      // 模擬刪除對應工作區的位置節點
+      const allWorkspaces = this.mockDataService.getMockWorkspaces();
+      for (const workspace of allWorkspaces) {
+        if (workspace.locations) {
+          const locationIndex = workspace.locations.findIndex(loc => loc.id === id);
+          if (locationIndex !== -1) {
+            workspace.locations.splice(locationIndex, 1);
+            break;
+          }
+        }
+      }
+      return;
+    }
     const nodeDoc = doc(this.firestore, 'workspace-locations', id);
     await deleteDoc(nodeDoc);
   }
