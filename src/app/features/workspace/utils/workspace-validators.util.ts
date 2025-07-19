@@ -101,6 +101,27 @@ export function validateTaskDateRange(startDate?: string, endDate?: string): { v
 }
 
 /**
+ * 驗證位置節點根節點唯一性
+ * 每個工地只能有一個根節點
+ */
+export function validateRootNodeUniqueness(
+  nodeType: string, 
+  existingNodes: WorkspaceLocationNode[]
+): { valid: boolean; message?: string } {
+  if (nodeType === 'root') {
+    const hasRootNode = existingNodes.some(node => node.nodeType === 'root');
+    if (hasRootNode) {
+      return {
+        valid: false,
+        message: '每個工地只能有一個根節點'
+      };
+    }
+  }
+  
+  return { valid: true };
+}
+
+/**
  * 驗證位置節點名稱
  */
 export function validateLocationNodeName(name: string): { valid: boolean; message?: string } {

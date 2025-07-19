@@ -36,8 +36,14 @@ export class LocationTreeService {
 
   /**
    * 獲取樹狀結構的根節點
+   * 每個工地只能有一個根節點
    */
   getRootNodes(workspaceId: string): Observable<WorkspaceLocationNode[]> {
+    if (this.isDevelopmentMode) {
+      const nodes = this.mockDataService.getMockLocationNodesByWorkspace(workspaceId);
+      const rootNodes = nodes.filter(node => node.nodeType === 'root');
+      return of(rootNodes);
+    }
     const q = query(
       this.locationsCollection,
       where('workspaceId', '==', workspaceId),

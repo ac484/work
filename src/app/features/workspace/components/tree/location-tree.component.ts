@@ -9,6 +9,7 @@ import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { WorkspaceFacadeService } from '../../services/core/workspace-facade.service';
 import { WorkspaceLocationNode } from '../../models';
+import { validateRootNodeUniqueness } from '../../utils/workspace-validators.util';
 
 /**
  * 工作區位置樹狀結構元件
@@ -97,12 +98,17 @@ import { WorkspaceLocationNode } from '../../models';
           <p-select 
             id="nodeType"
             [(ngModel)]="newNode.nodeType"
-            [options]="nodeTypeOptions"
+            [options]="nodeTypeOptions()"
             optionLabel="label"
             optionValue="value"
             placeholder="選擇節點類型"
             class="w-full">
           </p-select>
+          @if (nodeTypeOptions().length < 3) {
+            <small class="text-orange-600">
+              此工地已有根節點，只能新增枝節點或葉節點
+            </small>
+          }
         </div>
 
         <div class="field">
@@ -238,14 +244,15 @@ export class LocationTreeComponent implements OnInit {
     note: ''
   };
 
-  nodeTypeOptions = [
+  nodeTypeOptions = signal([
     { label: '根節點 (Root)', value: 'root' },
     { label: '枝節點 (Branch)', value: 'branch' },
     { label: '葉節點 (Leaf)', value: 'leaf' }
-  ];
+  ]);
 
   ngOnInit() {
     this.loadLocationTree();
+    this.updateNodeTypeOptions();
   }
 
   /**
@@ -258,12 +265,36 @@ export class LocationTreeComponent implements OnInit {
       next: (locations) => {
         this.treeNodes.set(this.convertToTreeNodes(locations));
         this.loading.set(false);
+        this.updateNodeTypeOptions(); // 更新節點類型選項
       },
       error: (error) => {
         console.error('載入位置樹狀結構失敗:', error);
         this.loading.set(false);
       }
     });
+  }
+
+  /**
+   * 更新節點類型選項
+   */
+  private updateNodeTypeOptions() {
+    const locations = this.treeNodes();
+    const hasRootNode = locations.some(node => node.data?.nodeType === 'root');
+    
+    if (hasRootNode) {
+      // 已有根節點，禁用根節點選項
+      this.nodeTypeOptions.set([
+        { label: '枝節點 (Branch)', value: 'branch' },
+        { label: '葉節點 (Leaf)', value: 'leaf' }
+      ]);
+    } else {
+      // 沒有根節點，啟用所有選項
+      this.nodeTypeOptions.set([
+        { label: '根節點 (Root)', value: 'root' },
+        { label: '枝節點 (Branch)', value: 'branch' },
+        { label: '葉節點 (Leaf)', value: 'leaf' }
+      ]);
+    }
   }
 
   /**
@@ -327,6 +358,15 @@ export class LocationTreeComponent implements OnInit {
       const workspaceId = await this.workspaceFacade.getSelectedWorkspaceId().pipe().toPromise();
       if (!workspaceId) {
         console.error('未選擇工作區');
+        return;
+      }
+
+      // 驗證根節點唯一性
+      const existingNodes = await this.workspaceFacade.getCurrentWorkspaceLocationTree().pipe().toPromise();
+      const rootValidation = validateRootNodeUniqueness(this.newNode.nodeType, existingNodes || []);
+      if (!rootValidation.valid) {
+        console.error(rootValidation.message);
+        // TODO: 顯示錯誤訊息給用戶
         return;
       }
 

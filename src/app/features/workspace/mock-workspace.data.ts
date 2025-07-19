@@ -1,355 +1,30 @@
 import { Workspace } from './models/workspace.model';
 
 export const MOCK_WORKSPACES: Workspace[] = [
-  // 1. 工地未開始，無成員、無任務、無日誌
+  // 台北科技園區 - 完整的工地範例
   {
-    id: 'empty-site',
-    name: '新北空地',
-    code: 'EMPTY-NTPC',
-    status: '未開始',
-    startDate: '2024-06-01',
-    progress: 0,
-    members: [],
-    logs: [],
-    tasks: [],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-empty', name: '空地', nodeType: 'root' },
-      { id: 'leaf-empty1', name: '臨時倉庫', nodeType: 'leaf', parentId: 'root-empty' },
-      { id: 'leaf-empty2', name: '臨時辦公室', nodeType: 'leaf', parentId: 'root-empty' }
-    ],
-    tags: [],
-    description: '',
-    createdAt: '2024-06-01T08:00:00Z'
-  },
-  // 2. 任務未指派，assignees 為空，status: '待處理'
-  {
-    id: 'umc',
-    name: '聯電（UMC）台南園區',
-    code: 'UMC-TNN',
+    id: 'workspace-1',
+    name: '台北科技園區',
+    code: 'TPE-TECH',
     status: '進行中',
-    startDate: '2023-02-01',
-    progress: 10,
+    startDate: '2024-01-01',
+    endDate: '2024-12-31',
+    progress: 35,
     members: [
-      { userId: 'u3', name: '陳建志', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [
-      {
-        id: 't2',
-        workspaceId: 'umc',
-        title: '基礎工程',
-        status: '待處理',
-        assignees: [],
-        createdAt: '2023-02-01',
-        progress: 0
-      }
-    ],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-umc', name: '主廠房', nodeType: 'root' },
-      { id: 'branch-umc1', name: 'A棟', nodeType: 'branch', parentId: 'root-umc' },
-      { id: 'branch-umc2', name: 'B棟', nodeType: 'branch', parentId: 'root-umc' },
-      { id: 'leaf-umc1', name: 'A棟1F', nodeType: 'leaf', parentId: 'branch-umc1' },
-      { id: 'leaf-umc2', name: 'A棟2F', nodeType: 'leaf', parentId: 'branch-umc1' },
-      { id: 'leaf-umc3', name: 'B棟1F', nodeType: 'leaf', parentId: 'branch-umc2' },
-      { id: 'leaf-umc4', name: 'B棟2F', nodeType: 'leaf', parentId: 'branch-umc2' },
-      { id: 'leaf-umc5', name: '倉庫', nodeType: 'leaf', parentId: 'root-umc' },
-      { id: 'leaf-umc6', name: '辦公室', nodeType: 'leaf', parentId: 'root-umc' }
-    ],
-    tags: ['半導體', '台南'],
-    description: '聯電台南園區擴建工程',
-    createdAt: '2023-02-01T08:00:00Z'
-  },
-  // 3. 任務有 assignees 但 logs 為空，progress 50
-  {
-    id: 'mediatek',
-    name: '聯發科（MediaTek）竹科園區',
-    code: 'MTK-HSINCHU',
-    status: '進行中',
-    startDate: '2023-05-01',
-    progress: 50,
-    members: [
-      { userId: 'u5', name: '張偉', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [
-      {
-        id: 't3',
-        workspaceId: 'mediatek',
-        title: '研發大樓基礎',
-        status: '進行中',
-        assignees: [
-          { userId: 'u5', name: '張偉', role: '工地主任' }
-        ],
-        createdAt: '2023-05-01',
-        progress: 50,
-        note: undefined
-      }
-    ],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-mtk', name: '研發大樓', nodeType: 'root' },
-      { id: 'branch-mtk1', name: '南棟', nodeType: 'branch', parentId: 'root-mtk' },
-      { id: 'branch-mtk2', name: '北棟', nodeType: 'branch', parentId: 'root-mtk' },
-      { id: 'leaf-mtk1', name: '南棟1F', nodeType: 'leaf', parentId: 'branch-mtk1' },
-      { id: 'leaf-mtk2', name: '南棟2F', nodeType: 'leaf', parentId: 'branch-mtk1' },
-      { id: 'leaf-mtk3', name: '北棟1F', nodeType: 'leaf', parentId: 'branch-mtk2' },
-      { id: 'leaf-mtk4', name: '北棟2F', nodeType: 'leaf', parentId: 'branch-mtk2' }
-    ],
-    tags: ['IC設計', '竹科'],
-    description: '聯發科竹科新建研發大樓',
-    createdAt: '2023-04-01T08:00:00Z'
-  },
-  // 4. 任務有 logs 但 assignees 為空，progress 100
-  {
-    id: 'mxic',
-    name: '旺宏電子（MXIC）新竹廠',
-    code: 'MXIC-HSINCHU',
-    status: '已完成',
-    startDate: '2022-12-01',
-    progress: 100,
-    members: [
-      { userId: 'u6', name: '林志明', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [
-      {
-        id: 't4',
-        workspaceId: 'mxic',
-        title: '主體完工',
-        status: '已完成',
-        assignees: [],
-        createdAt: '2022-12-01',
-        progress: 100,
-        logs: [
-          {
-            id: 'tl2',
-            workspaceId: 'mxic',
-            user: '林志明',
-            action: '完工',
-            content: '',
-            timestamp: '2023-03-01T10:00:00Z',
-            photos: [],
-            note: undefined
-          }
-        ]
-      }
-    ],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'loc6', name: '主廠房', nodeType: 'root' }
-    ],
-    tags: ['記憶體', '新竹'],
-    description: '旺宏新竹廠主體完工',
-    createdAt: '2022-12-01T08:00:00Z'
-  },
-  // 5. 日曆事件 allDay true, end 無, description 空
-  {
-    id: 'auo',
-    name: '友達光電（AUO）龍潭廠',
-    code: 'AUO-LT',
-    status: '進行中',
-    startDate: '2023-03-01',
-    progress: 30,
-    members: [
-      { userId: 'u8', name: '李國強', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [],
-    calendarEvents: [
-      {
-        id: 'c5',
-        workspaceId: 'auo',
-        title: '全日停電',
-        description: '',
-        start: '2023-05-01T00:00:00Z',
-        allDay: true,
-        createdBy: '李國強',
-        createdAt: '2023-04-25T08:00:00Z'
-      }
-    ],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-auo', name: '面板廠', nodeType: 'root' },
-      { id: 'branch-auo1', name: 'A棟', nodeType: 'branch', parentId: 'root-auo' },
-      { id: 'branch-auo2', name: 'B棟', nodeType: 'branch', parentId: 'root-auo' },
-      { id: 'leaf-auo1', name: 'A棟1F', nodeType: 'leaf', parentId: 'branch-auo1' },
-      { id: 'leaf-auo2', name: 'A棟2F', nodeType: 'leaf', parentId: 'branch-auo1' },
-      { id: 'leaf-auo3', name: 'B棟1F', nodeType: 'leaf', parentId: 'branch-auo2' },
-      { id: 'leaf-auo4', name: 'B棟2F', nodeType: 'leaf', parentId: 'branch-auo2' },
-      { id: 'leaf-auo5', name: '倉庫', nodeType: 'leaf', parentId: 'root-auo' }
-    ],
-    tags: ['面板', '龍潭'],
-    description: '友達光電龍潭新建面板廠',
-    createdAt: '2023-03-01T08:00:00Z'
-  },
-  // 6. 安全事件 resolved false, resolvedAt 無, note/照片有
-  {
-    id: 'ase',
-    name: '日月光（ASE）高雄廠',
-    code: 'ASE-KH',
-    status: '進行中',
-    startDate: '2023-01-15',
-    progress: 40,
-    members: [
-      { userId: 'u9', name: '周志豪', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [],
-    calendarEvents: [],
-    safetyEvents: [
-      {
-        id: 's6',
-        workspaceId: 'ase',
-        type: '事故',
-        description: '工地小火災',
-        reportedBy: '周志豪',
-        reportedAt: '2023-03-01T09:00:00Z',
-        resolved: false,
-        note: '現場已通報消防',
-        photos: ['https://example.com/fire.jpg']
-      }
-    ],
-    locations: [
-      { id: 'root-ase', name: '封裝廠', nodeType: 'root' },
-      { id: 'branch-ase1', name: 'A區', nodeType: 'branch', parentId: 'root-ase' },
-      { id: 'branch-ase2', name: 'B區', nodeType: 'branch', parentId: 'root-ase' },
-      { id: 'leaf-ase1', name: 'A區1F', nodeType: 'leaf', parentId: 'branch-ase1' },
-      { id: 'leaf-ase2', name: 'A區2F', nodeType: 'leaf', parentId: 'branch-ase1' },
-      { id: 'leaf-ase3', name: 'B區1F', nodeType: 'leaf', parentId: 'branch-ase2' },
-      { id: 'leaf-ase4', name: 'B區2F', nodeType: 'leaf', parentId: 'branch-ase2' }
-    ],
-    tags: ['封裝', '高雄'],
-    description: '日月光高雄封裝廠新建工程',
-    createdAt: '2023-01-15T08:00:00Z'
-  },
-  // 7. locations root+branch+leaf, code/note 空
-  {
-    id: 'innolux',
-    name: '群創光電（Innolux）台中廠',
-    code: 'INX-TC',
-    status: '進行中',
-    startDate: '2023-06-01',
-    progress: 20,
-    members: [
-      { userId: 'u10', name: '吳怡君', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-innolux', name: '面板廠', nodeType: 'root' },
-      { id: 'branch-innolux1', name: 'A棟', nodeType: 'branch', parentId: 'root-innolux' },
-      { id: 'branch-innolux2', name: 'B棟', nodeType: 'branch', parentId: 'root-innolux' },
-      { id: 'leaf-innolux1', name: 'A棟1F', nodeType: 'leaf', parentId: 'branch-innolux1' },
-      { id: 'leaf-innolux2', name: 'A棟2F', nodeType: 'leaf', parentId: 'branch-innolux1' },
-      { id: 'leaf-innolux3', name: 'B棟1F', nodeType: 'leaf', parentId: 'branch-innolux2' },
-      { id: 'leaf-innolux4', name: 'B棟2F', nodeType: 'leaf', parentId: 'branch-innolux2' }
-    ],
-    tags: ['面板', '台中'],
-    description: '群創光電台中新建面板廠',
-    createdAt: '2023-05-01T08:00:00Z'
-  },
-  // 8. 任務有 dependencies, note/description/updatedAt 空
-  {
-    id: 'chimei',
-    name: '奇美電子（Chimei）台南廠',
-    code: 'CHIMEI-TNN',
-    status: '進行中',
-    startDate: '2023-02-15',
-    progress: 20,
-    members: [
-      { userId: 'u11', name: '鄭文彬', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [
-      {
-        id: 't8',
-        workspaceId: 'chimei',
-        title: '電子廠主體',
-        status: '進行中',
-        assignees: [
-          { userId: 'u11', name: '鄭文彬', role: '工地主任' }
-        ],
-        createdAt: '2023-02-15',
-        progress: 20,
-        dependencies: ['t7'],
-        note: undefined,
-        description: undefined,
-        updatedAt: undefined
-      }
-    ],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-chimei', name: '電子廠', nodeType: 'root' },
-      { id: 'branch-chimei1', name: 'A區', nodeType: 'branch', parentId: 'root-chimei' },
-      { id: 'branch-chimei2', name: 'B區', nodeType: 'branch', parentId: 'root-chimei' },
-      { id: 'leaf-chimei1', name: 'A區1F', nodeType: 'leaf', parentId: 'branch-chimei1' },
-      { id: 'leaf-chimei2', name: 'A區2F', nodeType: 'leaf', parentId: 'branch-chimei1' },
-      { id: 'leaf-chimei3', name: 'B區1F', nodeType: 'leaf', parentId: 'branch-chimei2' },
-      { id: 'leaf-chimei4', name: 'B區2F', nodeType: 'leaf', parentId: 'branch-chimei2' }
-    ],
-    tags: ['電子', '台南'],
-    description: '奇美電子台南新建電子廠',
-    createdAt: '2023-02-15T08:00:00Z'
-  },
-  // 9. 工地已終止，tags/description/updatedAt 空
-  {
-    id: 'pegatron',
-    name: '和碩（Pegatron）桃園廠',
-    code: 'PEGATRON-TY',
-    status: '已終止',
-    startDate: '2023-07-01',
-    progress: 0,
-    members: [
-      { userId: 'u12', name: '林信宏', role: '工地主任' }
-    ],
-    logs: [],
-    tasks: [],
-    calendarEvents: [],
-    safetyEvents: [],
-    locations: [
-      { id: 'root-pegatron', name: '組裝廠', nodeType: 'root' },
-      { id: 'branch-pegatron1', name: 'A區', nodeType: 'branch', parentId: 'root-pegatron' },
-      { id: 'branch-pegatron2', name: 'B區', nodeType: 'branch', parentId: 'root-pegatron' },
-      { id: 'leaf-pegatron1', name: 'A區1F', nodeType: 'leaf', parentId: 'branch-pegatron1' },
-      { id: 'leaf-pegatron2', name: 'A區2F', nodeType: 'leaf', parentId: 'branch-pegatron1' },
-      { id: 'leaf-pegatron3', name: 'B區1F', nodeType: 'leaf', parentId: 'branch-pegatron2' },
-      { id: 'leaf-pegatron4', name: 'B區2F', nodeType: 'leaf', parentId: 'branch-pegatron2' }
-    ],
-    tags: undefined,
-    description: undefined,
-    createdAt: '2023-06-01T08:00:00Z',
-    updatedAt: undefined
-  },
-  // 10. 工地進行中，members 多人，任務 assignees 多人，日誌有照片
-  {
-    id: 'tsmc',
-    name: '台積電（TSMC）新竹園區',
-    code: 'TSMC-HSINCHU',
-    status: '進行中',
-    startDate: '2023-01-01',
-    progress: 65,
-    members: [
-      { userId: 'u1', name: '王大明', role: '工地主任' },
-      { userId: 'u2', name: '李小華', role: '安全員' },
-      { userId: 'u16', name: '張三', role: '工人' }
+      { userId: 'u1', name: '張工程師', role: '專案經理' },
+      { userId: 'u2', name: '李主任', role: '工地主任' },
+      { userId: 'u3', name: '王技師', role: '結構技師' },
+      { userId: 'u4', name: '陳監工', role: '品質監工' },
+      { userId: 'u5', name: '林安全員', role: '安全管理員' }
     ],
     logs: [
       {
         id: 'l1',
-        workspaceId: 'tsmc',
-        user: '王大明',
+        workspaceId: 'workspace-1',
+        user: '張工程師',
         action: '開工',
         content: '工地正式開工',
-        timestamp: '2023-01-01T08:00:00Z',
+        timestamp: '2024-01-01T08:00:00Z',
         photos: ['https://example.com/photo1.jpg'],
         note: '天氣晴朗'
       }
@@ -357,62 +32,116 @@ export const MOCK_WORKSPACES: Workspace[] = [
     tasks: [
       {
         id: 't1',
-        workspaceId: 'tsmc',
-        title: '主體結構施工',
-        description: '進行主體結構澆置',
+        workspaceId: 'workspace-1',
+        title: '地基開挖作業',
+        description: '進行建築物地基開挖，深度約15公尺',
+        status: '已完成',
+        assignees: [
+          { name: '張工程師', role: '專案經理' },
+          { name: '李主任', role: '工地主任' }
+        ],
+        locationId: 'workspace-1-loc-8',
+        startDate: '2024-01-15',
+        endDate: '2024-02-15',
+        actualStart: '2024-01-15',
+        actualEnd: '2024-02-10',
+        progress: 100,
+        hours: 320,
+        createdAt: '2024-01-10T09:00:00.000Z',
+        updatedAt: '2024-02-10T17:30:00.000Z'
+      },
+      {
+        id: 't2',
+        workspaceId: 'workspace-1',
+        title: '鋼筋綁紮工程',
+        description: '進行主結構鋼筋綁紮作業',
         status: '進行中',
         assignees: [
-          { userId: 'u1', name: '王大明', role: '工地主任' },
-          { userId: 'u16', name: '張三', role: '工人' }
+          { name: '王技師', role: '結構技師' },
+          { name: '陳監工', role: '品質監工' }
         ],
-        locationId: 'loc1',
-        startDate: '2023-01-05',
-        endDate: '2023-06-30',
-        actualStart: '2023-01-06',
-        actualEnd: undefined,
-        progress: 60,
-        dependencies: [],
-        logs: [],
-        photos: ['https://example.com/photo2.jpg'],
-        note: '需注意天氣',
-        createdAt: '2023-01-01T08:00:00Z',
-        updatedAt: '2023-04-01T10:00:00Z'
+        locationId: 'workspace-1-loc-9',
+        startDate: '2024-02-16',
+        endDate: '2024-03-30',
+        actualStart: '2024-02-16',
+        progress: 75,
+        hours: 480,
+        createdAt: '2024-02-10T10:00:00.000Z',
+        updatedAt: '2024-03-15T16:45:00.000Z'
+      },
+      {
+        id: 't3',
+        workspaceId: 'workspace-1',
+        title: '混凝土澆置',
+        description: '進行結構體混凝土澆置作業',
+        status: '待處理',
+        assignees: [
+          { name: '李主任', role: '工地主任' },
+          { name: '林安全員', role: '安全管理員' }
+        ],
+        locationId: 'workspace-1-loc-10',
+        startDate: '2024-04-01',
+        endDate: '2024-05-15',
+        progress: 0,
+        hours: 360,
+        dependencies: ['t2'],
+        createdAt: '2024-03-01T11:00:00.000Z'
       }
     ],
     calendarEvents: [
       {
         id: 'c1',
-        workspaceId: 'tsmc',
+        workspaceId: 'workspace-1',
         title: '工地會議',
         description: '每月例行會議',
-        start: '2023-04-01T14:00:00Z',
-        end: '2023-04-01T15:00:00Z',
+        start: '2024-04-01T14:00:00Z',
+        end: '2024-04-01T15:00:00Z',
         allDay: false,
-        createdBy: '王大明',
-        createdAt: '2023-03-25T08:00:00Z'
+        createdBy: '張工程師',
+        createdAt: '2024-03-25T08:00:00Z'
       }
     ],
     safetyEvents: [
       {
         id: 's1',
-        workspaceId: 'tsmc',
+        workspaceId: 'workspace-1',
         type: '巡檢',
         description: '日常安全巡檢',
-        reportedBy: '李小華',
-        reportedAt: '2023-02-01T09:00:00Z',
+        reportedBy: '林安全員',
+        reportedAt: '2024-02-01T09:00:00Z',
         resolved: true,
-        resolvedAt: '2023-02-01T10:00:00Z',
+        resolvedAt: '2024-02-01T10:00:00Z',
         note: '無異常',
         photos: []
       }
     ],
     locations: [
-      { id: 'root-tsmc', name: '主廠房', nodeType: 'root', code: 'A1', note: '主要生產區' },
-      { id: 'branch-tsmc1', name: '倉庫', nodeType: 'leaf', parentId: 'root-tsmc', code: 'A2', note: '' }
+      { id: 'workspace-1-loc-1', workspaceId: 'workspace-1', name: '工地主體', nodeType: 'root', code: 'MAIN', note: '主要工地範圍' },
+      { id: 'workspace-1-loc-2', workspaceId: 'workspace-1', name: 'A棟區域', nodeType: 'branch', parentId: 'workspace-1-loc-1', code: 'A', note: '主要建築物區域' },
+      { id: 'workspace-1-loc-3', workspaceId: 'workspace-1', name: 'B棟區域', nodeType: 'branch', parentId: 'workspace-1-loc-1', code: 'B', note: '附屬建築物區域' },
+      { id: 'workspace-1-loc-4', workspaceId: 'workspace-1', name: '公共設施', nodeType: 'branch', parentId: 'workspace-1-loc-1', code: 'PUBLIC', note: '公共設施區域' },
+      { id: 'workspace-1-loc-5', workspaceId: 'workspace-1', name: '地下室', nodeType: 'branch', parentId: 'workspace-1-loc-2', code: 'A-B', note: '停車場及機房' },
+      { id: 'workspace-1-loc-6', workspaceId: 'workspace-1', name: '辦公樓層', nodeType: 'branch', parentId: 'workspace-1-loc-2', code: 'A-L', note: '辦公樓層' },
+      { id: 'workspace-1-loc-7', workspaceId: 'workspace-1', name: '頂樓設備', nodeType: 'branch', parentId: 'workspace-1-loc-2', code: 'A-R', note: '機房及設備' },
+      { id: 'workspace-1-loc-8', workspaceId: 'workspace-1', name: 'B1停車場', nodeType: 'leaf', parentId: 'workspace-1-loc-5', code: 'A-B1-P' },
+      { id: 'workspace-1-loc-9', workspaceId: 'workspace-1', name: 'B2機房', nodeType: 'leaf', parentId: 'workspace-1-loc-5', code: 'A-B2-M' },
+      { id: 'workspace-1-loc-10', workspaceId: 'workspace-1', name: 'B3儲藏室', nodeType: 'leaf', parentId: 'workspace-1-loc-5', code: 'A-B3-S' },
+      { id: 'workspace-1-loc-11', workspaceId: 'workspace-1', name: '1樓大廳', nodeType: 'leaf', parentId: 'workspace-1-loc-6', code: 'A-1F-L' },
+      { id: 'workspace-1-loc-12', workspaceId: 'workspace-1', name: '2-5樓辦公室', nodeType: 'leaf', parentId: 'workspace-1-loc-6', code: 'A-2-5F-O' },
+      { id: 'workspace-1-loc-13', workspaceId: 'workspace-1', name: '6-10樓辦公室', nodeType: 'leaf', parentId: 'workspace-1-loc-6', code: 'A-6-10F-O' },
+      { id: 'workspace-1-loc-14', workspaceId: 'workspace-1', name: '空調機房', nodeType: 'leaf', parentId: 'workspace-1-loc-7', code: 'A-R-HVAC' },
+      { id: 'workspace-1-loc-15', workspaceId: 'workspace-1', name: '電梯機房', nodeType: 'leaf', parentId: 'workspace-1-loc-7', code: 'A-R-ELEV' },
+      { id: 'workspace-1-loc-16', workspaceId: 'workspace-1', name: '會議中心', nodeType: 'branch', parentId: 'workspace-1-loc-3', code: 'B-C', note: '會議及活動空間' },
+      { id: 'workspace-1-loc-17', workspaceId: 'workspace-1', name: '大會議室', nodeType: 'leaf', parentId: 'workspace-1-loc-16', code: 'B-C-L' },
+      { id: 'workspace-1-loc-18', workspaceId: 'workspace-1', name: '小會議室', nodeType: 'leaf', parentId: 'workspace-1-loc-16', code: 'B-C-S' },
+      { id: 'workspace-1-loc-19', workspaceId: 'workspace-1', name: '多功能廳', nodeType: 'leaf', parentId: 'workspace-1-loc-16', code: 'B-C-M' },
+      { id: 'workspace-1-loc-20', workspaceId: 'workspace-1', name: '警衛室', nodeType: 'leaf', parentId: 'workspace-1-loc-4', code: 'PUBLIC-SEC' },
+      { id: 'workspace-1-loc-21', workspaceId: 'workspace-1', name: '停車場', nodeType: 'leaf', parentId: 'workspace-1-loc-4', code: 'PUBLIC-PARK' },
+      { id: 'workspace-1-loc-22', workspaceId: 'workspace-1', name: '垃圾處理區', nodeType: 'leaf', parentId: 'workspace-1-loc-4', code: 'PUBLIC-WASTE' }
     ],
-    tags: ['半導體', '新竹'],
-    description: '台積電新竹園區新建工程',
-    createdAt: '2023-01-01T08:00:00Z',
-    updatedAt: '2023-04-01T10:00:00Z'
+    tags: ['科技園區', '辦公大樓'],
+    description: '台北科技園區新建辦公大樓專案',
+    createdAt: '2024-01-01T08:00:00Z',
+    updatedAt: '2024-03-15T14:20:00Z'
   }
 ];

@@ -15,59 +15,22 @@ export class MockDataService {
     return [
       {
         id: 'workspace-1',
-        name: '台北101大樓建設專案',
-        code: 'TP101',
+        name: '台北科技園區',
+        code: 'TPE-TECH',
         status: '進行中',
         startDate: '2024-01-01',
-        endDate: '2025-12-31',
-        progress: 65,
-        members: this.getMockMembers(),
-        logs: [],
-        tasks: [],
-        calendarEvents: [],
-        safetyEvents: [],
-        tags: ['高樓建築', '商業大樓'],
-        description: '台北101大樓建設專案，包含地基工程、結構工程、裝修工程等多個階段',
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-15T10:30:00.000Z',
-        locations: this.getMockLocationNodes('workspace-1')
-      },
-      {
-        id: 'workspace-2',
-        name: '高雄港區開發案',
-        code: 'KH-PORT',
-        status: '進行中',
-        startDate: '2024-03-01',
-        endDate: '2026-02-28',
+        endDate: '2024-12-31',
         progress: 35,
         members: this.getMockMembers(),
         logs: [],
         tasks: [],
         calendarEvents: [],
         safetyEvents: [],
-        tags: ['港區開發', '基礎建設'],
-        description: '高雄港區綜合開發專案，包含碼頭建設、倉儲設施、交通配套等',
-        createdAt: '2024-03-01T00:00:00.000Z',
+        tags: ['科技園區', '辦公大樓'],
+        description: '台北科技園區新建辦公大樓專案',
+        createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-03-15T14:20:00.000Z',
-        locations: this.getMockLocationNodes('workspace-2')
-      },
-      {
-        id: 'workspace-3',
-        name: '桃園機場第三航廈',
-        code: 'TPE-T3',
-        status: '未開始',
-        startDate: '2024-06-01',
-        endDate: '2027-05-31',
-        progress: 0,
-        members: this.getMockMembers(),
-        logs: [],
-        tasks: [],
-        calendarEvents: [],
-        safetyEvents: [],
-        tags: ['機場建設', '航廈工程'],
-        description: '桃園國際機場第三航廈建設專案',
-        createdAt: '2024-05-01T00:00:00.000Z',
-        locations: this.getMockLocationNodes('workspace-3')
+        locations: this.getMockLocationNodes('workspace-1')
       }
     ];
   }
@@ -90,30 +53,43 @@ export class MockDataService {
    */
   private getMockLocationNodes(workspaceId: string): WorkspaceLocationNode[] {
     const baseNodes: Omit<WorkspaceLocationNode, 'id' | 'workspaceId'>[] = [
-      // 根節點
-      { name: 'A棟', nodeType: 'root', code: 'A', note: '主要建築物' },
-      { name: 'B棟', nodeType: 'root', code: 'B', note: '附屬建築物' },
+      // 單一根節點 - 工地主體
+      { name: '工地主體', nodeType: 'root', code: 'MAIN', note: '主要工地範圍' },
       
-      // A棟的枝節點
+      // 主要區域（枝節點）
+      { name: 'A棟區域', nodeType: 'branch', parentId: 'MAIN', code: 'A', note: '主要建築物區域' },
+      { name: 'B棟區域', nodeType: 'branch', parentId: 'MAIN', code: 'B', note: '附屬建築物區域' },
+      { name: '公共設施', nodeType: 'branch', parentId: 'MAIN', code: 'PUBLIC', note: '公共設施區域' },
+      
+      // A棟區域的子節點
       { name: '地下室', nodeType: 'branch', parentId: 'A', code: 'A-B', note: '停車場及機房' },
-      { name: '1-10樓', nodeType: 'branch', parentId: 'A', code: 'A-L', note: '辦公樓層' },
-      { name: '頂樓', nodeType: 'branch', parentId: 'A', code: 'A-R', note: '機房及設備' },
+      { name: '辦公樓層', nodeType: 'branch', parentId: 'A', code: 'A-L', note: '辦公樓層' },
+      { name: '頂樓設備', nodeType: 'branch', parentId: 'A', code: 'A-R', note: '機房及設備' },
       
       // 地下室的葉節點
       { name: 'B1停車場', nodeType: 'leaf', parentId: 'A-B', code: 'A-B1-P' },
       { name: 'B2機房', nodeType: 'leaf', parentId: 'A-B', code: 'A-B2-M' },
       { name: 'B3儲藏室', nodeType: 'leaf', parentId: 'A-B', code: 'A-B3-S' },
       
-      // 1-10樓的葉節點
+      // 辦公樓層的葉節點
       { name: '1樓大廳', nodeType: 'leaf', parentId: 'A-L', code: 'A-1F-L' },
       { name: '2-5樓辦公室', nodeType: 'leaf', parentId: 'A-L', code: 'A-2-5F-O' },
       { name: '6-10樓辦公室', nodeType: 'leaf', parentId: 'A-L', code: 'A-6-10F-O' },
       
-      // B棟的枝節點和葉節點
+      // 頂樓設備的葉節點
+      { name: '空調機房', nodeType: 'leaf', parentId: 'A-R', code: 'A-R-HVAC' },
+      { name: '電梯機房', nodeType: 'leaf', parentId: 'A-R', code: 'A-R-ELEV' },
+      
+      // B棟區域的子節點
       { name: '會議中心', nodeType: 'branch', parentId: 'B', code: 'B-C', note: '會議及活動空間' },
       { name: '大會議室', nodeType: 'leaf', parentId: 'B-C', code: 'B-C-L' },
       { name: '小會議室', nodeType: 'leaf', parentId: 'B-C', code: 'B-C-S' },
-      { name: '多功能廳', nodeType: 'leaf', parentId: 'B-C', code: 'B-C-M' }
+      { name: '多功能廳', nodeType: 'leaf', parentId: 'B-C', code: 'B-C-M' },
+      
+      // 公共設施的葉節點
+      { name: '警衛室', nodeType: 'leaf', parentId: 'PUBLIC', code: 'PUBLIC-SEC' },
+      { name: '停車場', nodeType: 'leaf', parentId: 'PUBLIC', code: 'PUBLIC-PARK' },
+      { name: '垃圾處理區', nodeType: 'leaf', parentId: 'PUBLIC', code: 'PUBLIC-WASTE' }
     ];
 
     return baseNodes.map((node, index) => ({
