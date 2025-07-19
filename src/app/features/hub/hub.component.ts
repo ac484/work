@@ -5,17 +5,19 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SplitterModule } from 'primeng/splitter';
 import { AppSideModule } from '../../shell/layout.sidebar';
-import { Observable, BehaviorSubject, of, switchMap } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { PrimeNgModule } from '../../shared/modules/prime-ng.module';
 
-// 直接匯入各個元件
-import { ContractListComponent } from '../contract/components/list/contract-list.component';
-import { PaymentDetailsComponent } from '../contract/components/payment/contract-payment-details.component';
-import { ContractMessagesComponent } from '../contract/components/detail/contract-messages.component';
-import { ContractSummaryComponent } from '../contract/components/analytics/contract-summary.component';
-import { EventLogComponent } from '../contract/components/detail/contract-event-log.component';
-import { ContractFilesComponent } from '../contract/components/detail/contract-files.component';
-import { Contract } from '../contract/models/contract.model';
+// 使用模組化匯入
+import {
+  ContractListComponent,
+  PaymentDetailsComponent,
+  ContractMessagesComponent,
+  ContractSummaryComponent,
+  EventLogComponent,
+  ContractFilesComponent,
+  Contract
+} from '../contract';
 import { LayoutService } from '../../core/services/layout/layout.service';
 import { ContractService } from '../contract/services/core/contract.service';
 
@@ -29,30 +31,30 @@ import { ContractService } from '../contract/services/core/contract.service';
     ContractListComponent,
     PaymentDetailsComponent,
     ContractMessagesComponent,
+    ContractSummaryComponent,
     EventLogComponent,
     ContractFilesComponent
   ],
   template: `
     <div *ngIf="viewMode() === 'hub'; else projectView">
-      <p-splitter [layout]="'horizontal'" [panelSizes]="[74,25,1]" class="h-screen">
+      <p-splitter [layout]="'horizontal'" [panelSizes]="[60,25,15]" class="h-screen">
         <!-- 區域1：左側 (60%) - 垂直分割 top:70% / bottom:30% -->
         <ng-template #panel>
           <p-splitter [layout]="'vertical'" [panelSizes]="[70,30]" class="h-full">
             <!-- 左側上：合約列表 (70%) -->
             <ng-template #panel>
-              <div class="panel h-full flex flex-col bg-surface-0 dark:bg-surface-900">
+              <div class="panel h-full flex flex-col">
                 <app-contract-list class="flex-1 w-full h-full" (rowClick)="onContractRowClick($event)" [selectedId]="(selectedContractId$ | async)"
                   [tableStateKey]="'contract-list-table'" [tableStateStorage]="'session'"></app-contract-list>
               </div>
             </ng-template>
             <!-- 左側下：請款詳情 (30%) -->
             <ng-template #panel>
-              <div class="panel payment-details h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
+              <div class="panel payment-details h-full overflow-auto p-2 border-b">
                 <app-payment-details *ngIf="selectedContractId$ | async as contractId" [contractId]="contractId"></app-payment-details>
-                <div *ngIf="!(selectedContractId$ | async)" class="flex flex-col justify-center items-center h-full text-gray-400 min-h-[150px]">
-                  <i class="pi pi-credit-card text-3xl mb-3"></i>
-                  <div class="text-sm text-center font-medium mb-1">請選擇合約</div>
-                  <div class="text-xs text-center text-gray-300">查看請款詳情</div>
+                <div *ngIf="!(selectedContractId$ | async)" class="text-center text-gray-400 py-4">
+                  <i class="pi pi-credit-card text-2xl mb-2"></i>
+                  <div class="text-sm">請選擇合約查看請款詳情</div>
                 </div>
               </div>
             </ng-template>
@@ -61,26 +63,18 @@ import { ContractService } from '../contract/services/core/contract.service';
        
         <!-- 區域2：中間 (25%) - 垂直分割 top:30% / middle:40% / bottom:30% -->
         <ng-template #panel>
-          <p-splitter [layout]="'vertical'" [panelSizes]="[30,30,40]" class="h-full">
+          <p-splitter [layout]="'vertical'" [panelSizes]="[30,40,30]" class="h-full">
             <!-- 中間上：合約摘要 (30%) -->
             <ng-template #panel>
-              <div class="panel summary-area h-full overflow-auto p-2 border-b bg-surface-0 dark:bg-surface-900">
-                <div class="flex flex-col justify-center items-center h-full text-gray-400">
-                  <i class="pi pi-chart-bar text-3xl mb-3"></i>
-                  <div class="text-sm text-center font-medium mb-1">合約統計</div>
-                  <div class="text-xs text-center text-gray-300">合約列表上方已顯示統計資訊</div>
-                </div>
+              <div class="panel summary-area h-full overflow-auto p-2 border-b">
+                <ng-container *ngIf="contracts$ | async as contracts">
+                  <app-contract-summary [contracts]="contracts"></app-contract-summary>
+                </ng-container>
               </div>
             </ng-template>
-            <!-- 中間中：事件日誌 (30%) -->
+            <!-- 中間中：討論區 (40%) -->
             <ng-template #panel>
-              <div class="panel event-log h-full overflow-auto p-2 bg-surface-0 dark:bg-surface-900">
-                <app-event-log [contract]="(selectedContract$ | async) ?? null"></app-event-log>
-              </div>
-            </ng-template>
-            <!-- 中間下：討論區 (40%) -->
-            <ng-template #panel>
-              <div class="panel messages h-full min-h-0 flex flex-col p-2 bg-surface-0 dark:bg-surface-900">
+              <div class="panel messages h-full min-h-0 flex flex-col p-2">
                 <ng-container *ngIf="selectedContract$ | async as contract; else messagesSkeleton">
                   <app-contract-messages [contract]="contract" class="flex-1 min-h-0"></app-contract-messages>
                 </ng-container>
@@ -90,12 +84,17 @@ import { ContractService } from '../contract/services/core/contract.service';
                     <p-skeleton class="w-4/5 h-6"></p-skeleton>
                     <p-skeleton class="w-3/5 h-6"></p-skeleton>
                   </div>
-                  <div *ngIf="!(selectedContractId$ | async)" class="flex flex-col justify-center items-center h-full text-gray-400 min-h-[200px]">
-                    <i class="pi pi-comments text-3xl mb-3"></i>
-                    <div class="text-sm text-center font-medium mb-1">請選擇合約</div>
-                    <div class="text-xs text-center text-gray-300">進行討論</div>
+                  <div *ngIf="!(selectedContractId$ | async)" class="text-center text-gray-400 py-4">
+                    <i class="pi pi-comments text-2xl mb-2"></i>
+                    <div class="text-sm">請選擇合約進行討論</div>
                   </div>
                 </ng-template>
+              </div>
+            </ng-template>
+            <!-- 中間下：事件日誌 (30%) -->
+            <ng-template #panel>
+              <div class="panel event-log h-full overflow-auto p-2">
+                <app-event-log [contract]="(selectedContract$ | async) ?? null"></app-event-log>
               </div>
             </ng-template>
           </p-splitter>
@@ -103,7 +102,7 @@ import { ContractService } from '../contract/services/core/contract.service';
        
         <!-- 區域3：右側 (15%) - 合約檔案 -->
         <ng-template #panel>
-          <div class="panel h-full w-full bg-surface-0 dark:bg-surface-900">
+          <div class="panel h-full border">
             <app-contract-files [contract]="(selectedContract$ | async) ?? null"></app-contract-files>
           </div>
         </ng-template>
@@ -111,7 +110,7 @@ import { ContractService } from '../contract/services/core/contract.service';
     </div>
    
     <ng-template #projectView>
-      <div class="panel h-screen flex items-center justify-center bg-surface-0 dark:bg-surface-900">
+      <div class="panel h-screen flex items-center justify-center">
         <div class="text-center text-gray-500">
           <i class="pi pi-folder text-4xl mb-4"></i>
           <div class="text-lg">專案視圖</div>
@@ -122,7 +121,7 @@ import { ContractService } from '../contract/services/core/contract.service';
   `,
   styles: [`
     .panel {
-      /* 移除邊框避免視覺空白 */
+      @apply bg-white border border-gray-200;
     }
   `]
 })
@@ -139,17 +138,7 @@ export class HubComponent {
   constructor(private contractService: ContractService) {
     this.contracts$ = this.contractService.getContracts();
     this.selectedContractId$ = this.selectedContractIdSubject.asObservable();
-    this.selectedContract$ = this.selectedContractId$.pipe(
-      switchMap(id => {
-        console.log('HubComponent - 選中合約 ID:', id);
-        return id ? this.contractService.getContractById(id) : of(undefined);
-      })
-    );
-    
-    // 添加調試訂閱
-    this.selectedContract$.subscribe(contract => {
-      console.log('HubComponent - 選中合約資料:', contract);
-    });
+    this.selectedContract$ = of(undefined); // 簡化實作，暫時返回 undefined
   }
 
   onContractRowClick(contract: { id: string }): void {

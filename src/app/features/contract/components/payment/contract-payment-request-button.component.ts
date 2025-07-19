@@ -6,9 +6,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { SliderModule } from 'primeng/slider';
-import { Contract, PaymentRecord } from '../../models';
+import { Contract, PaymentRecord, PaymentStatus } from '../../models';
+import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 import { AppUser } from '../../../../core/services/iam/users/user.service';
-import { ContractFunctionsService } from '../../services/contract-functions.service';
+import { PaymentRequestService } from '../../services/payment/contract-payment-request.service';
 
 @Component({
   selector: 'app-payment-request-button',
@@ -59,7 +60,7 @@ export class PaymentRequestButtonComponent implements OnInit {
   paymentNote = '';
   submitting = false;
   
-  private contractFunctions = inject(ContractFunctionsService);
+  private paymentRequestService = inject(PaymentRequestService);
 
   ngOnInit(): void {
     // 初始化完成
@@ -109,20 +110,13 @@ export class PaymentRequestButtonComponent implements OnInit {
 
     this.submitting = true;
     try {
-      // 使用極簡調用
-      const result = await this.contractFunctions.requestPayment(
-        this.contract.id!,
+      const record = await this.paymentRequestService.createDraft(
+        this.contract,
+        this.user,
         this.paymentAmount,
         this.paymentPercent,
         this.paymentNote
-      ).toPromise();
-      
-      if (!result) throw new Error('請款申請失敗');
-      const record = result.paymentRecord;
-      
-      // 自動計算合約進度
-      await this.contractFunctions.calculateProgress(this.contract.id!).toPromise();
-      
+      );
       this.paymentAmount = null;
       this.paymentPercent = null;
       this.paymentNote = '';

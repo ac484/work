@@ -72,7 +72,7 @@ interface Product {
             </tr>
           </ng-template>
           <ng-template #body let-product>
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+            <tr>
               <td>{{ product.name }}</td>
               <td>{{ product.category }}</td>
               <td>{{ product.price }}</td>
@@ -94,8 +94,7 @@ interface Product {
         </p-table>
       </div>
     </div>
-  `,
-  styles: [``]
+  `
 })
 export class ProductOverviewWidget {
   selectedProduct!: Product;

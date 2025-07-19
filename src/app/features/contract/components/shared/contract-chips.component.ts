@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ChipModule } from 'primeng/chip';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { TagService } from '../../services/management/contract-tag.service';
 
 @Component({
   selector: 'app-chips',
@@ -41,24 +42,22 @@ export class ChipsComponent {
   @Output() tagsChange = new EventEmitter<string[]>();
 
   newTag = '';
+  constructor(private tagService: TagService) {}
 
   trackByTag(index: number, tag: string): string {
     return tag;
   }
 
   addTag(): void {
-    const trimmed = this.newTag.trim();
-    if (!trimmed || this.tags.includes(trimmed)) {
-      this.newTag = '';
-      return;
+    const updated = this.tagService.add(this.tags, this.newTag);
+    if (updated !== this.tags) {
+      this.tagsChange.emit(updated);
     }
-    const updated = [...this.tags, trimmed];
-    this.tagsChange.emit(updated);
     this.newTag = '';
   }
 
   removeTag(tag: string): void {
-    const updated = this.tags.filter(t => t !== tag);
+    const updated = this.tagService.remove(this.tags, tag);
     this.tagsChange.emit(updated);
   }
 }

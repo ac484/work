@@ -17,11 +17,7 @@ import { ContractAnalyticsService } from '../../services/analytics/contract-anal
       </div>
     </div>
     <ng-template #emptyBlock>
-      <div class="flex flex-col justify-center items-center h-full text-gray-400 min-h-[150px]">
-        <i class="pi pi-calendar text-3xl mb-3"></i>
-        <div class="text-sm text-center font-medium mb-1">請選擇合約</div>
-        <div class="text-xs text-center text-gray-300">檢視事件紀錄</div>
-      </div>
+      <div class="text-xs text-gray-400 p-2 h-full flex items-center justify-center">請選擇合約以檢視事件紀錄</div>
     </ng-template>
   `
 })

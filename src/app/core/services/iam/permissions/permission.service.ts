@@ -11,21 +11,9 @@ export class PermissionService {
 
   // 原子化權限檢查：檢查用戶是否有特定權限
   async hasPermission(user: AppUser | null, permission: Permission): Promise<boolean> {
-    console.log('PermissionService - 檢查權限:', {
-      user: user?.uid,
-      userRoles: user?.roles,
-      requiredPermission: permission
-    });
-    
     if (!user) return false;
     const userPerms = await this.getUserPermissions(user);
-    
-    console.log('PermissionService - 用戶權限列表:', userPerms);
-    
-    const hasPermission = userPerms.includes(permission);
-    console.log('PermissionService - 權限檢查結果:', hasPermission);
-    
-    return hasPermission;
+    return userPerms.includes(permission);
   }
 
   // 批量權限檢查：檢查用戶是否有多個權限中的任一個
